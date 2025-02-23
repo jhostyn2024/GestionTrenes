@@ -10,28 +10,73 @@ import java.util.Objects;
  *
  * @author jhost
  */
+
+
 public class Boleto {
-    private String nombre;
+    private String idRegistro;
+    private String fechaCompra;
+    private String fechaSalida;
+    private String idTren;
+    private String idPasajero;
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
+    // Constructor
+    public Boleto(String idRegistro, String fechaCompra, String fechaSalida, String idTren, String idPasajero) {
+        this.idRegistro = idRegistro;
+        this.fechaCompra = fechaCompra;
+        this.fechaSalida = fechaSalida;
+        this.idTren = idTren;
+        this.idPasajero = idPasajero;
+    }
+
+    // Getters y setters
+    public String getIdRegistro() {
+        return idRegistro;
+    }
+
+    public void setIdRegistro(String idRegistro) {
+        this.idRegistro = idRegistro;
+    }
+
+    public String getFechaCompra() {
+        return fechaCompra;
+    }
+
+    public void setFechaCompra(String fechaCompra) {
+        this.fechaCompra = fechaCompra;
+    }
+
+    public String getFechaSalida() {
+        return fechaSalida;
+    }
+
+    public void setFechaSalida(String fechaSalida) {
+        this.fechaSalida = fechaSalida;
+    }
+
+    public String getIdTren() {
+        return idTren;
+    }
+
+    public void setIdTren(String idTren) {
+        this.idTren = idTren;
+    }
+
+    public String getIdPasajero() {
+        return idPasajero;
+    }
+
+    public void setIdPasajero(String idPasajero) {
+        this.idPasajero = idPasajero;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Boleto other = (Boleto) obj;
-        return Objects.equals(this.nombre, other.nombre);
+    public String toString() {
+        return "Boleto{" +
+                "idRegistro='" + idRegistro + '\'' +
+                ", fechaCompra='" + fechaCompra + '\'' +
+                ", fechaSalida='" + fechaSalida + '\'' +
+                ", idTren='" + idTren + '\'' +
+                ", idPasajero='" + idPasajero + '\'' +
+                '}';
     }
-         
 }
