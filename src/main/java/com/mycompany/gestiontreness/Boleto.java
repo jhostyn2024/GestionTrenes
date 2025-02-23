@@ -19,7 +19,7 @@ public class Boleto {
     private String idTren;
     private String idPasajero;
 
-    // Constructor
+    
     public Boleto(String idRegistro, String fechaCompra, String fechaSalida, String idTren, String idPasajero) {
         this.idRegistro = idRegistro;
         this.fechaCompra = fechaCompra;
@@ -28,7 +28,7 @@ public class Boleto {
         this.idPasajero = idPasajero;
     }
 
-    // Getters y setters
+    
     public String getIdRegistro() {
         return idRegistro;
     }

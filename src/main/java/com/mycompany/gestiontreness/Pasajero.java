@@ -18,7 +18,7 @@ public class Pasajero {
     private String idTren;
     private String lugarAsignado;
 
-    // Constructor
+    
     public Pasajero(String identificacion, String nombres, String apellidos, String tipoBoleto, String idTren, String lugarAsignado) {
         this.identificacion = identificacion;
         this.nombres = nombres;
@@ -28,7 +28,7 @@ public class Pasajero {
         this.lugarAsignado = lugarAsignado;
     }
 
-    // Getters y setters
+    
     public String getIdentificacion() {
         return identificacion;
     }

@@ -17,7 +17,7 @@ public class Tren {
     private int capacidadCarga; // Número de vagones
     private double kilometraje;
 
-    // Constructor
+    
     public Tren(String nombre, String identificador, int capacidadCarga, double kilometraje) {
         this.nombre = nombre;
         this.identificador = identificador;
@@ -25,7 +25,7 @@ public class Tren {
         this.kilometraje = kilometraje;
     }
 
-    // Getters y setters
+    
     public String getNombre() {
         return nombre;
     }
