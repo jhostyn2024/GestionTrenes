@@ -9,6 +9,7 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
+
 import java.util.List;
 
 public class Ruta {
@@ -17,7 +18,7 @@ public class Ruta {
     private List<String> estacionesIntermedias;
     private double distanciaTotal; // En kilómetros
 
-    
+    // Constructor
     public Ruta(String origen, String destino, List<String> estacionesIntermedias, double distanciaTotal) {
         this.origen = origen;
         this.destino = destino;
@@ -25,7 +26,7 @@ public class Ruta {
         this.distanciaTotal = distanciaTotal;
     }
 
-    
+    // Getters y setters
     public String getOrigen() {
         return origen;
     }
