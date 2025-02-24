@@ -17,7 +17,7 @@ public class Vagon {
     private int asientosEjecutivo; // 8 asientos ejecutivo por vagón
     private int asientosEstandar; // 22 asientos estándar por vagón
 
-    // Constructor
+    
     public Vagon(int numeroVagon) {
         this.numeroVagon = numeroVagon;
         this.capacidad = 40; // Capacidad fija según el documento
@@ -26,7 +26,7 @@ public class Vagon {
         this.asientosEstandar = 22;
     }
 
-    // Getters y setters
+    
     public int getNumeroVagon() {
         return numeroVagon;
     }

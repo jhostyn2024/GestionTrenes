@@ -10,7 +10,7 @@ package com.mycompany.gestiontreness;
  */
 
 
-import modelo.Tren;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;

@@ -25,7 +25,7 @@ public class Tren {
         this.nombre = nombre;
         this.identificador = identificador;
         this.marca = marca;
-        // Validar la capacidad de carga según la marca
+        
         if (marca.equalsIgnoreCase("Mercedes-Benz")) {
             if (capacidadCarga < 1 || capacidadCarga > 28) {
                 throw new IllegalArgumentException("La capacidad de carga para un tren Mercedes-Benz debe estar entre 1 y 28 vagones.");
@@ -42,7 +42,7 @@ public class Tren {
         this.vagones = vagones;
     }
 
-    // Getters y setters
+    
     public String getNombre() {
         return nombre;
     }

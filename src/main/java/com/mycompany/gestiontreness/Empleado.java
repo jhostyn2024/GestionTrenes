@@ -18,13 +18,13 @@ public class Empleado {
     private List<Tren> trenes;
     private List<Ruta> rutas;
 
-    // Constructor
+    
     public Empleado(String nombre, String identificacion) {
         this.nombre = nombre;
         this.identificacion = identificacion;
     }
 
-    // Getters y setters
+    
     public String getNombre() {
         return nombre;
     }

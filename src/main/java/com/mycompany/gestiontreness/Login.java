@@ -55,7 +55,7 @@ public class Login extends JFrame {
                 String contrasena = new String(txtContrasena.getPassword());
 
                 // Validar usuario y contraseña (esto es un ejemplo básico)
-                if (usuario.equals("admin") && contrasena.equals("admin123")) {
+                if (usuario.equals("empleaado") && contrasena.equals("proyectoAula")) {
                     new GestionTrenes().setVisible(true);
                     dispose(); // Cierra la ventana de inicio de sesión
                 } else {

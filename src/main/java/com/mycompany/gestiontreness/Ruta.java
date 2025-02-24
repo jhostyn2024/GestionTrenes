@@ -16,7 +16,7 @@ public class Ruta {
     private String origen;
     private String destino;
     private List<String> estacionesIntermedias;
-    private double distanciaTotal; // En kilómetros
+    private double distanciaTotal; 
 
     // Constructor
     public Ruta(String origen, String destino, List<String> estacionesIntermedias, double distanciaTotal) {
@@ -26,7 +26,7 @@ public class Ruta {
         this.distanciaTotal = distanciaTotal;
     }
 
-    // Getters y setters
+    
     public String getOrigen() {
         return origen;
     }
