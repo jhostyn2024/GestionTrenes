@@ -97,7 +97,7 @@ public class GestionTrenes extends JFrame {
                     Tren tren = new Tren(nombre, identificador, marca, capacidad, kilometraje, new ArrayList<>());
                     trenes.add(tren);
 
-                    // Guardar en JSON
+                    
                     mapper.writeValue(new File("trenes.json"), trenes);
 
                     JOptionPane.showMessageDialog(null, "Tren agregado correctamente");
@@ -111,7 +111,7 @@ public class GestionTrenes extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Leer desde JSON
+                    
                     trenes = mapper.readValue(new File("trenes.json"),
                             mapper.getTypeFactory().constructCollectionType(List.class, Tren.class));
 

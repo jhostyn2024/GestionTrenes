@@ -11,6 +11,9 @@ package com.mycompany.gestiontreness;
 
 
 
+
+
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;
@@ -57,4 +60,57 @@ public class GestionRutas extends JFrame {
         panel.add(lblDistancia);
 
         txtDistancia = new JTextField();
-        txtDistancia.set
+        txtDistancia.setBounds(100, 80, 165, 25);
+        panel.add(txtDistancia);
+
+        btnAgregar = new JButton("Agregar Ruta");
+        btnAgregar.setBounds(10, 120, 120, 25);
+        panel.add(btnAgregar);
+
+        btnConsultar = new JButton("Consultar Rutas");
+        btnConsultar.setBounds(150, 120, 150, 25);
+        panel.add(btnConsultar);
+
+        btnAgregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String origen = txtOrigen.getText();
+                    String destino = txtDestino.getText();
+                    double distancia = Double.parseDouble(txtDistancia.getText());
+
+                    Ruta ruta = new Ruta(origen, destino, new ArrayList<>(), distancia);
+                    rutas.add(ruta);
+
+                    
+                    mapper.writeValue(new File("rutas.json"), rutas);
+
+                    JOptionPane.showMessageDialog(null, "Ruta agregada correctamente");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
+                }
+            }
+        });
+
+        btnConsultar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    
+                    rutas = mapper.readValue(new File("rutas.json"),
+                            mapper.getTypeFactory().constructCollectionType(List.class, Ruta.class));
+
+                    StringBuilder sb = new StringBuilder();
+                    for (Ruta ruta : rutas) {
+                        sb.append(ruta.toString()).append("\n");
+                    }
+                    JOptionPane.showMessageDialog(null, sb.toString());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Error al leer las rutas: " + ex.getMessage());
+                }
+            }
+        });
+
+        add(panel);
+    }
+}
