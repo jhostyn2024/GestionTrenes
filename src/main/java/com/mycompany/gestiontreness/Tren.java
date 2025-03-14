@@ -9,62 +9,67 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tren {
-    private String nombre;
-    private String identificador;
-    private int capacidadCarga; // Número de vagones
-    private double kilometraje;
+    private String id;
+    private String marca;
+    private String modelo;
+    private int capacidad;
+    private double velocidadPromedio;
+    private List<Vagon> vagones;
 
-    
-    public Tren(String nombre, String identificador, int capacidadCarga, double kilometraje) {
-        this.nombre = nombre;
-        this.identificador = identificador;
-        this.capacidadCarga = capacidadCarga;
-        this.kilometraje = kilometraje;
+    public Tren(String id, String marca, String modelo, int capacidad, double velocidadPromedio, List<Vagon> vagones) {
+        this.id = id;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.capacidad = capacidad;
+        this.velocidadPromedio = velocidadPromedio;
+        this.vagones = vagones != null ? vagones : new ArrayList<>();
     }
 
-    
-    public String getNombre() {
-        return nombre;
+    public String getId() {
+        return id;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public String getMarca() {
+        return marca;
     }
 
-    public String getIdentificador() {
-        return identificador;
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
-    public void setIdentificador(String identificador) {
-        this.identificador = identificador;
+    public String getModelo() {
+        return modelo;
     }
 
-    public int getCapacidadCarga() {
-        return capacidadCarga;
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
-    public void setCapacidadCarga(int capacidadCarga) {
-        this.capacidadCarga = capacidadCarga;
+    public int getCapacidad() {
+        return capacidad;
     }
 
-    public double getKilometraje() {
-        return kilometraje;
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
     }
 
-    public void setKilometraje(double kilometraje) {
-        this.kilometraje = kilometraje;
+    public double getVelocidadPromedio() {
+        return velocidadPromedio;
     }
 
-    @Override
-    public String toString() {
-        return "Tren{" +
-                "nombre='" + nombre + '\'' +
-                ", identificador='" + identificador + '\'' +
-                ", capacidadCarga=" + capacidadCarga +
-                ", kilometraje=" + kilometraje +
-                '}';
+    public void setVelocidadPromedio(double velocidadPromedio) {
+        this.velocidadPromedio = velocidadPromedio;
+    }
+
+    public List<Vagon> getVagones() {
+        return vagones;
+    }
+
+    public void setVagones(List<Vagon> vagones) {
+        this.vagones = vagones;
     }
 }
