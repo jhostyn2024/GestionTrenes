@@ -7,6 +7,8 @@
  *
  * @author jhost
  */
+import javax.swing.JOptionPane;
+
 public class Ventana1 extends javax.swing.JFrame {
     private SistemaGestion sistema;
 
@@ -37,21 +39,9 @@ public class Ventana1 extends javax.swing.JFrame {
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 10));
         jTextField1.setForeground(new java.awt.Color(204, 204, 204));
         jTextField1.setText("Ingresar Contraseña");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
         jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 10));
         jTextField2.setForeground(new java.awt.Color(204, 204, 204));
         jTextField2.setText("Ingresar Usuario");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
-
         jLabel1.setText("Correo");
         jLabel2.setText("Contraseña");
 
@@ -92,9 +82,6 @@ public class Ventana1 extends javax.swing.JFrame {
 
         pack();
     }
-    
-     
-    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -190,8 +177,16 @@ public class Ventana1 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-    
+    String usuario = jTextField2.getText();
+        String contrasena = jTextField1.getText();
+        String rol = sistema.autenticar(usuario, contrasena);
+        if (rol != null) {
+            Ventana2 a = new Ventana2(sistema, rol);
+            a.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -201,7 +196,13 @@ public class Ventana1 extends javax.swing.JFrame {
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
-
+public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Ventana1().setVisible(true);
+            }
+        });
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JDialog jDialog1;
@@ -211,3 +212,4 @@ public class Ventana1 extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private java.awt.Label label1;
     // End of variables declaration//GEN-END:variables
+}
