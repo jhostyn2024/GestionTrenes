@@ -20,14 +20,16 @@ public class SistemaGestion {
     private List<Ruta> rutas;
     private List<Horario> horarios;
     private List<Empleado> empleados;
-    private Map<String, String> usuarios; // usuario -> contraseña
-    private Map<String, String> roles; // usuario -> rol
+    private List<Boleto> boletos; 
+    private Map<String, String> usuarios; 
+    private Map<String, String> roles;
 
     public SistemaGestion() {
         trenes = new ArrayList<>();
         rutas = new ArrayList<>();
         horarios = new ArrayList<>();
         empleados = new ArrayList<>();
+        boletos = new ArrayList<>(); 
         usuarios = new HashMap<>();
         roles = new HashMap<>();
         inicializarDatos();
@@ -44,9 +46,18 @@ public class SistemaGestion {
         rutas.add(new Ruta("R1", "Estacion A", "Estacion B", 50.0));
         rutas.add(new Ruta("R2", "Estacion B", "Estacion C", 30.0));
         rutas.add(new Ruta("R3", "Estacion A", "Estacion C", 90.0));
+
+        // Ejemplo de horarios
+        horarios.add(new Horario("R1", "08:00", "09:00", "Lunes"));
+        horarios.add(new Horario("R2", "10:00", "10:30", "Martes"));
+
+        // Ejemplo de tren con vagones
+        List<Vagon> vagones = new ArrayList<>();
+        vagones.add(new Vagon(1, 50, 20, 10, true)); // 50 estándar, 20 ejecutivos, 10 premium
+        trenes.add(new Tren("T1", "Marca1", "Modelo1", 80, 100.0, vagones));
     }
 
-    // Autenticación (RF15)
+    
     public String autenticar(String usuario, String contrasena) {
         if (usuarios.containsKey(usuario) && usuarios.get(usuario).equals(contrasena)) {
             return roles.get(usuario);
@@ -54,7 +65,7 @@ public class SistemaGestion {
         return null;
     }
 
-    // Gestión de Trenes (RF1-RF3)
+    
     public void agregarTren(Tren tren) {
         trenes.add(tren);
         registrarAccion("Tren agregado: " + tren.getId());
@@ -74,7 +85,7 @@ public class SistemaGestion {
         return trenes;
     }
 
-    // Gestión de Rutas (RF4)
+    
     public void agregarRuta(Ruta ruta) {
         rutas.add(ruta);
         registrarAccion("Ruta agregada: " + ruta.getId());
@@ -94,7 +105,7 @@ public class SistemaGestion {
         return rutas;
     }
 
-    // Gestión de Horarios (RF5)
+    
     public void agregarHorario(Horario horario) {
         horarios.add(horario);
         registrarAccion("Horario agregado para ruta: " + horario.getIdRuta());
@@ -114,7 +125,51 @@ public class SistemaGestion {
         return horarios;
     }
 
-    // Trazabilidad (RF16)
+    
+    public boolean venderBoleto(String idRuta, String idHorario, String categoriaAsiento, double pesoMaleta1, double pesoMaleta2) {
+        // Validar equipaje (máximo 2 maletas de 80 kg cada una)
+        if ((pesoMaleta1 > 0 && pesoMaleta1 > 80) || (pesoMaleta2 > 0 && pesoMaleta2 > 80)) {
+            return false; // Excede el peso máximo por maleta
+        }
+        if (pesoMaleta1 == 0 && pesoMaleta2 > 0) {
+            return false; // Si hay maleta 2, debe haber maleta 1
+        }
+
+        
+        if (trenes.isEmpty()) {
+            return false; // No hay trenes disponibles
+        }
+        Tren tren = trenes.get(0); // Simplificación: usar el primer tren
+
+        // Validar que el tren tenga vagones con espacio para equipaje si hay maletas
+        boolean tieneEquipaje = pesoMaleta1 > 0 || pesoMaleta2 > 0;
+        boolean tieneVagonEquipaje = tren.getVagones().stream().anyMatch(Vagon::isTieneEspacioEquipaje);
+        if (tieneEquipaje && !tieneVagonEquipaje) {
+            return false; // No hay vagones con espacio para equipaje
+        }
+
+        // Asignar asiento automáticamente
+        Vagon vagon = tren.getVagones().get(0); // Simplificación: usar el primer vagón
+        if (!vagon.hayAsientosDisponibles(categoriaAsiento)) {
+            return false; // No hay asientos disponibles en la categoría
+        }
+        int numeroAsiento = vagon.asignarAsiento(categoriaAsiento);
+        if (numeroAsiento == -1) {
+            return false; // No se pudo asignar asiento
+        }
+
+        // Crear y guardar el boleto
+        String idBoleto = "B" + (boletos.size() + 1);
+        Boleto boleto = new Boleto(idBoleto, idRuta, idHorario, categoriaAsiento, numeroAsiento, pesoMaleta1, pesoMaleta2);
+        boletos.add(boleto);
+        registrarAccion("Boleto vendido: " + idBoleto + " para ruta " + idRuta + ", horario " + idHorario);
+        return true;
+    }
+
+    public List<Boleto> getBoletos() {
+        return boletos;
+    }
+
     private void registrarAccion(String accion) {
         try (FileWriter writer = new FileWriter("log.txt", true)) {
             writer.write(LocalDateTime.now() + " - " + accion + "\n");
@@ -123,9 +178,7 @@ public class SistemaGestion {
         }
     }
 
-    // Método para Dijkstra (RF6) - Implementar en Semana 8
     public Map<String, Object> calcularRutaMasCorta(String origen, String destino) {
-        // Placeholder: Implementar Dijkstra aquí
         Map<String, Object> resultado = new HashMap<>();
         resultado.put("distancia", 0.0);
         resultado.put("tiempo", "0 minutos");

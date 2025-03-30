@@ -16,70 +16,50 @@ import java.util.Objects;
 
 
 public class Boleto {
-    private String idRegistro;
-    private String fechaCompra;
-    private String fechaSalida;
-    private String idTren;
-    private String idPasajero;
+    private String id;
+    private String idRuta;
+    private String idHorario;
+    private String categoriaAsiento; // "premium", "ejecutivo", "estandar"
+    private int numeroAsiento;
+    private double pesoMaleta1;
+    private double pesoMaleta2;
 
-    
-    public Boleto(String idRegistro, String fechaCompra, String fechaSalida, String idTren, String idPasajero) {
-        this.idRegistro = idRegistro;
-        this.fechaCompra = fechaCompra;
-        this.fechaSalida = fechaSalida;
-        this.idTren = idTren;
-        this.idPasajero = idPasajero;
+    public Boleto(String id, String idRuta, String idHorario, String categoriaAsiento, int numeroAsiento, double pesoMaleta1, double pesoMaleta2) {
+        this.id = id;
+        this.idRuta = idRuta;
+        this.idHorario = idHorario;
+        this.categoriaAsiento = categoriaAsiento;
+        this.numeroAsiento = numeroAsiento;
+        this.pesoMaleta1 = pesoMaleta1;
+        this.pesoMaleta2 = pesoMaleta2;
     }
 
-    
-    public String getIdRegistro() {
-        return idRegistro;
+    // Getters
+    public String getId() {
+        return id;
     }
 
-    public void setIdRegistro(String idRegistro) {
-        this.idRegistro = idRegistro;
+    public String getIdRuta() {
+        return idRuta;
     }
 
-    public String getFechaCompra() {
-        return fechaCompra;
+    public String getIdHorario() {
+        return idHorario;
     }
 
-    public void setFechaCompra(String fechaCompra) {
-        this.fechaCompra = fechaCompra;
+    public String getCategoriaAsiento() {
+        return categoriaAsiento;
     }
 
-    public String getFechaSalida() {
-        return fechaSalida;
+    public int getNumeroAsiento() {
+        return numeroAsiento;
     }
 
-    public void setFechaSalida(String fechaSalida) {
-        this.fechaSalida = fechaSalida;
+    public double getPesoMaleta1() {
+        return pesoMaleta1;
     }
 
-    public String getIdTren() {
-        return idTren;
-    }
-
-    public void setIdTren(String idTren) {
-        this.idTren = idTren;
-    }
-
-    public String getIdPasajero() {
-        return idPasajero;
-    }
-
-    public void setIdPasajero(String idPasajero) {
-        this.idPasajero = idPasajero;
-    }
-
-    @Override
-    public String toString() {
-        return "Boleto{" +
-                "idRegistro='" + idRegistro + '\'' +
-                ", fechaCompra='" + fechaCompra + '\'' +
-                ", fechaSalida='" + fechaSalida + '\'' +
-                ", idTren='" + idTren + '\'' +
-                ", idPasajero='" + idPasajero + '\'' +
-                '}';
+    public double getPesoMaleta2() {
+        return pesoMaleta2;
     }
 }

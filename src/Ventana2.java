@@ -136,6 +136,11 @@ public class Ventana2 extends javax.swing.JFrame {
         });
 
         jButton2.setText("Validar Tickets");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Gestionar Horarios");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -217,6 +222,12 @@ public class Ventana2 extends javax.swing.JFrame {
         e.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Ventana10 f = new Ventana10();
+        f.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jButton2ActionPerformed
     
     
     /**
