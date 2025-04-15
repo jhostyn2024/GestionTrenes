@@ -77,6 +77,6 @@ public class Boleto {
                 ", fechaSalida='" + fechaSalida + '\'' +
                 ", idTren='" + idTren + '\'' +
                 ", idPasajero='" + idPasajero + '\'' +
-                '}';
+                '};
     }
 }
