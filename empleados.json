@@ -1,0 +1,7 @@
+[ {
+  "id" : "1",
+  "nombre" : "Administrador",
+  "cargo" : "Admin",
+  "usuario" : "admin",
+  "contrasena" : "admin123"
+} ]

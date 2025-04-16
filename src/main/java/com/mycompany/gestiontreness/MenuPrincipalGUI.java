@@ -13,14 +13,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class AdminGUI {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MenuPrincipalGUI {
     private Controlador controlador;
 
-    public AdminGUI(Controlador controlador) {
+    public MenuPrincipalGUI(Controlador controlador) {
         this.controlador = controlador; // Recibe el controlador
 
-        // Crear el marco de la GUI de administración
-        JFrame frame = new JFrame("Administración");
+        // Crear el marco principal
+        JFrame frame = new JFrame("Menú Principal");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
         frame.setLocationRelativeTo(null); // Centrar la ventana
@@ -30,32 +35,32 @@ public class AdminGUI {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Layout vertical
 
         // Título
-        JLabel titleLabel = new JLabel("ADMINISTRACIÓN");
+        JLabel titleLabel = new JLabel("MENU PRINCIPAL");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio entre el título y los botones
 
         // Botones de gestión
-        JButton btnGestionEmpleados = new JButton("GESTIONAR EMPLEADOS");
-        JButton btnGestionTrenes = new JButton("GESTIONAR TRENES");
-        JButton btnGestionRutas = new JButton("GESTIONAR RUTAS");
+        JButton btnGestionGeneral = new JButton("GESTION GENERAL");
+        JButton btnGestionHorarios = new JButton("GESTION HORARIOS");
+        JButton btnGestionRutas = new JButton("GESTION RUTAS");
         JButton btnLogout = new JButton("Cerrar Sesión");
 
         // Agregar acción a los botones
-        btnGestionEmpleados.addActionListener(new ActionListener() {
+        btnGestionGeneral.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes abrir la ventana de gestión de empleados
-                JOptionPane.showMessageDialog(frame, "Abrir gestión de empleados...");
+                // Aquí puedes abrir la ventana de gestión general
+                JOptionPane.showMessageDialog(frame, "Abrir gestión general...");
             }
         });
 
-        btnGestionTrenes.addActionListener(new ActionListener() {
+        btnGestionHorarios.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes abrir la ventana de gestión de trenes
-                JOptionPane.showMessageDialog(frame, "Abrir gestión de trenes...");
+                // Aquí puedes abrir la ventana de gestión de horarios
+                JOptionPane.showMessageDialog(frame, "Abrir gestión de horarios...");
             }
         });
 
@@ -75,10 +80,10 @@ public class AdminGUI {
             }
         });
 
-        // Agregar botones al panel
-        panel.add(btnGestionEmpleados);
+                // Agregar botones al panel
+        panel.add(btnGestionGeneral);
         panel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre botones
-        panel.add(btnGestionTrenes);
+        panel.add(btnGestionHorarios);
         panel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre botones
         panel.add(btnGestionRutas);
         panel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre botones

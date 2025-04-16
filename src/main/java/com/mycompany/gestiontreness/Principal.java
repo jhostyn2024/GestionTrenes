@@ -12,6 +12,7 @@ package com.mycompany.gestiontreness;
 
 public class Principal {
     public static void main(String[] args) {
-        new LoginGUI();
+        Controlador controlador = new Controlador(); // Crear el controlador
+        new LoginGUI(controlador); // Iniciar la GUI de inicio de sesión
     }
 }

@@ -14,82 +14,62 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginGUI {
-    private JFrame frame;
-    private JTextField txtUsername;
-    private JPasswordField txtPassword;
-    private GestorEmpleado gestorEmpleado;
+    private Controlador controlador;
 
-    public LoginGUI() {
-        gestorEmpleado = new GestorEmpleado();
-        frame = new JFrame("Login de Empleados");
+    public LoginGUI(Controlador controlador) {
+        this.controlador = controlador; // Recibe el controlador
+
+        // Crear el marco de inicio de sesión
+        JFrame frame = new JFrame("Inicio de Sesión");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+        frame.setSize(300, 200);
 
-        // Crear un panel para los campos de texto y el botón
+        // Centramos la ventana utilizando el Toolkit para obtener la resolución de la pantalla
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        int x = (screenSize.width - frame.getWidth()) / 2; // Centro en X
+        int y = (screenSize.height - frame.getHeight()) / 2; // Centro en Y
+        frame.setLocation(x, y); // Ajusta la posición en el centro de la pantalla
+
+        // Crear un panel para el contenido
         JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado
+        panel.setLayout(new GridLayout(3, 2)); // Layout de cuadrícula
 
-        // Etiqueta y campo de texto para el nombre de usuario
-        JLabel lblUsername = new JLabel("Username:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(lblUsername, gbc);
+        // Campos de entrada
+        JLabel usuarioLabel = new JLabel("Usuario:");
+        JTextField usuarioField = new JTextField();
+        JLabel contrasenaLabel = new JLabel("Contraseña:");
+        JPasswordField contrasenaField = new JPasswordField();
 
-        txtUsername = new JTextField(15);
-        gbc.gridx = 1;
-        panel.add(txtUsername, gbc);
-
-        // Etiqueta y campo de texto para la contraseña
-        JLabel lblPassword = new JLabel("Password:");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(lblPassword, gbc);
-
-        txtPassword = new JPasswordField(15);
-        gbc.gridx = 1;
-        panel.add(txtPassword, gbc);
-
-        // Botón de login
-        JButton btnLogin = new JButton("Login");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2; // Ocupa dos columnas
-        panel.add(btnLogin, gbc);
-
-        // Agregar el panel al marco
-        frame.add(panel, BorderLayout.CENTER);
-
-        // Acción del botón de login
+        // Botón de inicio de sesión
+        JButton btnLogin = new JButton("Iniciar Sesión");
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = txtUsername.getText();
-                String password = new String(txtPassword.getPassword());
-                if (gestorEmpleado.autenticarEmpleado(username, password)) {
-                    JOptionPane.showMessageDialog(frame, "Login exitoso!");
-                    mostrarAdminGUI(); // Mostrar menú administrativo
+                String usuario = usuarioField.getText();
+                String contrasena = new String(contrasenaField.getPassword());
+
+                // Verificar las credenciales
+                if (controlador.verificarCredenciales(usuario, contrasena)) {
+                    // Si las credenciales son correctas, abrir el menú principal
+                    new MenuPrincipalGUI(controlador);
+                    frame.dispose(); // Cerrar la ventana de inicio de sesión
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Credenciales incorrectas. Intente de nuevo.");
+                    JOptionPane.showMessageDialog(frame, "Credenciales incorrectas. Inténtalo de nuevo.");
                 }
             }
         });
 
-        // Configurar el tamaño y hacer que se ajuste al contenido
-        frame.pack();
-        frame.setLocationRelativeTo(null); // Centrar la ventana
-        frame.setVisible(true);
-    }
+        // Agregar componentes al panel
+        panel.add(usuarioLabel);
+        panel.add(usuarioField);
+        panel.add(contrasenaLabel);
+        panel.add(contrasenaField);
+        panel.add(btnLogin);
 
-    // Método para mostrar la interfaz administrativa
-    private void mostrarAdminGUI() {
-        frame.dispose(); // Cerrar la ventana de login
-        new AdminGUI(); // Abrir la interfaz administrativa
-    }
-
-    public static void main(String[] args) {
-        new LoginGUI(); // Iniciar la aplicación
+        // Agregar el panel al marco
+        frame.add(panel);
+        frame.setVisible(true); // Hacer visible la ventana
     }
 }
+

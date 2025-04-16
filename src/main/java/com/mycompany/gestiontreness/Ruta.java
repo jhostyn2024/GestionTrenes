@@ -38,4 +38,3 @@ public class Ruta {
         return origen + " - " + destino + ": " + distancia + " km, Horario: " + horario;
     }
 }
-
