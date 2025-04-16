@@ -12,8 +12,10 @@ public class Ruta {
     private String id;
     private String origen;
     private String destino;
-    private int distancia; // Distancia en kilómetros
-    private String horario; // Horario de la ruta como String
+    private int distancia;
+    private String horario;
+
+    public Ruta() {} // Constructor vacío requerido
 
     public Ruta(String id, String origen, String destino, int distancia, String horario) {
         this.id = id;
@@ -23,32 +25,17 @@ public class Ruta {
         this.horario = horario;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public String getOrigen() { return origen; }
+    public String getDestino() { return destino; }
+    public int getDistancia() { return distancia; }
+    public String getHorario() { return horario; }
 
-    public String getOrigen() {
-        return origen;
-    }
-
-    public String getDestino() {
-        return destino;
-    }
-
-    public int getDistancia() {
-        return distancia; // Método para obtener la distancia
-    }
-
-    public String getHorario() {
-        return horario; // Método para obtener el horario
-    }
-
-    public void setHorario(String horario) {
-        this.horario = horario; // Método para actualizar el horario
-    }
+    public void setHorario(String horario) { this.horario = horario; }
 
     @Override
     public String toString() {
         return origen + " - " + destino + ": " + distancia + " km, Horario: " + horario;
     }
 }
+

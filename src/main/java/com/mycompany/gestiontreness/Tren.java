@@ -8,12 +8,11 @@ package com.mycompany.gestiontreness;
  *
  * @author jhost
  */
-import java.util.ArrayList;
-import java.util.List;
-
 public class Tren {
     private String id;
     private String nombre;
+
+    public Tren() {} // Constructor vacío requerido
 
     public Tren(String id, String nombre) {
         this.id = id;
