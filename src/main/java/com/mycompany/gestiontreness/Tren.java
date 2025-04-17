@@ -8,22 +8,52 @@ package com.mycompany.gestiontreness;
  *
  * @author jhost
  */
-public class Tren {
-    private String id;
-    private String nombre;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
-    public Tren() {} // Constructor vacío requerido
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Tren(String id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
+public class GestorTren {
+    private List<Tren> trenes;
+    private final File archivo = new File("trenes.json");
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    public GestorTren() {
+        trenes = cargarTrenes();
     }
 
-    public String getId() {
-        return id;
+    public void agregarTren(Tren tren) {
+        trenes.add(tren);
+        guardarTrenes();
     }
 
-    public String getNombre() {
-        return nombre;
+    public void eliminarTren(String id) {
+        trenes.removeIf(tren -> tren.getId().equals(id));
+        guardarTrenes();
+    }
+
+    public List<Tren> listarTrenes() {
+        return trenes;
+    }
+
+    private void guardarTrenes() {
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(archivo, trenes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<Tren> cargarTrenes() {
+        if (!archivo.exists()) return new ArrayList<>();
+        try {
+            return mapper.readValue(archivo, new TypeReference<List<Tren>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }
