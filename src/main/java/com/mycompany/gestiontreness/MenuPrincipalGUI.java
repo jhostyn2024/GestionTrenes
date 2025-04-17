@@ -13,11 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class MenuPrincipalGUI {
     private Controlador controlador;
 
@@ -51,16 +46,16 @@ public class MenuPrincipalGUI {
         btnGestionGeneral.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes abrir la ventana de gestión general
-                JOptionPane.showMessageDialog(frame, "Abrir gestión general...");
+                new GestionGeneralGUI(); // Abrir la ventana de gestión general
+                frame.dispose(); // Cerrar la ventana actual
             }
         });
 
         btnGestionHorarios.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes abrir la ventana de gestión de horarios
-                JOptionPane.showMessageDialog(frame, "Abrir gestión de horarios...");
+                new GestionHorariosGUI(); // Abrir la ventana de gestión de horarios
+                frame.dispose(); // Cerrar la ventana actual
             }
         });
 
@@ -80,7 +75,7 @@ public class MenuPrincipalGUI {
             }
         });
 
-                // Agregar botones al panel
+        // Agregar botones al panel
         panel.add(btnGestionGeneral);
         panel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre botones
         panel.add(btnGestionHorarios);
