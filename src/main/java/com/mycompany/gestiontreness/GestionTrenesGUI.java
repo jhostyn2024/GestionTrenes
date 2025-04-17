@@ -50,8 +50,13 @@ public class GestionTrenesGUI {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // Aquí puedes agregar la lógica para cada botón
-                    JOptionPane.showMessageDialog(frame, "Abrir opción: " + button.getText().toLowerCase() + "...");
+                    if (button == btnAgregar) {
+                        new AgregarTrenGUI(); // Abrir la ventana de agregar tren
+                    } else {
+                        // Aquí puedes agregar la lógica para las otras opciones
+                        JOptionPane.showMessageDialog(frame, "Abrir opción: " + button.getText().toLowerCase() + "...");
+                    }
+                    frame.dispose(); // Cerrar la ventana actual
                 }
             });
             panel.add(button);
