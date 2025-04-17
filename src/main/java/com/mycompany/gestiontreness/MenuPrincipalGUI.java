@@ -62,8 +62,8 @@ public class MenuPrincipalGUI {
         btnGestionRutas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes abrir la ventana de gestión de rutas
-                JOptionPane.showMessageDialog(frame, "Abrir gestión de rutas...");
+                new GestionRutasGUI(); // Abrir la ventana de gestión de rutas
+                frame.dispose(); // Cerrar la ventana actual
             }
         });
 
