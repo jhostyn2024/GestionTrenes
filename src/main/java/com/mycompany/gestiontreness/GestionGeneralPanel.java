@@ -8,6 +8,8 @@ package com.mycompany.gestiontreness;
  *
  * @author jhost
  */
+
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,38 +19,51 @@ class GestionGeneralPanel extends JPanel {
 
         // Encabezado
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(0, 51, 102)); // Color azul
+        headerPanel.setBackground(new Color(0, 51, 102));
         headerPanel.setLayout(new FlowLayout());
-        
+
         JLabel headerLabel = new JLabel("MEDINET");
         headerLabel.setForeground(Color.WHITE);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 30)); // Tamaño de fuente
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 30));
         headerPanel.add(headerLabel);
-        
-        add(headerPanel, BorderLayout.NORTH); // Agregar el encabezado en la parte superior
 
-        // Título de Gestión General
+        add(headerPanel, BorderLayout.NORTH);
+
+        // Título
         JLabel titleLabel = new JLabel("GESTION GENERAL", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(184, 134, 11)); // Color dorado
+        titleLabel.setForeground(new Color(184, 134, 11));
         add(titleLabel, BorderLayout.CENTER);
 
-        // Botones de gestión
+        // Botones
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
 
         JButton gestionTrenesButton = new JButton("GESTION TRENES");
         JButton gestionVagonesButton = new JButton("GESTION VAGONES");
 
-        // Estilo de los botones
         gestionTrenesButton.setBackground(new Color(184, 134, 11));
         gestionTrenesButton.setForeground(Color.WHITE);
         gestionVagonesButton.setBackground(new Color(184, 134, 11));
         gestionVagonesButton.setForeground(Color.WHITE);
 
+        // Acción para abrir Gestión Trenes
+        gestionTrenesButton.addActionListener(e -> {
+            frame.setContentPane(new GestionTrenesPanel(frame));
+            frame.revalidate();
+            frame.repaint();
+        });
+
+        // Acción para abrir Gestión Vagones
+        gestionVagonesButton.addActionListener(e -> {
+            frame.setContentPane(new GestionVagonesPanel(frame));
+            frame.revalidate();
+            frame.repaint();
+        });
+
         buttonPanel.add(gestionTrenesButton);
         buttonPanel.add(gestionVagonesButton);
 
-        add(buttonPanel, BorderLayout.SOUTH); // Agregar los botones en la parte inferior
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 }
