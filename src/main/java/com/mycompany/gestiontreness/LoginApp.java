@@ -18,7 +18,7 @@ public class LoginApp {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(400, 300); // Tamaño inicial de la ventana
             frame.setLocationRelativeTo(null);
-            frame.add(new LoginPanel());
+            frame.add(new LoginPanel(frame)); // Pasar el frame para cambiar a la ventana del menú
             frame.setVisible(true);
         });
     }

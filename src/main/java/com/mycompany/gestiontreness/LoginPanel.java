@@ -16,8 +16,10 @@ import java.awt.event.ActionListener;
 class LoginPanel extends JPanel {
     private JTextField emailField;
     private JPasswordField passwordField;
+    private JFrame parentFrame; // Referencia al JFrame principal
 
-    public LoginPanel() {
+    public LoginPanel(JFrame frame) {
+        this.parentFrame = frame; // Inicializar la referencia al JFrame
         setLayout(new BorderLayout()); // Usar BorderLayout para colocar el encabezado y el formulario
 
         // Encabezado
@@ -90,7 +92,10 @@ class LoginPanel extends JPanel {
             String password = new String(passwordField.getPassword());
 
             if (email.equals("admin") && password.equals("admin123")) {
-                JOptionPane.showMessageDialog(LoginPanel.this, "Inicio de sesión exitoso!");
+                // Si el inicio de sesión es exitoso, abrir el menú principal
+                parentFrame.setContentPane(new MainMenuPanel(parentFrame));
+                parentFrame.revalidate(); // Revalidar el frame para mostrar el nuevo panel
+                parentFrame.repaint(); // Repintar el frame
             } else {
                 JOptionPane.showMessageDialog(LoginPanel.this, "Correo o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
