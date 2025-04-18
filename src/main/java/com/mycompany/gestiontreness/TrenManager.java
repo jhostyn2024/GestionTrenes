@@ -8,34 +8,25 @@ package com.mycompany.gestiontreness;
  *
  * @author jhost
  */
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class GestorTren {
+public class TrenManager {
     private List<Tren> trenes;
 
-    public GestorTren() {
+    public TrenManager() {
         trenes = new ArrayList<>();
     }
 
-    public void agregarTren(Tren tren) {
+    public void addTren(Tren tren) {
         trenes.add(tren);
     }
 
-    public void eliminarTren(Tren tren) {
+    public void removeTren(Tren tren) {
         trenes.remove(tren);
     }
 
-    public List<Tren> obtenerTrenes() {
+    public List<Tren> getTrenes() {
         return trenes;
     }
 }
-

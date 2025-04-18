@@ -14,7 +14,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AgregarTrenGUI {
-    public AgregarTrenGUI() {
+    private TrenManager trenManager;
+
+    public AgregarTrenGUI(TrenManager trenManager) {
+        this.trenManager = trenManager;
+
         // Crear el marco de la GUI para agregar tren
         JFrame frame = new JFrame("Agregar Tren");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,12 +36,6 @@ public class AgregarTrenGUI {
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio entre el título y el contenido
-
-        // Imagen del tren (puedes cambiar la ruta a una imagen válida)
-        JLabel imageLabel = new JLabel(new ImageIcon("ruta/a/la/imagen/del/tren.png")); // Cambia la ruta a la imagen
-        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(imageLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio entre la imagen y el formulario
 
         // Campos del formulario
         String[] labels = {"MARCA:", "IDENTIFICADOR:", "CAPACIDAD:", "HORA SALIDA Y LLEGADA:", "VAGONES:", "RUTA:"};
@@ -65,18 +63,25 @@ public class AgregarTrenGUI {
         btnContinuar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes agregar la lógica para manejar la información del tren
+                // Obtener los datos del tren
                 String marca = textFields[0].getText();
                 String identificador = textFields[1].getText();
                 String capacidad = textFields[2].getText();
                 String horaSalidaLlegada = textFields[3].getText();
-                String vagones = textFields[4].getText();
+                                String vagones = textFields[4].getText();
                 String ruta = textFields[5].getText();
 
-                // Mostrar un mensaje de confirmación (puedes cambiar esto según tu lógica)
-                JOptionPane.showMessageDialog(frame, "Tren agregado:\nMarca: " + marca + "\nIdentificador: " + identificador +
-                        "\nCapacidad: " + capacidad + "\nHora Salida y Llegada: " + horaSalidaLlegada +
-                        "\nVagones: " + vagones + "\nRuta: " + ruta);
+                // Crear un nuevo tren y agregarlo al gestor
+                Tren nuevoTren = new Tren(marca, identificador, capacidad, horaSalidaLlegada, vagones, ruta);
+                trenManager.addTren(nuevoTren);
+
+                // Mostrar un mensaje de confirmación
+                JOptionPane.showMessageDialog(frame, "Tren agregado exitosamente.");
+
+                // Limpiar los campos
+                for (JTextField textField : textFields) {
+                    textField.setText("");
+                }
             }
         });
         panel.add(btnContinuar);
