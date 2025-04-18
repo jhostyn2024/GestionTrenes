@@ -10,9 +10,14 @@ package com.mycompany.gestiontreness;
  */
 
 
+import javax.swing.*;
+
 public class Principal {
     public static void main(String[] args) {
-        Controlador controlador = new Controlador(); // Crear el controlador
-        new LoginGUI(controlador); // Iniciar la GUI de inicio de sesión
+        // Crear el gestor de trenes
+        GestorTren gestorTren = new GestorTren();
+
+        // Mostrar la ventana de gestión de trenes
+        SwingUtilities.invokeLater(() -> new GestionTrenesGUI(gestorTren));
     }
 }

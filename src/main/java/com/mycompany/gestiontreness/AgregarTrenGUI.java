@@ -14,10 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AgregarTrenGUI {
-    private TrenManager trenManager;
+    private GestorTren gestorTren;
 
-    public AgregarTrenGUI(TrenManager trenManager) {
-        this.trenManager = trenManager;
+    public AgregarTrenGUI(GestorTren gestorTren) {
+        this.gestorTren = gestorTren;
 
         // Crear el marco de la GUI para agregar tren
         JFrame frame = new JFrame("Agregar Tren");
@@ -68,12 +68,12 @@ public class AgregarTrenGUI {
                 String identificador = textFields[1].getText();
                 String capacidad = textFields[2].getText();
                 String horaSalidaLlegada = textFields[3].getText();
-                                String vagones = textFields[4].getText();
+                String vagones = textFields[4].getText();
                 String ruta = textFields[5].getText();
 
                 // Crear un nuevo tren y agregarlo al gestor
                 Tren nuevoTren = new Tren(marca, identificador, capacidad, horaSalidaLlegada, vagones, ruta);
-                trenManager.addTren(nuevoTren);
+                gestorTren.agregarTren(nuevoTren);
 
                 // Mostrar un mensaje de confirmación
                 JOptionPane.showMessageDialog(frame, "Tren agregado exitosamente.");

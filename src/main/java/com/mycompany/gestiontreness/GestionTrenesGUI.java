@@ -14,54 +14,42 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GestionTrenesGUI {
-    public GestionTrenesGUI() {
-        // Crear el marco de la GUI de gestión de trenes
-        JFrame frame = new JFrame("Menú Gestión de Trenes");
+    private GestorTren gestorTren;
+
+    public GestionTrenesGUI(GestorTren gestorTren) {
+        this.gestorTren = gestorTren;
+
+        // Crear el marco de la GUI
+        JFrame frame = new JFrame("Gestión de Trenes");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
         frame.setLocationRelativeTo(null); // Centrar la ventana
 
         // Crear un panel para el contenido
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Layout vertical
-        panel.setBackground(new Color(243, 244, 246)); // Color de fondo
+        panel.setLayout(new FlowLayout()); // Layout horizontal
 
-        // Título
-        JLabel titleLabel = new JLabel("MENÚ GESTIÓN DE TRENES");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(200, 150, 13)); // Color dorado
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio entre el título y los botones
+        // Botón para agregar tren
+        JButton btnAgregar = new JButton("Agregar Tren");
+        btnAgregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AgregarTrenGUI(gestorTren); // Abrir la ventana de agregar tren
+            }
+        });
 
-        // Botones de gestión
-        JButton btnAgregar = new JButton("AGREGAR");
-        JButton btnDisponibilidad = new JButton("DISPONIBILIDAD");
-        JButton btnEliminarModificar = new JButton("ELIMINAR O MODIFICAR");
+        // Botón para eliminar o modificar tren
+        JButton btnEliminarModificar = new JButton("Eliminar/Modificar Tren");
+        btnEliminarModificar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new EliminarModificarTrenGUI(gestorTren); // Abrir la ventana de eliminar/modificar tren
+            }
+        });
 
-        // Estilo de los botones
-        for (JButton button : new JButton[]{btnAgregar, btnDisponibilidad, btnEliminarModificar}) {
-            button.setFont(new Font("Arial", Font.BOLD, 18));
-            button.setBackground(new Color(224, 180, 32)); // Color dorado
-            button.setForeground(Color.WHITE); // Color del texto
-            button.setAlignmentX(Component.CENTER_ALIGNMENT);
-            button.setPreferredSize(new Dimension(200, 50)); // Tamaño del botón
-            button.setFocusPainted(false); // Quitar el borde de enfoque
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (button == btnAgregar) {
-                        new AgregarTrenGUI(); // Abrir la ventana de agregar tren
-                    } else {
-                        // Aquí puedes agregar la lógica para las otras opciones
-                        JOptionPane.showMessageDialog(frame, "Abrir opción: " + button.getText().toLowerCase() + "...");
-                    }
-                    frame.dispose(); // Cerrar la ventana actual
-                }
-            });
-            panel.add(button);
-            panel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre botones
-        }
+        // Agregar botones al panel
+        panel.add(btnAgregar);
+        panel.add(btnEliminarModificar);
 
         // Agregar el panel al marco
         frame.add(panel);
