@@ -31,7 +31,7 @@ public class GestionTrenesGUI {
 
         // Botón para agregar tren
         JButton btnAgregar = new JButton("Agregar Tren");
-        btnAgregar.addActionListener(new ActionListener() {
+                btnAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new AgregarTrenGUI(gestorTren); // Abrir la ventana de agregar tren

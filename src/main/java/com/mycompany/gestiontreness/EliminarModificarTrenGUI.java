@@ -15,13 +15,13 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class EliminarModificarTrenGUI {
-    private TrenManager trenManager;
+    private GestorTren gestorTren;
 
-    public EliminarModificarTrenGUI(TrenManager trenManager) {
-        this.trenManager = trenManager;
+    public EliminarModificarTrenGUI(GestorTren gestorTren) {
+        this.gestorTren = gestorTren;
 
         // Crear el marco de la GUI para eliminar o modificar tren
-        JFrame frame = new JFrame("Eliminar o Modificar");
+        JFrame frame = new JFrame("Eliminar o Modificar Tren");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null); // Centrar la ventana
@@ -39,7 +39,7 @@ public class EliminarModificarTrenGUI {
         panel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio entre el título y el contenido
 
         // Obtener la lista de trenes
-        List<Tren> trenes = trenManager.getTrenes();
+        List<Tren> trenes = gestorTren.obtenerTrenes();
         for (Tren tren : trenes) {
             JPanel trenPanel = new JPanel();
             trenPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -58,7 +58,7 @@ public class EliminarModificarTrenGUI {
             btnEliminar.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    trenManager.removeTren(tren);
+                    gestorTren.eliminarTren(tren);
                     JOptionPane.showMessageDialog(frame, "Tren eliminado exitosamente.");
                     refreshTrenList(); // Actualizar la lista de trenes
                 }
@@ -86,7 +86,7 @@ public class EliminarModificarTrenGUI {
 
     private void refreshTrenList() {
         // Aquí puedes implementar la lógica para refrescar la lista de trenes
-        trenManager = new TrenManager(); // Recargar trenes
-        new EliminarModificarTrenGUI(trenManager); // Reabrir la ventana
+        // Por simplicidad, puedes cerrar la ventana actual y abrir una nueva
+        // o simplemente actualizar el contenido del panel.
     }
 }
