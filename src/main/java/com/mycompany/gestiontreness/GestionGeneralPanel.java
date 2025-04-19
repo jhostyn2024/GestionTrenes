@@ -8,62 +8,66 @@ package com.mycompany.gestiontreness;
  *
  * @author jhost
  */
-
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-class GestionGeneralPanel extends JPanel {
-    public GestionGeneralPanel(JFrame frame) {
+public class GestionGeneralPanel extends JPanel {
+
+    private JPanel contentPanel;
+
+    public GestionGeneralPanel(JPanel contentPanel) {
+        this.contentPanel = contentPanel;
         setLayout(new BorderLayout());
 
-        // Encabezado
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(0, 51, 102));
-        headerPanel.setLayout(new FlowLayout());
-
-        JLabel headerLabel = new JLabel("MEDINET");
+        JLabel headerLabel = new JLabel("MEDINET", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerLabel.setForeground(Color.WHITE);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        headerPanel.add(headerLabel);
+        headerLabel.setOpaque(true);
+        headerLabel.setBackground(new Color(30, 58, 138));
+        headerLabel.setPreferredSize(new Dimension(100, 60));
+        add(headerLabel, BorderLayout.NORTH);
 
-        add(headerPanel, BorderLayout.NORTH);
-
-        // Título
-        JLabel titleLabel = new JLabel("GESTION GENERAL", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(184, 134, 11));
-        add(titleLabel, BorderLayout.CENTER);
-
-        // Botones
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.setLayout(new GridLayout(2, 1, 20, 20));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 100, 50, 100));
+        buttonPanel.setBackground(new Color(244, 244, 244));
 
-        JButton gestionTrenesButton = new JButton("GESTION TRENES");
-        JButton gestionVagonesButton = new JButton("GESTION VAGONES");
-
-        gestionTrenesButton.setBackground(new Color(184, 134, 11));
-        gestionTrenesButton.setForeground(Color.WHITE);
-        gestionVagonesButton.setBackground(new Color(184, 134, 11));
-        gestionVagonesButton.setForeground(Color.WHITE);
-
-        // Acción para abrir Gestión Trenes
-        gestionTrenesButton.addActionListener(e -> {
-            frame.setContentPane(new GestionTrenesPanel(frame));
-            frame.revalidate();
-            frame.repaint();
+        JButton trenesButton = new JButton("GESTIÓN TRENES");
+        trenesButton.setBackground(new Color(205, 163, 74));
+        trenesButton.setForeground(Color.WHITE);
+        trenesButton.setFocusPainted(false);
+        trenesButton.setFont(new Font("Arial", Font.BOLD, 16));
+        trenesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                contentPanel.removeAll();
+                contentPanel.add(new GestionTrenesPanel(contentPanel));
+                contentPanel.revalidate();
+                contentPanel.repaint();
+            }
         });
 
-        // Acción para abrir Gestión Vagones
-        gestionVagonesButton.addActionListener(e -> {
-            frame.setContentPane(new GestionVagonesPanel(frame));
-            frame.revalidate();
-            frame.repaint();
+        JButton vagonesButton = new JButton("GESTIÓN VAGONES");
+        vagonesButton.setBackground(new Color(205, 163, 74));
+        vagonesButton.setForeground(Color.WHITE);
+        vagonesButton.setFocusPainted(false);
+        vagonesButton.setFont(new Font("Arial", Font.BOLD, 16));
+        vagonesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                contentPanel.removeAll();
+                contentPanel.add(new GestionVagonesPanel(contentPanel));
+                contentPanel.revalidate();
+                contentPanel.repaint();
+            }
         });
 
-        buttonPanel.add(gestionTrenesButton);
-        buttonPanel.add(gestionVagonesButton);
+        buttonPanel.add(trenesButton);
+        buttonPanel.add(vagonesButton);
 
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.CENTER);
     }
 }
+
