@@ -14,104 +14,88 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class LoginPanel extends JPanel {
+    private JFrame frame;
+
     public LoginPanel(JFrame frame) {
+        this.frame = frame;
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240)); // Fondo gris claro
-        
-        createHeader();
-        createCenteredLoginForm(frame);
+        setBackground(new Color(240, 240, 240));
+        createUI();
     }
 
-    private void createHeader() {
+    private void createUI() {
+        // Header
         JPanel header = new JPanel();
-        header.setBackground(new Color(26, 38, 116)); // Azul oscuro
-        header.setPreferredSize(new Dimension(600, 100));
-        header.setLayout(new BorderLayout());
+        header.setBackground(new Color(26, 38, 116));
+        header.setPreferredSize(new Dimension(800, 120));
         
         JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 36));
         title.setForeground(Color.WHITE);
+        header.add(title);
         
-        header.add(title, BorderLayout.CENTER);
         add(header, BorderLayout.NORTH);
-    }
 
-    private void createCenteredLoginForm(JFrame frame) {
-        // Panel principal que contendrá el formulario centrado
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBackground(new Color(240, 240, 240));
-        
-        // Constraints para centrar los componentes
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        
-        // Panel del formulario con borde y sombra
+        // Form panel
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200)),
-            BorderFactory.createEmptyBorder(30, 40, 30, 40)
-        ));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(50, 200, 50, 200));
         formPanel.setBackground(Color.WHITE);
-        
-        // Título del formulario
-        JLabel formTitle = new JLabel("INICIO DE SESIÓN", SwingConstants.CENTER);
-        formTitle.setFont(new Font("Arial", Font.BOLD, 20));
-        formTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        formPanel.add(formTitle);
+
+        JLabel loginTitle = new JLabel("INICIO DE SESIÓN", SwingConstants.CENTER);
+        loginTitle.setFont(new Font("Arial", Font.BOLD, 20));
+        loginTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        formPanel.add(loginTitle);
         formPanel.add(Box.createVerticalStrut(30));
-        
-        // Campo de usuario
-        JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        userPanel.setBackground(Color.WHITE);
-        JLabel userLabel = new JLabel("Usuario:");
-        userLabel.setPreferredSize(new Dimension(100, 25));
-        JTextField userField = new JTextField(15);
-        userPanel.add(userLabel);
-        userPanel.add(userField);
-        formPanel.add(userPanel);
-        formPanel.add(Box.createVerticalStrut(15));
-        
-        // Campo de contraseña
-        JPanel passPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        passPanel.setBackground(Color.WHITE);
-        JLabel passLabel = new JLabel("Contraseña:");
-        passLabel.setPreferredSize(new Dimension(100, 25));
-        JPasswordField passField = new JPasswordField(15);
-        passPanel.add(passLabel);
-        passPanel.add(passField);
-        formPanel.add(passPanel);
+
+        JTextField userField = new JTextField(20);
+        JPasswordField passField = new JPasswordField(20);
+
+        addFormField(formPanel, "Usuario:", userField);
+        addFormField(formPanel, "Contraseña:", passField);
+
+        JButton loginButton = new JButton("INGRESAR");
+        loginButton.setBackground(new Color(205, 163, 74));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 16));
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.addActionListener(e -> authenticate(userField, passField));
+
         formPanel.add(Box.createVerticalStrut(30));
-        
-        // Botón de login
-        JButton loginBtn = new JButton("INICIAR SESIÓN");
-        loginBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginBtn.setBackground(new Color(205, 163, 74)); // Dorado
-        loginBtn.setForeground(Color.WHITE);
-        loginBtn.setFocusPainted(false);
-        loginBtn.setFont(new Font("Arial", Font.BOLD, 14));
-        loginBtn.setPreferredSize(new Dimension(180, 40));
-        loginBtn.addActionListener(e -> handleLogin(frame, userField, passField));
-        formPanel.add(loginBtn);
-        
-        // Añadir el formulario al panel centrado
-        centerPanel.add(formPanel);
-        add(centerPanel, BorderLayout.CENTER);
+        formPanel.add(loginButton);
+
+        add(formPanel, BorderLayout.CENTER);
     }
 
-    private void handleLogin(JFrame frame, JTextField userField, JPasswordField passField) {
-        String usuario = userField.getText().trim();
-        String password = new String(passField.getPassword());
+    private void addFormField(JPanel panel, String label, JComponent field) {
+        JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        fieldPanel.setBackground(Color.WHITE);
         
-        if (usuario.equals("admin") && password.equals("admin123")) {
+        JLabel lbl = new JLabel(label);
+        lbl.setPreferredSize(new Dimension(100, 25));
+        
+        field.setPreferredSize(new Dimension(200, 30));
+        
+        fieldPanel.add(lbl);
+        fieldPanel.add(field);
+        panel.add(fieldPanel);
+        panel.add(Box.createVerticalStrut(15));
+    }
+
+    private void authenticate(JTextField userField, JPasswordField passField) {
+        String username = userField.getText().trim();
+        String password = new String(passField.getPassword()).trim();
+
+        if (username.equals("admin") && password.equals("admin123")) {
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         } else {
-            JOptionPane.showMessageDialog(frame, 
-                "Credenciales incorrectas. Intente nuevamente.", 
+            JOptionPane.showMessageDialog(
+                frame, 
+                "Usuario o contraseña incorrectos", 
                 "Error de autenticación", 
-                JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE
+            );
             passField.setText("");
         }
     }
