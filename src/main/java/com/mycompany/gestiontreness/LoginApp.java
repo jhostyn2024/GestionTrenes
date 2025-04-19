@@ -9,16 +9,15 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 import javax.swing.*;
-import java.awt.*;
 
 public class LoginApp {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Iniciar Sesión");
+            JFrame frame = new JFrame("Login");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 300); // Tamaño inicial de la ventana
+            frame.setSize(600, 400);
             frame.setLocationRelativeTo(null);
-            frame.add(new LoginPanel(frame)); // Pasar el frame para cambiar a la ventana del menú
+            frame.setContentPane(new LoginPanel(frame));
             frame.setVisible(true);
         });
     }

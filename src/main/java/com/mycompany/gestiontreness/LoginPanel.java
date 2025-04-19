@@ -11,94 +11,68 @@ package com.mycompany.gestiontreness;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-class LoginPanel extends JPanel {
-    private JTextField emailField;
-    private JPasswordField passwordField;
-    private JFrame parentFrame; // Referencia al JFrame principal
-
+public class LoginPanel extends JPanel {
     public LoginPanel(JFrame frame) {
-        this.parentFrame = frame; // Inicializar la referencia al JFrame
-        setLayout(new BorderLayout()); // Usar BorderLayout para colocar el encabezado y el formulario
+        setLayout(new BorderLayout());
 
-        // Encabezado
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(0, 51, 102)); // Color azul
-        headerPanel.setLayout(new FlowLayout());
-        
-        JLabel headerLabel = new JLabel("MEDINET");
-        headerLabel.setForeground(Color.WHITE);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 30)); // Tamaño de fuente
-        headerPanel.add(headerLabel);
-        
-        add(headerPanel, BorderLayout.NORTH); // Agregar el encabezado en la parte superior
+        JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 32));
+        title.setForeground(Color.WHITE);
 
-        // Panel de Login
-        JPanel loginFormPanel = new JPanel();
-        loginFormPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre componentes
+        JPanel header = new JPanel();
+        header.setBackground(new Color(26, 38, 116));
+        header.setPreferredSize(new Dimension(600, 80));
+        header.setLayout(new BorderLayout());
+        header.add(title, BorderLayout.CENTER);
 
-        // Título
-        JLabel titleLabel = new JLabel("INICIA SESION", SwingConstants.CENTER);
-        titleLabel.setForeground(new Color(214, 158, 46));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2; // Ocupa dos columnas
-        loginFormPanel.add(titleLabel, gbc);
+        JPanel center = new JPanel();
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.setBackground(Color.WHITE);
+        center.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
 
-        // Etiqueta y campo de correo electrónico
-        JLabel emailLabel = new JLabel("CORREO ELECTRONICO*");
-        gbc.gridwidth = 1; // Restablecer a una columna
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        loginFormPanel.add(emailLabel, gbc);
+        JLabel userLabel = new JLabel("Correo:");
+        JTextField userField = new JTextField();
+        JLabel passLabel = new JLabel("Contraseña:");
+        JPasswordField passField = new JPasswordField();
 
-        emailField = new JTextField();
-        emailField.setPreferredSize(new Dimension(250, 30)); // Tamaño preferido
-        gbc.gridx = 1;
-        loginFormPanel.add(emailField, gbc);
+        JButton ingresarBtn = new JButton("INGRESAR");
+        ingresarBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        ingresarBtn.setBackground(new Color(205, 163, 74));
+        ingresarBtn.setForeground(Color.WHITE);
+        ingresarBtn.setFocusPainted(false);
 
-        // Etiqueta y campo de contraseña
-        JLabel passwordLabel = new JLabel("CONTRASEÑA*");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        loginFormPanel.add(passwordLabel, gbc);
+        ingresarBtn.addActionListener((ActionEvent e) -> {
+            String correo = userField.getText().trim();
+            String password = new String(passField.getPassword());
 
-        passwordField = new JPasswordField();
-        passwordField.setPreferredSize(new Dimension(250, 30)); // Tamaño preferido
-        gbc.gridx = 1;
-        loginFormPanel.add(passwordField, gbc);
-
-        // Botón de inicio de sesión
-        JButton loginButton = new JButton("INGRESAR");
-        loginButton.setBackground(new Color(214, 158, 46));
-        loginButton.setForeground(Color.WHITE);
-        loginButton.addActionListener(new LoginAction());
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2; // Ocupa dos columnas
-        loginFormPanel.add(loginButton, gbc);
-
-        add(loginFormPanel, BorderLayout.CENTER); // Agregar el formulario de inicio de sesión en el centro
-    }
-
-    private class LoginAction implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String email = emailField.getText();
-            String password = new String(passwordField.getPassword());
-
-            if (email.equals("admin") && password.equals("admin123")) {
-                // Si el inicio de sesión es exitoso, abrir el menú principal
-                parentFrame.setContentPane(new MainMenuPanel(parentFrame));
-                parentFrame.revalidate(); // Revalidar el frame para mostrar el nuevo panel
-                parentFrame.repaint(); // Repintar el frame
+            if (correo.equals("admin") && password.equals("admin123")) {
+                frame.setContentPane(new MainMenuPanel(frame));
+                frame.revalidate();
             } else {
-                JOptionPane.showMessageDialog(LoginPanel.this, "Correo o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Correo o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
+        });
+
+        Dimension inputSize = new Dimension(200, 30);
+        userField.setMaximumSize(inputSize);
+        passField.setMaximumSize(inputSize);
+
+        userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        userField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        ingresarBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        center.add(userLabel);
+        center.add(userField);
+        center.add(Box.createVerticalStrut(10));
+        center.add(passLabel);
+        center.add(passField);
+        center.add(Box.createVerticalStrut(20));
+        center.add(ingresarBtn);
+
+        add(header, BorderLayout.NORTH);
+        add(center, BorderLayout.CENTER);
     }
 }

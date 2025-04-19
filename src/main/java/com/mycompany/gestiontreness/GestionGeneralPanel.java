@@ -10,64 +10,38 @@ package com.mycompany.gestiontreness;
  */
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GestionGeneralPanel extends JPanel {
-
-    private JPanel contentPanel;
-
-    public GestionGeneralPanel(JPanel contentPanel) {
-        this.contentPanel = contentPanel;
+    public GestionGeneralPanel(JFrame frame) {
         setLayout(new BorderLayout());
 
-        JLabel headerLabel = new JLabel("MEDINET", SwingConstants.CENTER);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        headerLabel.setForeground(Color.WHITE);
-        headerLabel.setOpaque(true);
-        headerLabel.setBackground(new Color(30, 58, 138));
-        headerLabel.setPreferredSize(new Dimension(100, 60));
-        add(headerLabel, BorderLayout.NORTH);
+        JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(Color.WHITE);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1, 20, 20));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 100, 50, 100));
-        buttonPanel.setBackground(new Color(244, 244, 244));
+        JPanel header = new JPanel();
+        header.setBackground(new Color(30, 58, 138));
+        header.setPreferredSize(new Dimension(600, 80));
+        header.add(title);
 
-        JButton trenesButton = new JButton("GESTIÓN TRENES");
-        trenesButton.setBackground(new Color(205, 163, 74));
-        trenesButton.setForeground(Color.WHITE);
-        trenesButton.setFocusPainted(false);
-        trenesButton.setFont(new Font("Arial", Font.BOLD, 16));
-        trenesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                contentPanel.removeAll();
-                contentPanel.add(new GestionTrenesPanel(contentPanel));
-                contentPanel.revalidate();
-                contentPanel.repaint();
-            }
-        });
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(new Color(244, 244, 244));
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
 
-        JButton vagonesButton = new JButton("GESTIÓN VAGONES");
-        vagonesButton.setBackground(new Color(205, 163, 74));
-        vagonesButton.setForeground(Color.WHITE);
-        vagonesButton.setFocusPainted(false);
-        vagonesButton.setFont(new Font("Arial", Font.BOLD, 16));
-        vagonesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                contentPanel.removeAll();
-                contentPanel.add(new GestionVagonesPanel(contentPanel));
-                contentPanel.revalidate();
-                contentPanel.repaint();
-            }
-        });
+        String[] options = {"AGREGAR", "DISPONIBILIDAD", "ELIMINAR O MODIFICAR"};
+        for (String text : options) {
+            JButton button = new JButton(text);
+            button.setBackground(new Color(205, 163, 74));
+            button.setForeground(Color.WHITE);
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            button.setMaximumSize(new Dimension(300, 50));
+            buttonsPanel.add(button);
+            buttonsPanel.add(Box.createVerticalStrut(20));
+        }
 
-        buttonPanel.add(trenesButton);
-        buttonPanel.add(vagonesButton);
-
-        add(buttonPanel, BorderLayout.CENTER);
+        add(header, BorderLayout.NORTH);
+        add(buttonsPanel, BorderLayout.CENTER);
     }
 }
 

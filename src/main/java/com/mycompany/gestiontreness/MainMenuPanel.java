@@ -11,50 +11,51 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class MainMenuPanel extends JPanel {
     public MainMenuPanel(JFrame frame) {
         setLayout(new BorderLayout());
 
-        // Encabezado
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(0, 51, 102));
-        JLabel titleLabel = new JLabel("MEDINET");
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
-        headerPanel.add(titleLabel);
+        JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 32));
+        title.setForeground(Color.WHITE);
 
-        // Botones de menú
-        JPanel menuPanel = new JPanel();
-        menuPanel.setLayout(new GridLayout(4, 1, 20, 20));
-        menuPanel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
-        menuPanel.setBackground(new Color(240, 240, 240));
+        JPanel header = new JPanel();
+        header.setBackground(new Color(26, 38, 116));
+        header.setPreferredSize(new Dimension(600, 80));
+        header.setLayout(new BorderLayout());
+        header.add(title, BorderLayout.CENTER);
 
-        JButton gestionGeneralButton = createStyledButton("Gestión General");
-        JButton gestionHorariosButton = createStyledButton("Gestión de Horarios");
-        JButton gestionRutasButton = createStyledButton("Gestión Rutas");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(244, 244, 244));
+        buttonPanel.setLayout(new GridLayout(5, 1, 10, 10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
 
-        // Acciones de botones
-        gestionGeneralButton.addActionListener(e -> frame.setContentPane(new GestionGeneralPanel(frame)));
-        gestionHorariosButton.addActionListener(e -> frame.setContentPane(new GestionHorariosPanel(frame)));
-        gestionRutasButton.addActionListener(e -> frame.setContentPane(new GestionRutasPanel(frame)));
+        String[] options = {"GESTIÓN GENERAL", "GESTIÓN DE HORARIOS", "GESTIÓN RUTAS", "GESTIÓN VAGONES", "GESTIÓN TRENES"};
+        for (String opt : options) {
+            JButton button = new JButton(opt);
+            button.setBackground(new Color(205, 163, 74));
+            button.setForeground(Color.WHITE);
+            button.setFocusPainted(false);
+            button.setFont(new Font("Arial", Font.BOLD, 16));
 
-        menuPanel.add(gestionGeneralButton);
-        menuPanel.add(gestionHorariosButton);
-        menuPanel.add(gestionRutasButton);
+            button.addActionListener(e -> {
+                switch (opt) {
+                    case "GESTIÓN GENERAL" -> frame.setContentPane(new GestionGeneralPanel(frame));
+                    case "GESTIÓN DE HORARIOS" -> frame.setContentPane(new GestionHorariosPanel(frame));
+                    case "GESTIÓN RUTAS" -> frame.setContentPane(new GestionRutasPanel(frame));
+                    case "GESTIÓN VAGONES" -> frame.setContentPane(new GestionVagonesPanel(frame));
+                    case "GESTIÓN TRENES" -> frame.setContentPane(new GestionTrenesPanel(frame));
+                }
+                frame.revalidate();
+            });
 
-        add(headerPanel, BorderLayout.NORTH);
-        add(menuPanel, BorderLayout.CENTER);
-    }
+            buttonPanel.add(button);
+        }
 
-    private JButton createStyledButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.BOLD, 18));
-        button.setBackground(new Color(205, 163, 74));
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return button;
+        add(header, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.CENTER);
     }
 }
+
