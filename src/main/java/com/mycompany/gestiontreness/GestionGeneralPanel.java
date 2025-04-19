@@ -29,13 +29,22 @@ public class GestionGeneralPanel extends JPanel {
         buttonsPanel.setBackground(new Color(244, 244, 244));
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
 
-        String[] options = {"AGREGAR", "DISPONIBILIDAD", "ELIMINAR O MODIFICAR"};
+        String[] options = {"GESTIÓN DE TRENES", "GESTIÓN DE VAGONES"};
         for (String text : options) {
             JButton button = new JButton(text);
             button.setBackground(new Color(205, 163, 74));
             button.setForeground(Color.WHITE);
             button.setAlignmentX(Component.CENTER_ALIGNMENT);
             button.setMaximumSize(new Dimension(300, 50));
+            button.setFont(new Font("Arial", Font.BOLD, 16));
+            button.addActionListener(e -> {
+                if (text.equals("GESTIÓN DE TRENES")) {
+                    frame.setContentPane(new GestionTrenesPanel(frame));
+                } else {
+                    frame.setContentPane(new GestionVagonesPanel(frame));
+                }
+                frame.revalidate();
+            });
             buttonsPanel.add(button);
             buttonsPanel.add(Box.createVerticalStrut(20));
         }

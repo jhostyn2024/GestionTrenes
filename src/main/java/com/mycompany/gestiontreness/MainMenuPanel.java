@@ -29,10 +29,10 @@ public class MainMenuPanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(244, 244, 244));
-        buttonPanel.setLayout(new GridLayout(5, 1, 10, 10));
+        buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
 
-        String[] options = {"GESTIÓN GENERAL", "GESTIÓN DE HORARIOS", "GESTIÓN RUTAS", "GESTIÓN VAGONES", "GESTIÓN TRENES"};
+        String[] options = {"GESTIÓN GENERAL", "GESTIÓN DE HORARIOS", "GESTIÓN RUTAS"};
         for (String opt : options) {
             JButton button = new JButton(opt);
             button.setBackground(new Color(205, 163, 74));
@@ -45,8 +45,6 @@ public class MainMenuPanel extends JPanel {
                     case "GESTIÓN GENERAL" -> frame.setContentPane(new GestionGeneralPanel(frame));
                     case "GESTIÓN DE HORARIOS" -> frame.setContentPane(new GestionHorariosPanel(frame));
                     case "GESTIÓN RUTAS" -> frame.setContentPane(new GestionRutasPanel(frame));
-                    case "GESTIÓN VAGONES" -> frame.setContentPane(new GestionVagonesPanel(frame));
-                    case "GESTIÓN TRENES" -> frame.setContentPane(new GestionTrenesPanel(frame));
                 }
                 frame.revalidate();
             });
@@ -58,4 +56,5 @@ public class MainMenuPanel extends JPanel {
         add(buttonPanel, BorderLayout.CENTER);
     }
 }
+
 

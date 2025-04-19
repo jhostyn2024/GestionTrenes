@@ -13,9 +13,9 @@ import javax.swing.*;
 public class LoginApp {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Login");
+            JFrame frame = new JFrame("Medinet");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(600, 400);
+            frame.setSize(600, 500);
             frame.setLocationRelativeTo(null);
             frame.setContentPane(new LoginPanel(frame));
             frame.setVisible(true);
