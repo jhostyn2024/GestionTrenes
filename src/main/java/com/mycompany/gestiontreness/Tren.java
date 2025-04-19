@@ -29,7 +29,7 @@ public class Tren {
         this.ruta = ruta;
     }
 
-    // Getters y Setters
+    // Getters
     public String getMarca() { return marca; }
     public String getIdentificador() { return identificador; }
     public int getCapacidad() { return capacidad; }
@@ -37,4 +37,18 @@ public class Tren {
     public String getHoraLlegada() { return horaLlegada; }
     public int getVagones() { return vagones; }
     public String getRuta() { return ruta; }
+
+    // Setters
+    public void setMarca(String marca) { this.marca = marca; }
+    public void setIdentificador(String identificador) { this.identificador = identificador; }
+    public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
+    public void setHoraSalida(String horaSalida) { this.horaSalida = horaSalida; }
+    public void setHoraLlegada(String horaLlegada) { this.horaLlegada = horaLlegada; }
+    public void setVagones(int vagones) { this.vagones = vagones; }
+    public void setRuta(String ruta) { this.ruta = ruta; }
+
+    @Override
+    public String toString() {
+        return marca + " - " + identificador;
+    }
 }
