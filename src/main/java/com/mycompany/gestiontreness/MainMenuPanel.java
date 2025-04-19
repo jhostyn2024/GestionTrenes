@@ -11,22 +11,29 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class MainMenuPanel extends JPanel {
     public MainMenuPanel(JFrame frame) {
         setLayout(new BorderLayout());
+        createHeader();
+        createButtonsPanel(frame);
+        createFooter();
+    }
 
-        JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 32));
-        title.setForeground(Color.WHITE);
-
+    private void createHeader() {
         JPanel header = new JPanel();
         header.setBackground(new Color(26, 38, 116));
         header.setPreferredSize(new Dimension(600, 80));
-        header.setLayout(new BorderLayout());
-        header.add(title, BorderLayout.CENTER);
+        
+        JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 32));
+        title.setForeground(Color.WHITE);
+        header.add(title);
+        
+        add(header, BorderLayout.NORTH);
+    }
 
+    private void createButtonsPanel(JFrame frame) {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(244, 244, 244));
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
@@ -34,27 +41,49 @@ public class MainMenuPanel extends JPanel {
 
         String[] options = {"GESTIÓN GENERAL", "GESTIÓN DE HORARIOS", "GESTIÓN RUTAS"};
         for (String opt : options) {
-            JButton button = new JButton(opt);
-            button.setBackground(new Color(205, 163, 74));
-            button.setForeground(Color.WHITE);
-            button.setFocusPainted(false);
-            button.setFont(new Font("Arial", Font.BOLD, 16));
-
-            button.addActionListener(e -> {
-                switch (opt) {
-                    case "GESTIÓN GENERAL" -> frame.setContentPane(new GestionGeneralPanel(frame));
-                    case "GESTIÓN DE HORARIOS" -> frame.setContentPane(new GestionHorariosPanel(frame));
-                    case "GESTIÓN RUTAS" -> frame.setContentPane(new GestionRutasPanel(frame));
-                }
-                frame.revalidate();
-            });
-
+            JButton button = createMenuButton(opt);
+            button.addActionListener(e -> handleMenuSelection(frame, opt));
             buttonPanel.add(button);
         }
 
-        add(header, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.CENTER);
     }
-}
 
+    private JButton createMenuButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(new Color(205, 163, 74));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        return button;
+    }
+
+    private void handleMenuSelection(JFrame frame, String option) {
+        switch (option) {
+            case "GESTIÓN GENERAL":
+                frame.setContentPane(new GestionGeneralPanel(frame));
+                break;
+            case "GESTIÓN DE HORARIOS":
+                frame.setContentPane(new GestionHorariosPanel(frame));
+                break;
+            case "GESTIÓN RUTAS":
+                frame.setContentPane(new GestionRutasPanel(frame));
+                break;
+        }
+        frame.revalidate();
+    }
+
+    private void createFooter() {
+        JPanel footer = new JPanel();
+        footer.setBackground(new Color(26, 38, 116));
+        
+        JButton salirBtn = new JButton("SALIR DEL SISTEMA");
+        salirBtn.setBackground(new Color(150, 40, 40));
+        salirBtn.setForeground(Color.WHITE);
+        salirBtn.addActionListener(e -> System.exit(0));
+        
+        footer.add(salirBtn);
+        add(footer, BorderLayout.SOUTH);
+    }
+}
 
