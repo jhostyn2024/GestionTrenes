@@ -11,60 +11,79 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class GestionHorariosPanel extends JPanel {
+    private final JFrame frame;
+
     public GestionHorariosPanel(JFrame frame) {
+        this.frame = frame;
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 242)); // fondo claro
-
-        // Header
-        JPanel header = new JPanel();
-        header.setBackground(new Color(26, 38, 116)); // Azul oscuro
-        header.setLayout(new FlowLayout(FlowLayout.LEFT));
-        header.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-
-        JLabel title = new JLabel("MEDINET");
-        title.setForeground(Color.WHITE);
-        title.setFont(new Font("Arial", Font.BOLD, 28));
-        header.add(title);
-        add(header, BorderLayout.NORTH);
-
-        // Contenido principal
-        JPanel mainContent = new JPanel();
-        mainContent.setLayout(new BoxLayout(mainContent, BoxLayout.Y_AXIS));
-        mainContent.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        mainContent.setBackground(new Color(240, 240, 242));
-
-        JLabel subtitle = new JLabel("MENU GESTION DE HORARIOS");
-        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        subtitle.setForeground(new Color(201, 162, 39)); // Dorado
-        subtitle.setFont(new Font("Arial", Font.BOLD, 24));
-        subtitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
-        mainContent.add(subtitle);
-
-        // Botones en grid
-        JPanel buttonsContainer = new JPanel();
-        buttonsContainer.setLayout(new GridLayout(2, 2, 20, 20));
-        buttonsContainer.setMaximumSize(new Dimension(800, 200));
-        buttonsContainer.setBackground(new Color(240, 240, 242));
-
-        buttonsContainer.add(createStyledButton("AGREGAR"));
-        buttonsContainer.add(createStyledButton("DISPONIBILIDAD"));
-        buttonsContainer.add(createStyledButton("ELIMINAR O MODIFICAR"));
-        buttonsContainer.add(new JLabel()); // espacio vacío para mantener simetría
-
-        mainContent.add(buttonsContainer);
-        add(mainContent, BorderLayout.CENTER);
+        setBackground(new Color(240, 240, 240));
+        createUI();
     }
 
-    private JButton createStyledButton(String text) {
+    private void createUI() {
+        // Header
+        JPanel header = new JPanel();
+        header.setBackground(new Color(0, 86, 179));
+        header.setPreferredSize(new Dimension(800, 80));
+        
+        JLabel title = new JLabel("GESTIÓN DE HORARIOS", SwingConstants.CENTER);
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Arial", Font.BOLD, 24));
+        header.add(title);
+        
+        add(header, BorderLayout.NORTH);
+
+        // Botones principales
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(40, 150, 40, 150));
+        buttonsPanel.setBackground(new Color(240, 240, 240));
+
+        JButton btnAgregar = createMenuButton("AGREGAR HORARIO");
+        btnAgregar.addActionListener(e -> {
+            frame.setContentPane(new AgregarHorarioPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnDisponibilidad = createMenuButton("VER DISPONIBILIDAD");
+        btnDisponibilidad.addActionListener(e -> {
+            frame.setContentPane(new DisponibilidadPanel(frame));
+            frame.revalidate();
+        });
+
+        buttonsPanel.add(btnAgregar);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnDisponibilidad);
+
+        add(buttonsPanel, BorderLayout.CENTER);
+
+        // Footer
+        JPanel footer = new JPanel();
+        footer.setBackground(new Color(240, 240, 240));
+        
+        JButton backButton = new JButton("VOLVER AL MENÚ");
+        backButton.setBackground(new Color(205, 163, 74));
+        backButton.setForeground(Color.WHITE);
+        backButton.addActionListener(e -> {
+            frame.setContentPane(new MainMenuPanel(frame));
+            frame.revalidate();
+        });
+        
+        footer.add(backButton);
+        add(footer, BorderLayout.SOUTH);
+    }
+
+    private JButton createMenuButton(String text) {
         JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.BOLD, 18));
-        button.setBackground(new Color(201, 162, 39)); // Dorado
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setBackground(new Color(0, 86, 179));
         button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setPreferredSize(new Dimension(300, 50));
+        button.setMaximumSize(new Dimension(300, 50));
         return button;
     }
 }
