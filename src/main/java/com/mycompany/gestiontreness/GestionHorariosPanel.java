@@ -9,6 +9,7 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -36,35 +37,47 @@ public class GestionHorariosPanel extends JPanel {
         
         add(header, BorderLayout.NORTH);
 
-        // Botones principales
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(40, 150, 40, 150));
-        buttonsPanel.setBackground(new Color(240, 240, 240));
+        // Main content
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(40, 150, 40, 150));
+        contentPanel.setBackground(new Color(240, 240, 240));
 
+        // Botón Agregar Horario
         JButton btnAgregar = createMenuButton("AGREGAR HORARIO");
         btnAgregar.addActionListener(e -> {
             frame.setContentPane(new AgregarHorarioPanel(frame));
             frame.revalidate();
         });
-
+        
+        // Botón Ver Disponibilidad
         JButton btnDisponibilidad = createMenuButton("VER DISPONIBILIDAD");
         btnDisponibilidad.addActionListener(e -> {
             frame.setContentPane(new DisponibilidadPanel(frame));
             frame.revalidate();
         });
+        
+        // Botón Modificar/Eliminar
+        JButton btnModificarEliminar = createMenuButton("MODIFICAR/ELIMINAR");
+        btnModificarEliminar.addActionListener(e -> {
+            frame.setContentPane(new ModificarEliminarHorarioPanel(frame));
+            frame.revalidate();
+        });
 
-        buttonsPanel.add(btnAgregar);
-        buttonsPanel.add(Box.createVerticalStrut(20));
-        buttonsPanel.add(btnDisponibilidad);
+        // Añadir botones al panel
+        contentPanel.add(btnAgregar);
+        contentPanel.add(Box.createVerticalStrut(20));
+        contentPanel.add(btnDisponibilidad);
+        contentPanel.add(Box.createVerticalStrut(20));
+        contentPanel.add(btnModificarEliminar);
 
-        add(buttonsPanel, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
 
         // Footer
         JPanel footer = new JPanel();
         footer.setBackground(new Color(240, 240, 240));
         
-        JButton backButton = new JButton("VOLVER AL MENÚ");
+        JButton backButton = new JButton("VOLVER AL MENÚ PRINCIPAL");
         backButton.setBackground(new Color(205, 163, 74));
         backButton.setForeground(Color.WHITE);
         backButton.addActionListener(e -> {
@@ -84,6 +97,17 @@ public class GestionHorariosPanel extends JPanel {
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setPreferredSize(new Dimension(300, 50));
         button.setMaximumSize(new Dimension(300, 50));
+        
+        // Efecto hover
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0, 105, 204));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0, 86, 179));
+            }
+        });
+        
         return button;
     }
 }

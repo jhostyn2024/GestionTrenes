@@ -9,6 +9,7 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
+
 public class Horario {
     private String idRuta;
     private String horaSalida;
@@ -27,4 +28,10 @@ public class Horario {
     public String getHoraSalida() { return horaSalida; }
     public String getHoraLlegada() { return horaLlegada; }
     public String getDiasSemana() { return diasSemana; }
+
+    // Setters (nuevos)
+    public void setIdRuta(String idRuta) { this.idRuta = idRuta; }
+    public void setHoraSalida(String horaSalida) { this.horaSalida = horaSalida; }
+    public void setHoraLlegada(String horaLlegada) { this.horaLlegada = horaLlegada; }
+    public void setDiasSemana(String diasSemana) { this.diasSemana = diasSemana; }
 }
