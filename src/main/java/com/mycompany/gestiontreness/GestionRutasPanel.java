@@ -11,58 +11,115 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class GestionRutasPanel extends JPanel {
+    private final JFrame frame;
+    private final Color GOLD_COLOR = new Color(198, 168, 77); // Color #C6A84D
+    private final Color BLUE_COLOR = new Color(0, 86, 179); // Color azul corporativo
+
     public GestionRutasPanel(JFrame frame) {
+        this.frame = frame;
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
-
-        // Encabezado
-        JPanel header = new JPanel();
-        header.setBackground(new Color(0, 51, 102)); // Azul oscuro
-        header.setLayout(new FlowLayout(FlowLayout.CENTER));
-        header.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-
-        JLabel title = new JLabel("MEDINET");
-        title.setForeground(Color.WHITE);
-        title.setFont(new Font("Arial", Font.BOLD, 28));
-        header.add(title);
-        add(header, BorderLayout.NORTH);
-
-        // Título del menú
-        JLabel menuTitle = new JLabel("MENU GESTION DE RUTAS");
-        menuTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        menuTitle.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
-        menuTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Botones
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 2, 20, 20));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 40));
-        buttonPanel.setBackground(Color.WHITE);
-
-        buttonPanel.add(createStyledButton("AGREGAR"));
-        buttonPanel.add(createStyledButton("DISPONIBILIDAD"));
-        buttonPanel.add(createStyledButton("ELIMINAR O MODIFICAR"));
-        buttonPanel.add(createStyledButton("RUTA MAS CORTA"));
-
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBackground(Color.WHITE);
-        centerPanel.add(menuTitle);
-        centerPanel.add(buttonPanel);
-
-        add(centerPanel, BorderLayout.CENTER);
+        setBackground(new Color(240, 240, 240));
+        createUI();
     }
 
-    private JButton createStyledButton(String text) {
+    private void createUI() {
+        // Header
+        JPanel header = new JPanel();
+        header.setBackground(BLUE_COLOR);
+        header.setPreferredSize(new Dimension(800, 80));
+        
+        JLabel title = new JLabel("GESTIÓN DE RUTAS", SwingConstants.CENTER);
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Arial", Font.BOLD, 24));
+        header.add(title);
+        
+        add(header, BorderLayout.NORTH);
+
+        // Main content
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(40, 150, 40, 150));
+        contentPanel.setBackground(new Color(240, 240, 240));
+
+        // Botón Agregar Ruta
+        JButton btnAgregar = createMenuButton("AGREGAR");
+        btnAgregar.addActionListener(e -> {
+            frame.setContentPane(new AgregarRutaPanel(frame));
+            frame.revalidate();
+        });
+        
+        // Botón Disponibilidad
+        JButton btnDisponibilidad = createMenuButton("DISPONIBILIDAD");
+        btnDisponibilidad.addActionListener(e -> {
+            frame.setContentPane(new DisponibilidadRutasPanel(frame));
+            frame.revalidate();
+        });
+        
+        // Botón Modificar/Eliminar
+        JButton btnModificarEliminar = createMenuButton("ELIMINAR O MODIFICAR");
+        btnModificarEliminar.addActionListener(e -> {
+            frame.setContentPane(new ModificarEliminarRutaPanel(frame));
+            frame.revalidate();
+        });
+
+        // Botón Ruta más Corta
+        JButton btnRutaMasCorta = createMenuButton("RUTA MÁS CORTA");
+        btnRutaMasCorta.addActionListener(e -> {
+            frame.setContentPane(new RutaMasCortaPanel(frame));
+            frame.revalidate();
+        });
+
+        // Añadir botones al panel
+        contentPanel.add(btnAgregar);
+        contentPanel.add(Box.createVerticalStrut(20));
+        contentPanel.add(btnDisponibilidad);
+        contentPanel.add(Box.createVerticalStrut(20));
+        contentPanel.add(btnModificarEliminar);
+        contentPanel.add(Box.createVerticalStrut(20));
+        contentPanel.add(btnRutaMasCorta);
+
+        add(contentPanel, BorderLayout.CENTER);
+
+        // Footer
+        JPanel footer = new JPanel();
+        footer.setBackground(new Color(240, 240, 240));
+        
+        JButton backButton = new JButton("VOLVER AL MENÚ PRINCIPAL");
+        backButton.setBackground(GOLD_COLOR);
+        backButton.setForeground(Color.WHITE);
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.addActionListener(e -> {
+            frame.setContentPane(new MainMenuPanel(frame));
+            frame.revalidate();
+        });
+        
+        footer.add(backButton);
+        add(footer, BorderLayout.SOUTH);
+    }
+
+    private JButton createMenuButton(String text) {
         JButton button = new JButton(text);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setBackground(GOLD_COLOR);
+        button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 16));
-        button.setBackground(new Color(255, 215, 0)); // Dorado
-        button.setForeground(Color.BLACK);
+        button.setPreferredSize(new Dimension(300, 50));
+        button.setMaximumSize(new Dimension(300, 50));
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        // Efecto hover
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(210, 180, 90)); // Color más claro al pasar el mouse
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(GOLD_COLOR);
+            }
+        });
+        
         return button;
     }
 }
