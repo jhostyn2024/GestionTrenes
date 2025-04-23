@@ -18,9 +18,8 @@ public class GestorEmpleados {
 
     private GestorEmpleados() {
         empleados = new ArrayList<>();
-        // Datos de ejemplo
-        empleados.add(new Empleado("EMP-001", "Juan Pérez", "12345678", "Conductor", "987654321"));
-        empleados.add(new Empleado("EMP-002", "María López", "87654321", "Mantenimiento", "987123456"));
+        // Datos de ejemplo (puedes eliminarlos después)
+        empleados.add(new Empleado("EMP-001", "Admin Ejemplo", "12345678", "Administrador", "999888777"));
     }
 
     public static synchronized GestorEmpleados getInstance() {
@@ -30,25 +29,11 @@ public class GestorEmpleados {
         return instance;
     }
 
+    public List<Empleado> getEmpleados() {
+        return new ArrayList<>(empleados); // Devuelve una copia para proteger los datos
+    }
+
     public void agregarEmpleado(Empleado empleado) {
         empleados.add(empleado);
-    }
-
-    public boolean eliminarEmpleado(String idEmpleado) {
-        return empleados.removeIf(e -> e.getIdEmpleado().equals(idEmpleado));
-    }
-
-    public List<Empleado> getEmpleados() {
-        return new ArrayList<>(empleados);
-    }
-
-    public boolean actualizarEmpleado(String idOriginal, Empleado empleadoActualizado) {
-        for (int i = 0; i < empleados.size(); i++) {
-            if (empleados.get(i).getIdEmpleado().equals(idOriginal)) {
-                empleados.set(i, empleadoActualizado);
-                return true;
-            }
-        }
-        return false;
     }
 }

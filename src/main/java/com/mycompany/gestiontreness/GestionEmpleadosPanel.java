@@ -9,9 +9,12 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class GestionEmpleadosPanel extends JPanel {
     private JFrame frame;
@@ -20,11 +23,11 @@ public class GestionEmpleadosPanel extends JPanel {
         this.frame = frame;
         setLayout(new BorderLayout());
         setBackground(new Color(240, 240, 240));
-        createUI();
+        initializeUI();
     }
 
-    private void createUI() {
-        // Header (mismo estilo que otros paneles)
+    private void initializeUI() {
+        // Header
         JPanel header = new JPanel();
         header.setBackground(new Color(0, 86, 179));
         header.setPreferredSize(new Dimension(800, 80));
@@ -42,62 +45,66 @@ public class GestionEmpleadosPanel extends JPanel {
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         contentPanel.setBackground(Color.WHITE);
 
+        // Obtener empleados del gestor
         List<Empleado> empleados = GestorEmpleados.getInstance().getEmpleados();
         
         if (empleados.isEmpty()) {
             contentPanel.add(new JLabel("No hay empleados registrados", SwingConstants.CENTER));
         } else {
-            // Cabecera de la tabla
+            // Crear tabla
+            JPanel tablePanel = new JPanel();
+            tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
+            
+            // Cabecera
             JPanel headerPanel = new JPanel(new GridLayout(1, 5));
             headerPanel.setBackground(new Color(0, 86, 179));
-            
-            addHeaderCell(headerPanel, "ID Empleado");
+            addHeaderCell(headerPanel, "ID");
             addHeaderCell(headerPanel, "Nombre");
             addHeaderCell(headerPanel, "DNI");
             addHeaderCell(headerPanel, "Cargo");
             addHeaderCell(headerPanel, "Teléfono");
+            tablePanel.add(headerPanel);
             
-            contentPanel.add(headerPanel);
-
             // Filas de datos
-            for (Empleado empleado : empleados) {
-                JPanel dataRow = new JPanel(new GridLayout(1, 5));
-                dataRow.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
-                
-                addDataCell(dataRow, empleado.getIdEmpleado());
-                addDataCell(dataRow, empleado.getNombre());
-                addDataCell(dataRow, empleado.getDni());
-                addDataCell(dataRow, empleado.getCargo());
-                addDataCell(dataRow, empleado.getTelefono());
-                
-                contentPanel.add(dataRow);
+            for (Empleado emp : empleados) {
+                JPanel rowPanel = new JPanel(new GridLayout(1, 5));
+                rowPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+                addDataCell(rowPanel, emp.getIdEmpleado());
+                addDataCell(rowPanel, emp.getNombre());
+                addDataCell(rowPanel, emp.getDni());
+                addDataCell(rowPanel, emp.getCargo());
+                addDataCell(rowPanel, emp.getTelefono());
+                tablePanel.add(rowPanel);
             }
+            
+            contentPanel.add(new JScrollPane(tablePanel));
         }
 
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
-        add(scrollPane, BorderLayout.CENTER);
+        add(new JScrollPane(contentPanel), BorderLayout.CENTER);
 
-        // Footer con botones (mismo estilo)
-        JPanel footer = new JPanel(new GridLayout(1, 3, 10, 0));
+        // Footer
+        JPanel footer = new JPanel();
         footer.setBackground(new Color(240, 240, 240));
-        footer.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
         
-        JButton btnAgregar = createActionButton("AGREGAR", new Color(198, 168, 77));
-        btnAgregar.addActionListener(this::agregarEmpleado);
-        
-        JButton btnEditar = createActionButton("EDITAR", new Color(52, 152, 219));
-        btnEditar.addActionListener(this::editarEmpleado);
-        
-        JButton btnVolver = createActionButton("VOLVER", new Color(205, 163, 74));
-        btnVolver.addActionListener(e -> {
+        JButton backButton = new JButton("VOLVER AL MENÚ");
+        backButton.setBackground(new Color(198, 168, 77));
+        backButton.setForeground(Color.WHITE);
+        backButton.addActionListener(e -> {
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         });
         
-        footer.add(btnVolver);
-        footer.add(btnEditar);
-        footer.add(btnAgregar);
+        JButton addButton = new JButton("AGREGAR EMPLEADO");
+        addButton.setBackground(new Color(0, 86, 179));
+        addButton.setForeground(Color.WHITE);
+        addButton.addActionListener(e -> {
+            frame.setContentPane(new AgregarEmpleadoPanel(frame));
+            frame.revalidate();
+        });
         
+        footer.add(backButton);
+        footer.add(Box.createHorizontalStrut(20));
+        footer.add(addButton);
         add(footer, BorderLayout.SOUTH);
     }
 
@@ -114,24 +121,5 @@ public class GestionEmpleadosPanel extends JPanel {
         label.setFont(new Font("Arial", Font.PLAIN, 13));
         label.setBorder(BorderFactory.createEmptyBorder(8, 5, 8, 5));
         panel.add(label);
-    }
-
-    private JButton createActionButton(String text, Color color) {
-        JButton button = new JButton(text);
-        button.setBackground(color);
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-        button.setFocusPainted(false);
-        return button;
-    }
-
-    private void agregarEmpleado(ActionEvent e) {
-        frame.setContentPane(new AgregarEmpleadoPanel(frame));
-        frame.revalidate();
-    }
-
-    private void editarEmpleado(ActionEvent e) {
-        // Implementar lógica de edición
-        JOptionPane.showMessageDialog(frame, "Seleccione un empleado para editar", "Editar", JOptionPane.INFORMATION_MESSAGE);
     }
 }

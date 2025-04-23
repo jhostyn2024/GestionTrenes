@@ -9,6 +9,7 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
+
 public class Empleado {
     private String idEmpleado;
     private String nombre;
@@ -30,9 +31,4 @@ public class Empleado {
     public String getDni() { return dni; }
     public String getCargo() { return cargo; }
     public String getTelefono() { return telefono; }
-
-    // Setters
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setCargo(String cargo) { this.cargo = cargo; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
 }
