@@ -9,72 +9,75 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusAdapter;
+import java.util.Map;
 
 public class LoginPanel extends JPanel {
     private JFrame frame;
+    private final Color GOLD_COLOR = new Color(198, 168, 77); // Color #C6A84D
+    private final Color BLUE_COLOR = new Color(0, 86, 179); // Color azul corporativo
 
     public LoginPanel(JFrame frame) {
         this.frame = frame;
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240)); // Fondo gris claro
+        setBackground(new Color(240, 240, 240));
         initializeUI();
     }
 
     private void initializeUI() {
-        // 1. Crear el encabezado
-        createHeader();
-
-        // 2. Crear el formulario de login
-        createLoginForm();
-    }
-
-    private void createHeader() {
+        // Header
         JPanel header = new JPanel();
-        header.setBackground(new Color(26, 38, 116)); // Azul oscuro corporativo
-        header.setPreferredSize(new Dimension(600, 100));
+        header.setBackground(BLUE_COLOR);
+        header.setPreferredSize(new Dimension(800, 100));
         
         JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 36));
         title.setForeground(Color.WHITE);
-        
+        title.setFont(new Font("Arial", Font.BOLD, 36));
         header.add(title);
+        
         add(header, BorderLayout.NORTH);
-    }
 
-    private void createLoginForm() {
+        // Form Panel
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 50, 150));
         formPanel.setBackground(Color.WHITE);
 
-        // Campo de usuario
+        // Usuario Field
         JTextField userField = new JTextField(20);
         userField.setText("Usuario");
         userField.setForeground(Color.GRAY);
         userField.addFocusListener(new PlaceholderFocusListener("Usuario", userField));
 
-        // Campo de contraseña
+        // Password Field
         JPasswordField passField = new JPasswordField(20);
         passField.setText("Contraseña");
         passField.setForeground(Color.GRAY);
-        passField.setEchoChar((char)0); // Mostrar texto normal inicialmente
+        passField.setEchoChar((char)0);
         passField.addFocusListener(new PasswordFocusListener(passField));
 
-        // Agregar campos al formulario
+        // Add Fields
         addFormField(formPanel, "Usuario:", userField);
         addFormField(formPanel, "Contraseña:", passField);
 
-        // Botón de login
-        JButton loginButton = createLoginButton(userField, passField);
-        formPanel.add(Box.createVerticalStrut(20));
+        // Login Button
+        JButton loginButton = new JButton("INICIAR SESIÓN");
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.setBackground(GOLD_COLOR);
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 16));
+        loginButton.setPreferredSize(new Dimension(250, 40));
+        loginButton.addActionListener(e -> authenticate(userField, passField));
+        
+        formPanel.add(Box.createVerticalStrut(30));
         formPanel.add(loginButton);
 
-        add(formPanel, BorderLayout.CENTER);
+        add(new JScrollPane(formPanel), BorderLayout.CENTER);
     }
 
     private void addFormField(JPanel panel, String label, JComponent field) {
@@ -83,36 +86,15 @@ public class LoginPanel extends JPanel {
         
         JLabel lbl = new JLabel(label);
         lbl.setPreferredSize(new Dimension(100, 25));
+        lbl.setFont(new Font("Arial", Font.BOLD, 14));
         
         field.setPreferredSize(new Dimension(200, 30));
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
         
         fieldPanel.add(lbl);
         fieldPanel.add(field);
         panel.add(fieldPanel);
         panel.add(Box.createVerticalStrut(15));
-    }
-
-    private JButton createLoginButton(JTextField userField, JPasswordField passField) {
-        JButton button = new JButton("INICIAR SESIÓN");
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setBackground(new Color(205, 163, 74)); // Dorado corporativo
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 16));
-        button.setFocusPainted(false);
-        
-        // Efecto hover
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(225, 183, 94)); // Dorado más claro
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(205, 163, 74)); // Dorado original
-            }
-        });
-        
-        button.addActionListener(e -> authenticate(userField, passField));
-        
-        return button;
     }
 
     private void authenticate(JTextField userField, JPasswordField passField) {
@@ -122,12 +104,18 @@ public class LoginPanel extends JPanel {
         // Validar campos vacíos
         if (username.isEmpty() || username.equals("Usuario") || 
             password.isEmpty() || password.equals("Contraseña")) {
-            showErrorMessage("Por favor ingrese usuario y contraseña");
+            showErrorMessage("Por favor ingrese usuario y contraseña válidos");
             return;
         }
 
-        // Validar credenciales (en un sistema real esto sería con base de datos)
-        if (username.equals("admin") && password.equals("admin123")) {
+        // Credenciales hardcodeadas (solo para desarrollo)
+        Map<String, String> admins = Map.of(
+            "admin1", "clave123",
+            "admin2", "password456",
+            "jhost", "medinet2023"
+        );
+
+        if (admins.containsKey(username) && admins.get(username).equals(password)) {
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         } else {
@@ -145,7 +133,7 @@ public class LoginPanel extends JPanel {
         );
     }
 
-    // Clases internas para manejar los placeholders
+    // Clases internas para manejar placeholders
     private class PlaceholderFocusListener extends FocusAdapter {
         private String placeholder;
         private JTextField textField;
@@ -184,7 +172,7 @@ public class LoginPanel extends JPanel {
             if (String.valueOf(passwordField.getPassword()).equals("Contraseña")) {
                 passwordField.setText("");
                 passwordField.setForeground(Color.BLACK);
-                passwordField.setEchoChar('*'); // Mostrar caracteres de contraseña
+                passwordField.setEchoChar('*');
             }
         }
 
