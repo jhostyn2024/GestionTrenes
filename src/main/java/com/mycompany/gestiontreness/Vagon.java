@@ -4,11 +4,6 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
 
 /**
  *
@@ -21,7 +16,7 @@ public class Vagon {
     private int asientosEstandar;
     private int asientosEjecutivo;
     private int asientosPremium;
-    private String idVagon; // Nuevo campo para identificación única
+    private String idVagon; // Campo para identificación única
 
     public Vagon(int totalVagones, int vagonesConEquipaje, int totalAsientos, 
                  int asientosEstandar, int asientosEjecutivo, int asientosPremium) {
@@ -43,7 +38,7 @@ public class Vagon {
     public int getAsientosPremium() { return asientosPremium; }
     public String getIdVagon() { return idVagon; }
 
-    // Setters (agregados para permitir edición)
+    // Setters
     public void setTotalVagones(int totalVagones) { this.totalVagones = totalVagones; }
     public void setVagonesConEquipaje(int vagonesConEquipaje) { this.vagonesConEquipaje = vagonesConEquipaje; }
     public void setTotalAsientos(int totalAsientos) { this.totalAsientos = totalAsientos; }

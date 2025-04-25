@@ -12,6 +12,7 @@ package com.mycompany.gestiontreness;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class EditarVagonPanel extends JPanel {
     private JFrame frame;
@@ -110,49 +111,27 @@ public class EditarVagonPanel extends JPanel {
         }
 
         try {
-            // Crear nuevo vagón con los datos modificados
-            Vagon vagonModificado = new Vagon(
-                Integer.parseInt(txtTotalVagones.getText()),
-                Integer.parseInt(txtVagonesEquipaje.getText()),
-                Integer.parseInt(txtTotalAsientos.getText()),
-                Integer.parseInt(txtAsientosEstandar.getText()),
-                Integer.parseInt(txtAsientosEjecutivo.getText()),
-                Integer.parseInt(txtAsientosPremium.getText())
-            );
-            vagonModificado.setIdVagon(vagonOriginal.getIdVagon()); // Mantener el mismo ID
+            // Actualizar los campos de vagonOriginal directamente
+            vagonOriginal.setTotalVagones(Integer.parseInt(txtTotalVagones.getText()));
+            vagonOriginal.setVagonesConEquipaje(Integer.parseInt(txtVagonesEquipaje.getText()));
+            vagonOriginal.setTotalAsientos(Integer.parseInt(txtTotalAsientos.getText()));
+            vagonOriginal.setAsientosEstandar(Integer.parseInt(txtAsientosEstandar.getText()));
+            vagonOriginal.setAsientosEjecutivo(Integer.parseInt(txtAsientosEjecutivo.getText()));
+            vagonOriginal.setAsientosPremium(Integer.parseInt(txtAsientosPremium.getText()));
 
             // Depuración
-            System.out.println("Vagón original ID: " + vagonOriginal.getIdVagon());
-            System.out.println("Vagón modificado: Total Vagones=" + vagonModificado.getTotalVagones() +
-                              ", Asientos Totales=" + vagonModificado.getTotalAsientos());
+            System.out.println("Vagón actualizado - ID: " + vagonOriginal.getIdVagon());
+            System.out.println("Nuevos valores: Total Vagones=" + vagonOriginal.getTotalVagones() +
+                              ", Asientos Totales=" + vagonOriginal.getTotalAsientos());
 
-            // Buscar índice
-            List<Vagon> vagones = GestorVagones.getInstance().getVagones();
-            int index = -1;
-            for (int i = 0; i < vagones.size(); i++) {
-                if (vagones.get(i).getIdVagon().equals(vagonOriginal.getIdVagon())) {
-                    index = i;
-                    break;
-                }
-            }
-
-            System.out.println("Índice encontrado: " + index);
-
-            if (index != -1) {
-                vagones.set(index, vagonModificado);
-                JOptionPane.showMessageDialog(frame, 
-                    "Vagón actualizado correctamente", 
-                    "Éxito", 
-                    JOptionPane.INFORMATION_MESSAGE);
+            // No necesitamos actualizar la lista, ya que modificamos el objeto existente
+            JOptionPane.showMessageDialog(frame, 
+                "Vagón actualizado correctamente", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
                 
-                frame.setContentPane(new ModificarVagonPanel(frame));
-                frame.revalidate();
-            } else {
-                JOptionPane.showMessageDialog(frame, 
-                    "Error: No se encontró el vagón original", 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE);
-            }
+            frame.setContentPane(new ModificarVagonPanel(frame));
+            frame.revalidate();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(frame, 
                 "Error en los datos ingresados. Asegúrese de ingresar números válidos.", 
