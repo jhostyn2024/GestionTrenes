@@ -18,8 +18,6 @@ public class GestorHorarios {
 
     private GestorHorarios() {
         horarios = new ArrayList<>();
-        // Datos de ejemplo (opcional)
-        horarios.add(new Horario("RUTA-001", "08:00", "10:30", "Lunes, Miércoles, Viernes"));
     }
 
     public static synchronized GestorHorarios getInstance() {

@@ -12,15 +12,11 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusAdapter;
+import java.awt.event.*;
 import java.util.Map;
 
 public class LoginPanel extends JPanel {
     private JFrame frame;
-    private final Color GOLD_COLOR = new Color(198, 168, 77); // Color #C6A84D
-    private final Color BLUE_COLOR = new Color(0, 86, 179); // Color azul corporativo
 
     public LoginPanel(JFrame frame) {
         this.frame = frame;
@@ -32,7 +28,7 @@ public class LoginPanel extends JPanel {
     private void initializeUI() {
         // Header
         JPanel header = new JPanel();
-        header.setBackground(BLUE_COLOR);
+        header.setBackground(new Color(0, 86, 179));
         header.setPreferredSize(new Dimension(800, 100));
         
         JLabel title = new JLabel("MEDINET", SwingConstants.CENTER);
@@ -52,14 +48,46 @@ public class LoginPanel extends JPanel {
         JTextField userField = new JTextField(20);
         userField.setText("Usuario");
         userField.setForeground(Color.GRAY);
-        userField.addFocusListener(new PlaceholderFocusListener("Usuario", userField));
+        userField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (userField.getText().equals("Usuario")) {
+                    userField.setText("");
+                    userField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (userField.getText().isEmpty()) {
+                    userField.setForeground(Color.GRAY);
+                    userField.setText("Usuario");
+                }
+            }
+        });
 
         // Password Field
         JPasswordField passField = new JPasswordField(20);
         passField.setText("Contraseña");
         passField.setForeground(Color.GRAY);
         passField.setEchoChar((char)0);
-        passField.addFocusListener(new PasswordFocusListener(passField));
+        passField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (String.valueOf(passField.getPassword()).equals("Contraseña")) {
+                    passField.setText("");
+                    passField.setForeground(Color.BLACK);
+                    passField.setEchoChar('*');
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passField.getPassword().length == 0) {
+                    passField.setEchoChar((char)0);
+                    passField.setForeground(Color.GRAY);
+                    passField.setText("Contraseña");
+                }
+            }
+        });
 
         // Add Fields
         addFormField(formPanel, "Usuario:", userField);
@@ -68,7 +96,7 @@ public class LoginPanel extends JPanel {
         // Login Button
         JButton loginButton = new JButton("INICIAR SESIÓN");
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginButton.setBackground(GOLD_COLOR);
+        loginButton.setBackground(new Color(198, 168, 77));
         loginButton.setForeground(Color.WHITE);
         loginButton.setFont(new Font("Arial", Font.BOLD, 16));
         loginButton.setPreferredSize(new Dimension(250, 40));
@@ -101,14 +129,13 @@ public class LoginPanel extends JPanel {
         String username = userField.getText().trim();
         String password = new String(passField.getPassword()).trim();
 
-        // Validar campos vacíos
         if (username.isEmpty() || username.equals("Usuario") || 
             password.isEmpty() || password.equals("Contraseña")) {
             showErrorMessage("Por favor ingrese usuario y contraseña válidos");
             return;
         }
 
-        // Credenciales hardcodeadas (solo para desarrollo)
+        // Credenciales hardcodeadas
         Map<String, String> admins = Map.of(
             "admin1", "clave123",
             "admin2", "password456",
@@ -131,58 +158,5 @@ public class LoginPanel extends JPanel {
             "Error de autenticación", 
             JOptionPane.ERROR_MESSAGE
         );
-    }
-
-    // Clases internas para manejar placeholders
-    private class PlaceholderFocusListener extends FocusAdapter {
-        private String placeholder;
-        private JTextField textField;
-
-        public PlaceholderFocusListener(String placeholder, JTextField textField) {
-            this.placeholder = placeholder;
-            this.textField = textField;
-        }
-
-        @Override
-        public void focusGained(FocusEvent e) {
-            if (textField.getText().equals(placeholder)) {
-                textField.setText("");
-                textField.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            if (textField.getText().isEmpty()) {
-                textField.setForeground(Color.GRAY);
-                textField.setText(placeholder);
-            }
-        }
-    }
-
-    private class PasswordFocusListener extends FocusAdapter {
-        private JPasswordField passwordField;
-
-        public PasswordFocusListener(JPasswordField passwordField) {
-            this.passwordField = passwordField;
-        }
-
-        @Override
-        public void focusGained(FocusEvent e) {
-            if (String.valueOf(passwordField.getPassword()).equals("Contraseña")) {
-                passwordField.setText("");
-                passwordField.setForeground(Color.BLACK);
-                passwordField.setEchoChar('*');
-            }
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            if (passwordField.getPassword().length == 0) {
-                passwordField.setEchoChar((char)0);
-                passwordField.setForeground(Color.GRAY);
-                passwordField.setText("Contraseña");
-            }
-        }
     }
 }

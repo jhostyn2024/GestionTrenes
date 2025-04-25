@@ -9,7 +9,6 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +18,6 @@ public class GestorTrenes {
 
     private GestorTrenes() {
         trenes = new ArrayList<>();
-        // Datos de ejemplo
-        trenes.add(new Tren("Alstom", "TR-001", 150, "08:00", "10:30", 5, "Ruta Norte"));
-        trenes.add(new Tren("Bombardier", "TR-002", 200, "09:00", "12:15", 6, "Ruta Sur"));
     }
 
     public static synchronized GestorTrenes getInstance() {

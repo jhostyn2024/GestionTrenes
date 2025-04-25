@@ -19,8 +19,6 @@ public class GestorRutas {
 
     private GestorRutas() {
         rutas = new ArrayList<>();
-        // Datos de ejemplo (opcional)
-        rutas.add(new Ruta("RUTA-001", "Lima", "Arequipa", 1005.5, "Activa"));
     }
 
     public static synchronized GestorRutas getInstance() {
