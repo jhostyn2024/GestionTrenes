@@ -27,7 +27,6 @@ public class ModificarVagonPanel extends JPanel {
     }
 
     private void createUI() {
-        // Header
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(26, 38, 116));
         header.setPreferredSize(new Dimension(800, 80));
@@ -48,7 +47,6 @@ public class ModificarVagonPanel extends JPanel {
         header.add(title, BorderLayout.CENTER);
         add(header, BorderLayout.NORTH);
 
-        // Lista de vagones
         listModel = new DefaultListModel<>();
         List<Vagon> vagones = GestorVagones.getInstance().getVagones();
         vagones.forEach(listModel::addElement);
@@ -60,7 +58,6 @@ public class ModificarVagonPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(listaVagones);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Botones de acción
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(244, 244, 244));
         
@@ -107,22 +104,32 @@ public class ModificarVagonPanel extends JPanel {
 
         int confirm = JOptionPane.showConfirmDialog(
             frame, 
-            "¿Está seguro de eliminar este vagón?", 
+            "¿Está seguro de eliminar este vagón? (ID: " + seleccionado.getIdVagon() + ")", 
             "Confirmar eliminación", 
             JOptionPane.YES_NO_OPTION
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            GestorVagones.getInstance().getVagones().remove(seleccionado);
-            listModel.removeElement(seleccionado);
-            JOptionPane.showMessageDialog(frame, 
-                "Vagón eliminado correctamente", 
-                "Éxito", 
-                JOptionPane.INFORMATION_MESSAGE);
+            List<Vagon> vagones = GestorVagones.getInstance().getVagones();
+            System.out.println("Antes de eliminar - Tamaño lista: " + vagones.size());
+            boolean removed = vagones.removeIf(v -> v.getIdVagon().equals(seleccionado.getIdVagon()));
+            System.out.println("Eliminado: " + removed + " - Tamaño lista después: " + vagones.size());
+
+            if (removed) {
+                listModel.removeElement(seleccionado);
+                JOptionPane.showMessageDialog(frame, 
+                    "Vagón eliminado correctamente", 
+                    "Éxito", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(frame, 
+                    "Error al eliminar el vagón", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
-    // Renderer personalizado para mostrar mejor los vagones en la lista
     private static class VagonListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, 
@@ -130,8 +137,8 @@ public class ModificarVagonPanel extends JPanel {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof Vagon) {
                 Vagon v = (Vagon) value;
-                setText(String.format("Vagones: %d (Equipaje: %d) - Asientos: %d (E: %d, Ej: %d, P: %d)",
-                    v.getTotalVagones(), v.getVagonesConEquipaje(),
+                setText(String.format("ID: %s - Vagones: %d (Equipaje: %d) - Asientos: %d (E: %d, Ej: %d, P: %d)",
+                    v.getIdVagon(), v.getTotalVagones(), v.getVagonesConEquipaje(),
                     v.getTotalAsientos(), v.getAsientosEstandar(),
                     v.getAsientosEjecutivo(), v.getAsientosPremium()));
             }

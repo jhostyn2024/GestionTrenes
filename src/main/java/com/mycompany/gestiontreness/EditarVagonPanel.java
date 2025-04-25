@@ -17,7 +17,6 @@ public class EditarVagonPanel extends JPanel {
     private JFrame frame;
     private Vagon vagonOriginal;
     
-    // Campos del formulario
     private JTextField txtTotalVagones;
     private JTextField txtVagonesEquipaje;
     private JTextField txtTotalAsientos;
@@ -34,10 +33,7 @@ public class EditarVagonPanel extends JPanel {
     }
 
     private void initializeUI() {
-        // 1. Crear el encabezado
         createHeader();
-        
-        // 2. Crear el formulario de edición
         createFormPanel();
     }
 
@@ -69,7 +65,6 @@ public class EditarVagonPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        // Inicializar campos con los valores del vagón
         txtTotalVagones = createFormField(formPanel, "Total Vagones:", String.valueOf(vagonOriginal.getTotalVagones()));
         txtVagonesEquipaje = createFormField(formPanel, "Vagones con Equipaje:", String.valueOf(vagonOriginal.getVagonesConEquipaje()));
         txtTotalAsientos = createFormField(formPanel, "Total Asientos:", String.valueOf(vagonOriginal.getTotalAsientos()));
@@ -77,10 +72,9 @@ public class EditarVagonPanel extends JPanel {
         txtAsientosEjecutivo = createFormField(formPanel, "Asientos Ejecutivos:", String.valueOf(vagonOriginal.getAsientosEjecutivo()));
         txtAsientosPremium = createFormField(formPanel, "Asientos Premium:", String.valueOf(vagonOriginal.getAsientosPremium()));
 
-        // Botón Guardar
         JButton btnGuardar = new JButton("GUARDAR CAMBIOS");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnGuardar.setBackground(new Color(39, 174, 96)); // Verde
+        btnGuardar.setBackground(new Color(39, 174, 96));
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFont(new Font("Arial", Font.BOLD, 16));
         btnGuardar.addActionListener(this::guardarCambios);
@@ -125,19 +119,39 @@ public class EditarVagonPanel extends JPanel {
                 Integer.parseInt(txtAsientosEjecutivo.getText()),
                 Integer.parseInt(txtAsientosPremium.getText())
             );
+            vagonModificado.setIdVagon(vagonOriginal.getIdVagon()); // Mantener el mismo ID
 
-            // Actualizar en el gestor
-            int index = GestorVagones.getInstance().getVagones().indexOf(vagonOriginal);
+            // Depuración
+            System.out.println("Vagón original ID: " + vagonOriginal.getIdVagon());
+            System.out.println("Vagón modificado: Total Vagones=" + vagonModificado.getTotalVagones() +
+                              ", Asientos Totales=" + vagonModificado.getTotalAsientos());
+
+            // Buscar índice
+            List<Vagon> vagones = GestorVagones.getInstance().getVagones();
+            int index = -1;
+            for (int i = 0; i < vagones.size(); i++) {
+                if (vagones.get(i).getIdVagon().equals(vagonOriginal.getIdVagon())) {
+                    index = i;
+                    break;
+                }
+            }
+
+            System.out.println("Índice encontrado: " + index);
+
             if (index != -1) {
-                GestorVagones.getInstance().getVagones().set(index, vagonModificado);
+                vagones.set(index, vagonModificado);
                 JOptionPane.showMessageDialog(frame, 
                     "Vagón actualizado correctamente", 
                     "Éxito", 
                     JOptionPane.INFORMATION_MESSAGE);
                 
-                // Volver al panel de modificación
                 frame.setContentPane(new ModificarVagonPanel(frame));
                 frame.revalidate();
+            } else {
+                JOptionPane.showMessageDialog(frame, 
+                    "Error: No se encontró el vagón original", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(frame, 
@@ -156,7 +170,6 @@ public class EditarVagonPanel extends JPanel {
             int asientosEjecutivo = Integer.parseInt(txtAsientosEjecutivo.getText());
             int asientosPremium = Integer.parseInt(txtAsientosPremium.getText());
 
-            // Validar que los vagones con equipaje no sean más que el total
             if (vagonesEquipaje > totalVagones) {
                 JOptionPane.showMessageDialog(frame, 
                     "Los vagones con equipaje no pueden ser más que el total de vagones", 
@@ -165,7 +178,6 @@ public class EditarVagonPanel extends JPanel {
                 return false;
             }
 
-            // Validar que la suma de asientos coincida con el total
             if (asientosEstandar + asientosEjecutivo + asientosPremium != totalAsientos) {
                 JOptionPane.showMessageDialog(frame, 
                     "La suma de los asientos no coincide con el total", 
