@@ -94,6 +94,7 @@ public class ModificarEliminarTrenPanel extends JPanel {
         addInfoField(infoPanel, "Salida:", tren.getHoraSalida());
         addInfoField(infoPanel, "Llegada:", tren.getHoraLlegada());
         addInfoField(infoPanel, "Vagones:", String.valueOf(tren.getVagones()));
+        addInfoField(infoPanel, "Ruta:", tren.getRuta()); 
 
         card.add(infoPanel, BorderLayout.CENTER);
 
