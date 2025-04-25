@@ -11,14 +11,13 @@ package com.mycompany.gestiontreness;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList; // Para seguridad en hilos
 
 public class GestorVagones {
     private static GestorVagones instance;
-    private final List<Vagon> vagones; // final para evitar reasignación
+    private List<Vagon> vagones;
 
     private GestorVagones() {
-        vagones = new CopyOnWriteArrayList<>(); // Lista thread-safe
+        vagones = new ArrayList<>();
     }
 
     public static synchronized GestorVagones getInstance() {
@@ -28,32 +27,11 @@ public class GestorVagones {
         return instance;
     }
 
-    public boolean agregarVagon(Vagon vagon) {
-        return vagones.add(vagon); // Retorna true si se añade
-    }
-
-    public boolean eliminarVagon(String idVagon) {
-        return vagones.removeIf(v -> v.getIdVagon().equals(idVagon));
-    }
-
-    public boolean actualizarVagon(String idOriginal, Vagon vagonActualizado) {
-        for (int i = 0; i < vagones.size(); i++) {
-            if (vagones.get(i).getIdVagon().equals(idOriginal)) {
-                vagones.set(i, vagonActualizado);
-                return true;
-            }
-        }
-        return false;
+    public void agregarVagon(Vagon vagon) {
+        vagones.add(vagon);
     }
 
     public List<Vagon> getVagones() {
-        return new ArrayList<>(vagones); // Copia defensiva
-    }
-
-    public Vagon buscarVagon(String idVagon) {
-        return vagones.stream()
-                     .filter(v -> v.getIdVagon().equals(idVagon))
-                     .findFirst()
-                     .orElse(null);
+        return new ArrayList<>(vagones);
     }
 }

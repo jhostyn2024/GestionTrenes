@@ -9,42 +9,35 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class ModificarVagonPanel extends JPanel {
-    private final JFrame frame;
-    private final DefaultListModel<Vagon> listModel;
+    private JFrame frame;
+    private JList<Vagon> listaVagones;
+    private DefaultListModel<Vagon> listModel;
 
     public ModificarVagonPanel(JFrame frame) {
         this.frame = frame;
-        this.listModel = new DefaultListModel<>();
-        cargarVagones();
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240));
-        initializeUI();
+        setBackground(new Color(244, 244, 244));
+        createUI();
     }
 
-    private void cargarVagones() {
-        listModel.clear();
-        GestorVagones.getInstance().getVagones().forEach(listModel::addElement);
-    }
-
-    private void initializeUI() {
+    private void createUI() {
         // Header
         JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(0, 86, 179));
+        header.setBackground(new Color(26, 38, 116));
         header.setPreferredSize(new Dimension(800, 80));
 
         JLabel title = new JLabel("MODIFICAR/ELIMINAR VAGONES", SwingConstants.CENTER);
-        title.setForeground(Color.WHITE);
         title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setForeground(Color.WHITE);
 
-        JButton backButton = new JButton("← VOLVER");
-        backButton.setBackground(new Color(198, 168, 77));
+        JButton backButton = new JButton("Volver");
+        backButton.setBackground(new Color(205, 163, 74));
         backButton.setForeground(Color.WHITE);
         backButton.addActionListener(e -> {
             frame.setContentPane(new GestionVagonesPanel(frame));
@@ -56,34 +49,40 @@ public class ModificarVagonPanel extends JPanel {
         add(header, BorderLayout.NORTH);
 
         // Lista de vagones
-        JList<Vagon> listaVagones = new JList<>(listModel);
-        listaVagones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listModel = new DefaultListModel<>();
+        List<Vagon> vagones = GestorVagones.getInstance().getVagones();
+        vagones.forEach(listModel::addElement);
+
+        listaVagones = new JList<>(listModel);
         listaVagones.setCellRenderer(new VagonListRenderer());
+        listaVagones.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane scrollPane = new JScrollPane(listaVagones);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        add(scrollPane, BorderLayout.CENTER);
 
-        // Panel de botones
+        // Botones de acción
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(new Color(240, 240, 240));
+        buttonPanel.setBackground(new Color(244, 244, 244));
+        
+        JButton modificarBtn = new JButton("Modificar");
+        modificarBtn.setBackground(new Color(52, 152, 219));
+        modificarBtn.setForeground(Color.WHITE);
+        modificarBtn.addActionListener(this::modificarVagon);
 
-        JButton btnModificar = new JButton("MODIFICAR");
-        btnModificar.setBackground(new Color(52, 152, 219));
-        btnModificar.setForeground(Color.WHITE);
-        btnModificar.addActionListener(e -> modificarVagon(listaVagones));
+        JButton eliminarBtn = new JButton("Eliminar");
+        eliminarBtn.setBackground(new Color(231, 76, 60));
+        eliminarBtn.setForeground(Color.WHITE);
+        eliminarBtn.addActionListener(this::eliminarVagon);
 
-        JButton btnEliminar = new JButton("ELIMINAR");
-        btnEliminar.setBackground(new Color(231, 76, 60));
-        btnEliminar.setForeground(Color.WHITE);
-        btnEliminar.addActionListener(e -> eliminarVagon(listaVagones));
-
-        buttonPanel.add(btnModificar);
+        buttonPanel.add(modificarBtn);
         buttonPanel.add(Box.createHorizontalStrut(20));
-        buttonPanel.add(btnEliminar);
+        buttonPanel.add(eliminarBtn);
+
+        add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void modificarVagon(JList<Vagon> listaVagones) {
+    private void modificarVagon(ActionEvent e) {
         Vagon seleccionado = listaVagones.getSelectedValue();
         if (seleccionado == null) {
             JOptionPane.showMessageDialog(frame, 
@@ -96,7 +95,7 @@ public class ModificarVagonPanel extends JPanel {
         frame.revalidate();
     }
 
-    private void eliminarVagon(JList<Vagon> listaVagones) {
+    private void eliminarVagon(ActionEvent e) {
         Vagon seleccionado = listaVagones.getSelectedValue();
         if (seleccionado == null) {
             JOptionPane.showMessageDialog(frame, 
@@ -114,30 +113,27 @@ public class ModificarVagonPanel extends JPanel {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean eliminado = GestorVagones.getInstance().eliminarVagon(seleccionado.getIdVagon());
-            if (eliminado) {
-                listModel.removeElement(seleccionado); // Actualizar modelo
-                JOptionPane.showMessageDialog(frame, 
-                    "Vagón eliminado correctamente", 
-                    "Éxito", 
-                    JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(frame, 
-                    "Error al eliminar el vagón", 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE);
-            }
+            GestorVagones.getInstance().getVagones().remove(seleccionado);
+            listModel.removeElement(seleccionado);
+            JOptionPane.showMessageDialog(frame, 
+                "Vagón eliminado correctamente", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
+    // Renderer personalizado para mostrar mejor los vagones en la lista
     private static class VagonListRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, 
-                                                    boolean isSelected, boolean cellHasFocus) {
+                                                     boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof Vagon) {
                 Vagon v = (Vagon) value;
-                setText(String.format("Vagón %s - Asientos: %d", v.getIdVagon(), v.getTotalAsientos()));
+                setText(String.format("Vagones: %d (Equipaje: %d) - Asientos: %d (E: %d, Ej: %d, P: %d)",
+                    v.getTotalVagones(), v.getVagonesConEquipaje(),
+                    v.getTotalAsientos(), v.getAsientosEstandar(),
+                    v.getAsientosEjecutivo(), v.getAsientosPremium()));
             }
             return this;
         }
