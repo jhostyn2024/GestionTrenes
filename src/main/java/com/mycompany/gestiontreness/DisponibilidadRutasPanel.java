@@ -75,20 +75,4 @@ public class DisponibilidadRutasPanel extends JPanel {
     private void addTableCell(Vector<Object> dataRow, Object value) {
         dataRow.add(value);
     }
-
-    // Incluyo RutaListRenderer por si la línea está en una JList
-    private static class RutaListRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, 
-                                                     boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (value instanceof Ruta) {
-                Ruta r = (Ruta) value;
-                setText(String.format("ID: %s - %s a %s, Distancia: %.2f km, Estado: %s", 
-                    r.getIdRuta(), r.getEstacionOrigen(), r.getEstacionDestino(), 
-                    r.getDistancia(), r.getEstado()));
-            }
-            return this;
-        }
-    }
 }
