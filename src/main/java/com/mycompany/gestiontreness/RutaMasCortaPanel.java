@@ -68,6 +68,8 @@ public class RutaMasCortaPanel extends JPanel {
 
         // Lista de rutas
         listModel = new DefaultListModel<>();
+        // Obtener rutas desde GestorRutas
+        System.out.println("Intentando obtener rutas desde GestorRutas...");
         List<Ruta> rutas = GestorRutas.getInstance().getRutas();
         System.out.println("Cargando rutas en RutaMasCortaPanel - Total: " + rutas.size());
         rutas.forEach(listModel::addElement);
