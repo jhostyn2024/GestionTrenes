@@ -7,6 +7,7 @@ package com.mycompany.gestiontreness;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class RutaMasCortaPanel extends JPanel {
     private JFrame frame;
@@ -68,10 +69,13 @@ public class RutaMasCortaPanel extends JPanel {
 
         // Lista de rutas
         listModel = new DefaultListModel<>();
-        // Obtener rutas desde GestorRutas
+        // Depuración detallada
+        System.out.println("Intentando obtener instancia de GestorRutas...");
+        GestorRutas gestor = GestorRutas.getInstance();
+        System.out.println("Instancia de GestorRutas obtenida: " + (gestor != null));
         System.out.println("Intentando obtener rutas desde GestorRutas...");
-        List<Ruta> rutas = GestorRutas.getInstance().getRutas();
-        System.out.println("Cargando rutas en RutaMasCortaPanel - Total: " + rutas.size());
+        List<Ruta> rutas = gestor.getRutas();
+        System.out.println("Rutas obtenidas - Total: " + rutas.size());
         rutas.forEach(listModel::addElement);
 
         listaRutas = new JList<>(listModel);
