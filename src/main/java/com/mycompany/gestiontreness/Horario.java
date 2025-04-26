@@ -9,11 +9,11 @@ package com.mycompany.gestiontreness;
  * @author jhost
  */
 public class Horario {
-    private String idHorario; // Campo para identificación única
-    private String idRuta; // Identificador de la ruta
-    private String horaSalida; // Hora de salida
-    private String horaLlegada; // Hora de llegada
-    private String diasSemana; // Días de la semana (ej. "Lunes,Miércoles,Viernes")
+    private String idHorario; 
+    private String idRuta; 
+    private String horaSalida; 
+    private String horaLlegada; 
+    private String diasSemana; 
 
     public Horario(String idRuta, String horaSalida, String horaLlegada, String diasSemana) {
         this.idHorario = "HOR-" + System.currentTimeMillis(); // ID único basado en timestamp
