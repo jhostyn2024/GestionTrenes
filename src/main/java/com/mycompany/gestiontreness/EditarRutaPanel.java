@@ -4,128 +4,129 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class EditarRutaPanel extends JPanel {
-    private final JFrame frame;
-    private final Ruta rutaOriginal;
-    private final JTextField txtIdRuta, txtEstacionOrigen, txtEstacionDestino, txtDistancia, txtEstado;
+    private JFrame frame;
+    private Ruta rutaOriginal;
+    private JTextField txtOrigen;
+    private JTextField txtDestino;
 
     public EditarRutaPanel(JFrame frame, Ruta ruta) {
         this.frame = frame;
         this.rutaOriginal = ruta;
-        this.txtIdRuta = new JTextField(ruta.getIdRuta(), 20);
-        this.txtEstacionOrigen = new JTextField(ruta.getEstacionOrigen(), 20);
-        this.txtEstacionDestino = new JTextField(ruta.getEstacionDestino(), 20);
-        this.txtDistancia = new JTextField(String.valueOf(ruta.getDistancia()), 20);
-        this.txtEstado = new JTextField(ruta.getEstado(), 20);
-        
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240));
-        createUI();
+        setBackground(new Color(244, 244, 244));
+        initializeUI();
     }
 
-    private void createUI() {
-        // Header
+    private void initializeUI() {
+        createHeader();
+        createFormPanel();
+    }
+
+    private void createHeader() {
         JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(0, 86, 179));
+        header.setBackground(new Color(26, 38, 116));
         header.setPreferredSize(new Dimension(800, 80));
-        
-        JButton backButton = new JButton("← VOLVER");
-        backButton.setBackground(new Color(198, 168, 77));
+
+        JLabel title = new JLabel("EDITAR RUTA", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setForeground(Color.WHITE);
+
+        JButton backButton = new JButton("Cancelar");
+        backButton.setBackground(new Color(205, 163, 74));
         backButton.setForeground(Color.WHITE);
         backButton.addActionListener(e -> {
             frame.setContentPane(new ModificarEliminarRutaPanel(frame));
             frame.revalidate();
         });
-        
-        JLabel title = new JLabel("EDITAR RUTA", SwingConstants.CENTER);
-        title.setForeground(Color.WHITE);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
-        
+
         header.add(backButton, BorderLayout.WEST);
         header.add(title, BorderLayout.CENTER);
         add(header, BorderLayout.NORTH);
+    }
 
-        // Formulario
+    private void createFormPanel() {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 100, 30, 100));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        addFormField(formPanel, "ID RUTA:", txtIdRuta);
-        addFormField(formPanel, "ESTACIÓN ORIGEN:", txtEstacionOrigen);
-        addFormField(formPanel, "ESTACIÓN DESTINO:", txtEstacionDestino);
-        addFormField(formPanel, "DISTANCIA (km):", txtDistancia);
-        addFormField(formPanel, "ESTADO:", txtEstado);
+        txtOrigen = createFormField(formPanel, "Origen:", rutaOriginal.getOrigen());
+        txtDestino = createFormField(formPanel, "Destino:", rutaOriginal.getDestino());
 
         JButton btnGuardar = new JButton("GUARDAR CAMBIOS");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnGuardar.setBackground(new Color(198, 168, 77));
+        btnGuardar.setBackground(new Color(39, 174, 96));
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnGuardar.setPreferredSize(new Dimension(250, 40));
         btnGuardar.addActionListener(this::guardarCambios);
-        
+
         formPanel.add(Box.createVerticalStrut(30));
         formPanel.add(btnGuardar);
 
         add(new JScrollPane(formPanel), BorderLayout.CENTER);
     }
 
-    private void addFormField(JPanel panel, String label, JTextField textField) {
+    private JTextField createFormField(JPanel panel, String label, String value) {
         JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         fieldPanel.setBackground(Color.WHITE);
-        
+        fieldPanel.setMaximumSize(new Dimension(500, 50));
+
         JLabel lbl = new JLabel(label);
-        lbl.setPreferredSize(new Dimension(200, 25));
-        lbl.setFont(new Font("Arial", Font.BOLD, 14));
-        
-        textField.setPreferredSize(new Dimension(300, 30));
+        lbl.setPreferredSize(new Dimension(180, 25));
+
+        JTextField textField = new JTextField(value, 20);
         textField.setFont(new Font("Arial", Font.PLAIN, 14));
-        
+
         fieldPanel.add(lbl);
         fieldPanel.add(textField);
         panel.add(fieldPanel);
-        panel.add(Box.createVerticalStrut(15));
+        panel.add(Box.createVerticalStrut(10));
+
+        return textField;
     }
 
     private void guardarCambios(ActionEvent e) {
-        String idRuta = txtIdRuta.getText().trim();
-        String estacionOrigen = txtEstacionOrigen.getText().trim();
-        String estacionDestino = txtEstacionDestino.getText().trim();
-        String distanciaStr = txtDistancia.getText().trim();
-        String estado = txtEstado.getText().trim();
-
-        if (idRuta.isEmpty() || estacionOrigen.isEmpty() || estacionDestino.isEmpty() || 
-            distanciaStr.isEmpty() || estado.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!validarCampos()) {
             return;
         }
 
         try {
-            double distancia = Double.parseDouble(distanciaStr);
-            
-            // Actualizar la ruta
-            rutaOriginal.setIdRuta(idRuta);
-            rutaOriginal.setEstacionOrigen(estacionOrigen);
-            rutaOriginal.setEstacionDestino(estacionDestino);
-            rutaOriginal.setDistancia(distancia);
-            rutaOriginal.setEstado(estado);
+            String origen = txtOrigen.getText().trim();
+            String destino = txtDestino.getText().trim();
 
-            JOptionPane.showMessageDialog(frame, "Ruta actualizada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            GestorRutas.getInstance().modificarRuta(rutaOriginal.getIdRuta(), origen, destino);
+
+            System.out.println("Ruta actualizada - ID: " + rutaOriginal.getIdRuta());
+
+            JOptionPane.showMessageDialog(frame, 
+                "Ruta actualizada correctamente", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
+                
             frame.setContentPane(new ModificarEliminarRutaPanel(frame));
             frame.revalidate();
-            
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(frame, "La distancia debe ser un número válido", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            System.out.println("Error al guardar ruta: " + ex.getMessage());
+            JOptionPane.showMessageDialog(frame, 
+                "Error al guardar los cambios", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private boolean validarCampos() {
+        if (txtOrigen.getText().trim().isEmpty() || txtDestino.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(frame, 
+                "Todos los campos son obligatorios", 
+                "Error de validación", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 }
