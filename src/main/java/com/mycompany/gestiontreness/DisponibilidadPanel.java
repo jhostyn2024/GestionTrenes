@@ -42,7 +42,10 @@ public class DisponibilidadPanel extends JPanel {
         add(header, BorderLayout.NORTH);
 
         listModel = new DefaultListModel<>();
-        List<Ruta> rutas = GestorRutas.getInstance().getRutas();
+        List<Ruta> rutas = GestorRutas.getInstance().getRutasOptimas();
+        if (rutas.isEmpty()) {
+            rutas = GestorRutas.getInstance().getRutas(); // Fallback a todas las rutas
+        }
         System.out.println("Cargando rutas en DisponibilidadPanel - Total: " + rutas.size());
         rutas.forEach(listModel::addElement);
 

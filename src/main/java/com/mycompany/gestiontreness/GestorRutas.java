@@ -57,6 +57,42 @@ public class GestorRutas {
         return new ArrayList<>(rutas);
     }
 
+    public List<Ruta> getRutasOptimas() {
+        List<Ruta> optimas = new ArrayList<>();
+        for (Ruta ruta : rutas) {
+            if ("Óptima".equals(ruta.getEstado())) {
+                optimas.add(ruta);
+            }
+        }
+        System.out.println("Obteniendo rutas óptimas - Total: " + optimas.size());
+        return optimas;
+    }
+
+    public Ruta encontrarRutaMasCorta(String origen, String destino) {
+        Ruta rutaMasCorta = null;
+        double menorDistancia = Double.MAX_VALUE;
+
+        for (Ruta ruta : rutas) {
+            if (ruta.getEstacionOrigen().equalsIgnoreCase(origen) && 
+                ruta.getEstacionDestino().equalsIgnoreCase(destino)) {
+                if (ruta.getDistancia() < menorDistancia) {
+                    menorDistancia = ruta.getDistancia();
+                    rutaMasCorta = ruta;
+                }
+            }
+        }
+
+        if (rutaMasCorta != null) {
+            System.out.println("Ruta más corta encontrada - ID: " + rutaMasCorta.getIdRuta() + 
+                              ", Origen: " + origen + ", Destino: " + destino + 
+                              ", Distancia: " + rutaMasCorta.getDistancia());
+        } else {
+            System.out.println("No se encontró ruta directa de " + origen + " a " + destino);
+        }
+
+        return rutaMasCorta;
+    }
+
     public void printRutas() {
         System.out.println("Lista de rutas:");
         if (rutas.isEmpty()) {

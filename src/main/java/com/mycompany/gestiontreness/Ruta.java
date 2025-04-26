@@ -13,7 +13,7 @@ public class Ruta {
     private String estacionOrigen; // Estación de origen
     private String estacionDestino; // Estación de destino
     private double distancia; // Distancia en kilómetros
-    private String estado; // Estado (ej. "Activa", "Inactiva")
+    private String estado; // Estado (ej. "Activa", "Inactiva", "Óptima")
 
     public Ruta(String estacionOrigen, String estacionDestino, double distancia, String estado) {
         this.idRuta = "RUTA-" + System.currentTimeMillis(); // ID único
