@@ -10,8 +10,10 @@ import java.awt.event.ActionEvent;
 
 public class AgregarRutaPanel extends JPanel {
     private JFrame frame;
-    private JTextField txtOrigen;
-    private JTextField txtDestino;
+    private JTextField txtEstacionOrigen;
+    private JTextField txtEstacionDestino;
+    private JTextField txtDistancia;
+    private JComboBox<String> comboEstado;
 
     public AgregarRutaPanel(JFrame frame) {
         this.frame = frame;
@@ -38,7 +40,7 @@ public class AgregarRutaPanel extends JPanel {
         backButton.setBackground(new Color(205, 163, 74));
         backButton.setForeground(Color.WHITE);
         backButton.addActionListener(e -> {
-            frame.setContentPane(new GestionRutasPanel(frame)); // Asumo este panel
+            frame.setContentPane(new GestionRutasPanel(frame));
             frame.revalidate();
         });
 
@@ -53,8 +55,10 @@ public class AgregarRutaPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        txtOrigen = createFormField(formPanel, "Origen:", "");
-        txtDestino = createFormField(formPanel, "Destino:", "");
+        txtEstacionOrigen = createFormField(formPanel, "Estación Origen:", "");
+        txtEstacionDestino = createFormField(formPanel, "Estación Destino:", "");
+        txtDistancia = createFormField(formPanel, "Distancia (km):", "");
+        comboEstado = createComboBox(formPanel, "Estado:", new String[]{"Activa", "Inactiva"});
 
         JButton btnGuardar = new JButton("GUARDAR RUTA");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -88,20 +92,42 @@ public class AgregarRutaPanel extends JPanel {
         return textField;
     }
 
+    private JComboBox<String> createComboBox(JPanel panel, String label, String[] options) {
+        JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        fieldPanel.setBackground(Color.WHITE);
+        fieldPanel.setMaximumSize(new Dimension(500, 50));
+
+        JLabel lbl = new JLabel(label);
+        lbl.setPreferredSize(new Dimension(180, 25));
+
+        JComboBox<String> comboBox = new JComboBox<>(options);
+        comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        fieldPanel.add(lbl);
+        fieldPanel.add(comboBox);
+        panel.add(fieldPanel);
+        panel.add(Box.createVerticalStrut(10));
+
+        return comboBox;
+    }
+
     private void guardarRuta(ActionEvent e) {
         if (!validarCampos()) {
             return;
         }
 
         try {
-            String origen = txtOrigen.getText().trim();
-            String destino = txtDestino.getText().trim();
+            String estacionOrigen = txtEstacionOrigen.getText().trim();
+            String estacionDestino = txtEstacionDestino.getText().trim();
+            double distancia = Double.parseDouble(txtDistancia.getText().trim());
+            String estado = (String) comboEstado.getSelectedItem();
 
-            Ruta nuevaRuta = new Ruta(origen, destino);
+            Ruta nuevaRuta = new Ruta(estacionOrigen, estacionDestino, distancia, estado);
             GestorRutas.getInstance().agregarRuta(nuevaRuta);
 
             System.out.println("Ruta creada - ID: " + nuevaRuta.getIdRuta() +
-                              ", Origen: " + origen + ", Destino: " + destino);
+                              ", Origen: " + estacionOrigen + ", Destino: " + estacionDestino +
+                              ", Distancia: " + distancia + ", Estado: " + estado);
 
             JOptionPane.showMessageDialog(frame, 
                 "Ruta guardada correctamente", 
@@ -110,6 +136,12 @@ public class AgregarRutaPanel extends JPanel {
 
             frame.setContentPane(new GestionRutasPanel(frame));
             frame.revalidate();
+        } catch (NumberFormatException ex) {
+            System.out.println("Error de formato en distancia: " + ex.getMessage());
+            JOptionPane.showMessageDialog(frame, 
+                "La distancia debe ser un número válido", 
+                "Error de validación", 
+                JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             System.out.println("Error al guardar ruta: " + ex.getMessage());
             JOptionPane.showMessageDialog(frame, 
@@ -120,9 +152,20 @@ public class AgregarRutaPanel extends JPanel {
     }
 
     private boolean validarCampos() {
-        if (txtOrigen.getText().trim().isEmpty() || txtDestino.getText().trim().isEmpty()) {
+        if (txtEstacionOrigen.getText().trim().isEmpty() ||
+            txtEstacionDestino.getText().trim().isEmpty() ||
+            txtDistancia.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(frame, 
                 "Todos los campos son obligatorios", 
+                "Error de validación", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        try {
+            Double.parseDouble(txtDistancia.getText().trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, 
+                "La distancia debe ser un número válido", 
                 "Error de validación", 
                 JOptionPane.ERROR_MESSAGE);
             return false;

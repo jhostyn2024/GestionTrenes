@@ -38,11 +38,14 @@ public class GestorRutas {
         return removed;
     }
 
-    public void modificarRuta(String idRuta, String nuevoOrigen, String nuevoDestino) {
+    public void modificarRuta(String idRuta, String nuevoOrigen, String nuevoDestino, 
+                            double nuevaDistancia, String nuevoEstado) {
         for (Ruta ruta : rutas) {
             if (ruta.getIdRuta().equals(idRuta)) {
-                ruta.setOrigen(nuevoOrigen);
-                ruta.setDestino(nuevoDestino);
+                ruta.setEstacionOrigen(nuevoOrigen);
+                ruta.setEstacionDestino(nuevoDestino);
+                ruta.setDistancia(nuevaDistancia);
+                ruta.setEstado(nuevoEstado);
                 System.out.println("Ruta modificada - ID: " + idRuta + ", Nuevo origen: " + nuevoOrigen);
                 return;
             }
@@ -60,8 +63,9 @@ public class GestorRutas {
             System.out.println("  (Vacía)");
         } else {
             for (Ruta r : rutas) {
-                System.out.println("  ID: " + r.getIdRuta() + ", Origen: " + r.getOrigen() +
-                                   ", Destino: " + r.getDestino());
+                System.out.println("  ID: " + r.getIdRuta() + ", Origen: " + r.getEstacionOrigen() +
+                                   ", Destino: " + r.getEstacionDestino() + ", Distancia: " + r.getDistancia() +
+                                   ", Estado: " + r.getEstado());
             }
         }
     }

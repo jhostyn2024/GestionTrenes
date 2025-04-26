@@ -101,7 +101,7 @@ public class ModificarEliminarRutaPanel extends JPanel {
         int confirm = JOptionPane.showConfirmDialog(
             frame, 
             "¿Está seguro de eliminar esta ruta? (ID: " + seleccionada.getIdRuta() + 
-            ", " + seleccionada.getOrigen() + " - " + seleccionada.getDestino() + ")", 
+            ", " + seleccionada.getEstacionOrigen() + " - " + seleccionada.getEstacionDestino() + ")", 
             "Confirmar eliminación", 
             JOptionPane.YES_NO_OPTION
         );
@@ -138,8 +138,9 @@ public class ModificarEliminarRutaPanel extends JPanel {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof Ruta) {
                 Ruta r = (Ruta) value;
-                setText(String.format("ID: %s - %s a %s", 
-                    r.getIdRuta(), r.getOrigen(), r.getDestino()));
+                setText(String.format("ID: %s - %s a %s, Distancia: %.2f km, Estado: %s", 
+                    r.getIdRuta(), r.getEstacionOrigen(), r.getEstacionDestino(), 
+                    r.getDistancia(), r.getEstado()));
             }
             return this;
         }

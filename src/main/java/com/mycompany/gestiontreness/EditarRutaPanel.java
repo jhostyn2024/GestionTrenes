@@ -11,8 +11,10 @@ import java.awt.event.ActionEvent;
 public class EditarRutaPanel extends JPanel {
     private JFrame frame;
     private Ruta rutaOriginal;
-    private JTextField txtOrigen;
-    private JTextField txtDestino;
+    private JTextField txtEstacionOrigen;
+    private JTextField txtEstacionDestino;
+    private JTextField txtDistancia;
+    private JComboBox<String> comboEstado;
 
     public EditarRutaPanel(JFrame frame, Ruta ruta) {
         this.frame = frame;
@@ -55,8 +57,10 @@ public class EditarRutaPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        txtOrigen = createFormField(formPanel, "Origen:", rutaOriginal.getOrigen());
-        txtDestino = createFormField(formPanel, "Destino:", rutaOriginal.getDestino());
+        txtEstacionOrigen = createFormField(formPanel, "Estación Origen:", rutaOriginal.getEstacionOrigen());
+        txtEstacionDestino = createFormField(formPanel, "Estación Destino:", rutaOriginal.getEstacionDestino());
+        txtDistancia = createFormField(formPanel, "Distancia (km):", String.valueOf(rutaOriginal.getDistancia()));
+        comboEstado = createComboBox(formPanel, "Estado:", new String[]{"Activa", "Inactiva"}, rutaOriginal.getEstado());
 
         JButton btnGuardar = new JButton("GUARDAR CAMBIOS");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -90,16 +94,39 @@ public class EditarRutaPanel extends JPanel {
         return textField;
     }
 
+    private JComboBox<String> createComboBox(JPanel panel, String label, String[] options, String selected) {
+        JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        fieldPanel.setBackground(Color.WHITE);
+        fieldPanel.setMaximumSize(new Dimension(500, 50));
+
+        JLabel lbl = new JLabel(label);
+        lbl.setPreferredSize(new Dimension(180, 25));
+
+        JComboBox<String> comboBox = new JComboBox<>(options);
+        comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        comboBox.setSelectedItem(selected);
+
+        fieldPanel.add(lbl);
+        fieldPanel.add(comboBox);
+        panel.add(fieldPanel);
+        panel.add(Box.createVerticalStrut(10));
+
+        return comboBox;
+    }
+
     private void guardarCambios(ActionEvent e) {
         if (!validarCampos()) {
             return;
         }
 
         try {
-            String origen = txtOrigen.getText().trim();
-            String destino = txtDestino.getText().trim();
+            String estacionOrigen = txtEstacionOrigen.getText().trim();
+            String estacionDestino = txtEstacionDestino.getText().trim();
+            double distancia = Double.parseDouble(txtDistancia.getText().trim());
+            String estado = (String) comboEstado.getSelectedItem();
 
-            GestorRutas.getInstance().modificarRuta(rutaOriginal.getIdRuta(), origen, destino);
+            GestorRutas.getInstance().modificarRuta(rutaOriginal.getIdRuta(), estacionOrigen, 
+                                                  estacionDestino, distancia, estado);
 
             System.out.println("Ruta actualizada - ID: " + rutaOriginal.getIdRuta());
 
@@ -110,6 +137,12 @@ public class EditarRutaPanel extends JPanel {
                 
             frame.setContentPane(new ModificarEliminarRutaPanel(frame));
             frame.revalidate();
+        } catch (NumberFormatException ex) {
+            System.out.println("Error de formato en distancia: " + ex.getMessage());
+            JOptionPane.showMessageDialog(frame, 
+                "La distancia debe ser un número válido", 
+                "Error de validación", 
+                JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             System.out.println("Error al guardar ruta: " + ex.getMessage());
             JOptionPane.showMessageDialog(frame, 
@@ -120,9 +153,20 @@ public class EditarRutaPanel extends JPanel {
     }
 
     private boolean validarCampos() {
-        if (txtOrigen.getText().trim().isEmpty() || txtDestino.getText().trim().isEmpty()) {
+        if (txtEstacionOrigen.getText().trim().isEmpty() ||
+            txtEstacionDestino.getText().trim().isEmpty() ||
+            txtDistancia.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(frame, 
                 "Todos los campos son obligatorios", 
+                "Error de validación", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        try {
+            Double.parseDouble(txtDistancia.getText().trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, 
+                "La distancia debe ser un número válido", 
                 "Error de validación", 
                 JOptionPane.ERROR_MESSAGE);
             return false;
