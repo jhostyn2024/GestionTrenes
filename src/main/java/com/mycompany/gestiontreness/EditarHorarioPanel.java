@@ -12,11 +12,10 @@ public class EditarHorarioPanel extends JPanel {
     private JFrame frame;
     private Horario horarioOriginal;
     
-    private JTextField txtEstacionOrigen;
-    private JTextField txtEstacionDestino;
+    private JTextField txtIdRuta;
     private JTextField txtHoraSalida;
     private JTextField txtHoraLlegada;
-    private JTextField txtFecha;
+    private JTextField txtDiasSemana;
 
     public EditarHorarioPanel(JFrame frame, Horario horario) {
         this.frame = frame;
@@ -59,11 +58,10 @@ public class EditarHorarioPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        txtEstacionOrigen = createFormField(formPanel, "Estación Origen:", horarioOriginal.getEstacionOrigen());
-        txtEstacionDestino = createFormField(formPanel, "Estación Destino:", horarioOriginal.getEstacionDestino());
-        txtHoraSalida = createFormField(formPanel, "Hora Salida:", horarioOriginal.getHoraSalida());
-        txtHoraLlegada = createFormField(formPanel, "Hora Llegada:", horarioOriginal.getHoraLlegada());
-        txtFecha = createFormField(formPanel, "Fecha:", horarioOriginal.getFecha());
+        txtIdRuta = createFormField(formPanel, "ID Ruta:", horarioOriginal.getIdRuta());
+        txtHoraSalida = createFormField(formPanel, "Hora Salida (HH:mm):", horarioOriginal.getHoraSalida());
+        txtHoraLlegada = createFormField(formPanel, "Hora Llegada (HH:mm):", horarioOriginal.getHoraLlegada());
+        txtDiasSemana = createFormField(formPanel, "Días Semana (ej. Lunes,Miércoles):", horarioOriginal.getDiasSemana());
 
         JButton btnGuardar = new JButton("GUARDAR CAMBIOS");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -104,17 +102,16 @@ public class EditarHorarioPanel extends JPanel {
 
         try {
             // Actualizar los campos de horarioOriginal directamente
-            horarioOriginal.setEstacionOrigen(txtEstacionOrigen.getText());
-            horarioOriginal.setEstacionDestino(txtEstacionDestino.getText());
-            horarioOriginal.setHoraSalida(txtHoraSalida.getText());
-            horarioOriginal.setHoraLlegada(txtHoraLlegada.getText());
-            horarioOriginal.setFecha(txtFecha.getText());
+            horarioOriginal.setIdRuta(txtIdRuta.getText().trim());
+            horarioOriginal.setHoraSalida(txtHoraSalida.getText().trim());
+            horarioOriginal.setHoraLlegada(txtHoraLlegada.getText().trim());
+            horarioOriginal.setDiasSemana(txtDiasSemana.getText().trim());
 
             // Depuración
             System.out.println("Horario actualizado - ID: " + horarioOriginal.getIdHorario());
-            System.out.println("Nuevos valores: Origen=" + horarioOriginal.getEstacionOrigen() +
-                              ", Destino=" + horarioOriginal.getEstacionDestino() +
-                              ", Fecha=" + horarioOriginal.getFecha());
+            System.out.println("Nuevos valores: Ruta=" + horarioOriginal.getIdRuta() +
+                              ", Salida=" + horarioOriginal.getHoraSalida() +
+                              ", Días=" + horarioOriginal.getDiasSemana());
 
             JOptionPane.showMessageDialog(frame, 
                 "Horario actualizado correctamente", 
@@ -124,6 +121,7 @@ public class EditarHorarioPanel extends JPanel {
             frame.setContentPane(new ModificarEliminarHorarioPanel(frame));
             frame.revalidate();
         } catch (Exception ex) {
+            System.out.println("Error al guardar horario: " + ex.getMessage());
             JOptionPane.showMessageDialog(frame, 
                 "Error al guardar los cambios", 
                 "Error", 
@@ -132,18 +130,28 @@ public class EditarHorarioPanel extends JPanel {
     }
 
     private boolean validarCampos() {
-        if (txtEstacionOrigen.getText().trim().isEmpty() ||
-            txtEstacionDestino.getText().trim().isEmpty() ||
+        if (txtIdRuta.getText().trim().isEmpty() ||
             txtHoraSalida.getText().trim().isEmpty() ||
             txtHoraLlegada.getText().trim().isEmpty() ||
-            txtFecha.getText().trim().isEmpty()) {
+            txtDiasSemana.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(frame, 
                 "Todos los campos son obligatorios", 
                 "Error de validación", 
                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        // Aquí podrías añadir más validaciones (por ejemplo, formato de hora o fecha)
+
+        // Validación de formato de hora (HH:mm)
+        String horaSalida = txtHoraSalida.getText().trim();
+        String horaLlegada = txtHoraLlegada.getText().trim();
+        if (!horaSalida.matches("\\d{2}:\\d{2}") || !horaLlegada.matches("\\d{2}:\\d{2}")) {
+            JOptionPane.showMessageDialog(frame, 
+                "Las horas deben tener el formato HH:mm", 
+                "Error de validación", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
         return true;
     }
 }

@@ -101,7 +101,7 @@ public class ModificarEliminarHorarioPanel extends JPanel {
         int confirm = JOptionPane.showConfirmDialog(
             frame, 
             "¿Está seguro de eliminar este horario? (ID: " + seleccionado.getIdHorario() + 
-            ", " + seleccionado.getEstacionOrigen() + " - " + seleccionado.getEstacionDestino() + ")", 
+            ", Ruta: " + seleccionado.getIdRuta() + ", Días: " + seleccionado.getDiasSemana() + ")", 
             "Confirmar eliminación", 
             JOptionPane.YES_NO_OPTION
         );
@@ -138,9 +138,8 @@ public class ModificarEliminarHorarioPanel extends JPanel {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof Horario) {
                 Horario h = (Horario) value;
-                setText(String.format("ID: %s - %s a %s, Salida: %s, Llegada: %s, Fecha: %s",
-                    h.getIdHorario(), h.getEstacionOrigen(), h.getEstacionDestino(),
-                    h.getHoraSalida(), h.getHoraLlegada(), h.getFecha()));
+                setText(String.format("ID: %s - Ruta: %s, Salida: %s, Llegada: %s, Días: %s",
+                    h.getIdHorario(), h.getIdRuta(), h.getHoraSalida(), h.getHoraLlegada(), h.getDiasSemana()));
             }
             return this;
         }

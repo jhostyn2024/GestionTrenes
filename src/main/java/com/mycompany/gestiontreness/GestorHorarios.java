@@ -48,8 +48,8 @@ public class GestorHorarios {
             System.out.println("  (Vacía)");
         } else {
             for (Horario h : horarios) {
-                System.out.println("  ID: " + h.getIdHorario() + ", Origen: " + h.getEstacionOrigen() +
-                                   ", Destino: " + h.getEstacionDestino() + ", Fecha: " + h.getFecha());
+                System.out.println("  ID: " + h.getIdHorario() + ", Ruta: " + h.getIdRuta() +
+                                   ", Salida: " + h.getHoraSalida() + ", Días: " + h.getDiasSemana());
             }
         }
     }

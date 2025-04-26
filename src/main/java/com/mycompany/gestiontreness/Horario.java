@@ -10,36 +10,31 @@ package com.mycompany.gestiontreness;
  */
 public class Horario {
     private String idHorario; // Campo para identificación única
-    private String estacionOrigen;
-    private String estacionDestino;
-    private String horaSalida;
-    private String horaLlegada;
-    private String fecha;
+    private String idRuta; // Identificador de la ruta
+    private String horaSalida; // Hora de salida
+    private String horaLlegada; // Hora de llegada
+    private String diasSemana; // Días de la semana (ej. "Lunes,Miércoles,Viernes")
 
-    public Horario(String estacionOrigen, String estacionDestino, String horaSalida, 
-                   String horaLlegada, String fecha) {
+    public Horario(String idRuta, String horaSalida, String horaLlegada, String diasSemana) {
         this.idHorario = "HOR-" + System.currentTimeMillis(); // ID único basado en timestamp
-        this.estacionOrigen = estacionOrigen;
-        this.estacionDestino = estacionDestino;
+        this.idRuta = idRuta;
         this.horaSalida = horaSalida;
         this.horaLlegada = horaLlegada;
-        this.fecha = fecha;
+        this.diasSemana = diasSemana;
     }
 
     // Getters
     public String getIdHorario() { return idHorario; }
-    public String getEstacionOrigen() { return estacionOrigen; }
-    public String getEstacionDestino() { return estacionDestino; }
+    public String getIdRuta() { return idRuta; }
     public String getHoraSalida() { return horaSalida; }
     public String getHoraLlegada() { return horaLlegada; }
-    public String getFecha() { return fecha; }
+    public String getDiasSemana() { return diasSemana; }
 
     // Setters (para edición)
-    public void setEstacionOrigen(String estacionOrigen) { this.estacionOrigen = estacionOrigen; }
-    public void setEstacionDestino(String estacionDestino) { this.estacionDestino = estacionDestino; }
+    public void setIdRuta(String idRuta) { this.idRuta = idRuta; }
     public void setHoraSalida(String horaSalida) { this.horaSalida = horaSalida; }
     public void setHoraLlegada(String horaLlegada) { this.horaLlegada = horaLlegada; }
-    public void setFecha(String fecha) { this.fecha = fecha; }
+    public void setDiasSemana(String diasSemana) { this.diasSemana = diasSemana; }
 
     @Override
     public boolean equals(Object obj) {
