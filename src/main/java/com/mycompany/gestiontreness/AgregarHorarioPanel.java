@@ -55,10 +55,10 @@ public class AgregarHorarioPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        txtIdRuta = createFormField(formPanel, "ID Ruta:", "");
+        txtIdRuta = createFormField(formPanel, "ID", "");
         txtHoraSalida = createFormField(formPanel, "Hora Salida (HH:mm):", "");
         txtHoraLlegada = createFormField(formPanel, "Hora Llegada (HH:mm):", "");
-        txtDiasSemana = createFormField(formPanel, "Días Semana (ej. Lunes,Miércoles):", "");
+        txtDiasSemana = createFormField(formPanel, "Días Semana:", "");
 
         JButton btnGuardar = new JButton("AGREGAR HORARIO");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
