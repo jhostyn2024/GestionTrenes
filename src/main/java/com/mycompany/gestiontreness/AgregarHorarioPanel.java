@@ -55,7 +55,7 @@ public class AgregarHorarioPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        txtIdRuta = createFormField(formPanel, "ID", "");
+        txtIdRuta = createFormField(formPanel, "ID:", "");
         txtHoraSalida = createFormField(formPanel, "Hora Salida (HH:mm):", "");
         txtHoraLlegada = createFormField(formPanel, "Hora Llegada (HH:mm):", "");
         txtDiasSemana = createFormField(formPanel, "Días Semana:", "");
