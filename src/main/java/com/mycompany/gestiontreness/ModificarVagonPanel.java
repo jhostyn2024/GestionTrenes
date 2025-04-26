@@ -4,11 +4,6 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -110,11 +105,13 @@ public class ModificarVagonPanel extends JPanel {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            List<Vagon> vagones = GestorVagones.getInstance().getVagones();
-            System.out.println("Antes de eliminar - Tamaño lista: " + vagones.size());
-            boolean removed = vagones.removeIf(v -> v.getIdVagon().equals(seleccionado.getIdVagon()));
-            System.out.println("Eliminado: " + removed + " - Tamaño lista después: " + vagones.size());
+            System.out.println("Intentando eliminar vagón - ID: " + seleccionado.getIdVagon());
+            GestorVagones.getInstance().printVagones(); // Depuración antes
+            
+            boolean removed = GestorVagones.getInstance().eliminarVagon(seleccionado.getIdVagon());
 
+            GestorVagones.getInstance().printVagones(); // Depuración después
+            
             if (removed) {
                 listModel.removeElement(seleccionado);
                 JOptionPane.showMessageDialog(frame, 

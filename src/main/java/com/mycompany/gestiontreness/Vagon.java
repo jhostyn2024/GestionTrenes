@@ -4,7 +4,6 @@
  */
 package com.mycompany.gestiontreness;
 
-
 /**
  *
  * @author jhost

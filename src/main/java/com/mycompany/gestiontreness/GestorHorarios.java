@@ -4,11 +4,6 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +13,7 @@ public class GestorHorarios {
 
     private GestorHorarios() {
         horarios = new ArrayList<>();
+        System.out.println("Nueva instancia de GestorHorarios creada");
     }
 
     public static synchronized GestorHorarios getInstance() {
@@ -29,9 +25,32 @@ public class GestorHorarios {
 
     public void agregarHorario(Horario horario) {
         horarios.add(horario);
+        System.out.println("Horario agregado - ID: " + horario.getIdHorario() + ", Total horarios: " + horarios.size());
     }
 
     public List<Horario> getHorarios() {
         return new ArrayList<>(horarios);
+    }
+
+    public boolean eliminarHorario(String idHorario) {
+        boolean removed = horarios.removeIf(h -> h.getIdHorario().equals(idHorario));
+        if (removed) {
+            System.out.println("Horario eliminado - ID: " + idHorario + ", Total horarios: " + horarios.size());
+        } else {
+            System.out.println("No se encontró horario con ID: " + idHorario);
+        }
+        return removed;
+    }
+
+    public void printHorarios() {
+        System.out.println("Lista de horarios:");
+        if (horarios.isEmpty()) {
+            System.out.println("  (Vacía)");
+        } else {
+            for (Horario h : horarios) {
+                System.out.println("  ID: " + h.getIdHorario() + ", Origen: " + h.getEstacionOrigen() +
+                                   ", Destino: " + h.getEstacionDestino() + ", Fecha: " + h.getFecha());
+            }
+        }
     }
 }

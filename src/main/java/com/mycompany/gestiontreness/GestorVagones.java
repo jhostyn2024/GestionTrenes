@@ -4,12 +4,6 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +13,12 @@ public class GestorVagones {
 
     private GestorVagones() {
         vagones = new ArrayList<>();
+        System.out.println("Nueva instancia de GestorVagones creada");
     }
 
     public static synchronized GestorVagones getInstance() {
         if (instance == null) {
             instance = new GestorVagones();
-            System.out.println("Nueva instancia de GestorVagones creada");
         }
         return instance;
     }
@@ -38,12 +32,25 @@ public class GestorVagones {
         return new ArrayList<>(vagones);
     }
 
-    // Método para depuración
+    public boolean eliminarVagon(String idVagon) {
+        boolean removed = vagones.removeIf(v -> v.getIdVagon().equals(idVagon));
+        if (removed) {
+            System.out.println("Vagón eliminado - ID: " + idVagon + ", Total vagones: " + vagones.size());
+        } else {
+            System.out.println("No se encontró vagón con ID: " + idVagon);
+        }
+        return removed;
+    }
+
     public void printVagones() {
         System.out.println("Lista de vagones:");
-        for (Vagon v : vagones) {
-            System.out.println("ID: " + v.getIdVagon() + ", Total Vagones: " + v.getTotalVagones() +
-                               ", Asientos Totales: " + v.getTotalAsientos());
+        if (vagones.isEmpty()) {
+            System.out.println("  (Vacía)");
+        } else {
+            for (Vagon v : vagones) {
+                System.out.println("  ID: " + v.getIdVagon() + ", Total Vagones: " + v.getTotalVagones() +
+                                   ", Asientos Totales: " + v.getTotalAsientos());
+            }
         }
     }
 }

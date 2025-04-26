@@ -4,11 +4,6 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

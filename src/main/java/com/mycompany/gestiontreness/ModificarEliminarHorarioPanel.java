@@ -4,32 +4,33 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class ModificarEliminarHorarioPanel extends JPanel {
-    private final JFrame frame;
+    private JFrame frame;
+    private JList<Horario> listaHorarios;
+    private DefaultListModel<Horario> listModel;
 
     public ModificarEliminarHorarioPanel(JFrame frame) {
         this.frame = frame;
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240));
+        setBackground(new Color(244, 244, 244));
         createUI();
     }
 
     private void createUI() {
-        // Header
         JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(0, 86, 179));
+        header.setBackground(new Color(26, 38, 116));
         header.setPreferredSize(new Dimension(800, 80));
 
-        JButton backButton = new JButton("← VOLVER");
+        JLabel title = new JLabel("MODIFICAR/ELIMINAR HORARIOS", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setForeground(Color.WHITE);
+
+        JButton backButton = new JButton("Volver");
         backButton.setBackground(new Color(205, 163, 74));
         backButton.setForeground(Color.WHITE);
         backButton.addActionListener(e -> {
@@ -37,120 +38,111 @@ public class ModificarEliminarHorarioPanel extends JPanel {
             frame.revalidate();
         });
 
-        JLabel title = new JLabel("ELIMINAR O MODIFICAR HORARIOS", SwingConstants.CENTER);
-        title.setForeground(Color.WHITE);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
-
         header.add(backButton, BorderLayout.WEST);
         header.add(title, BorderLayout.CENTER);
         add(header, BorderLayout.NORTH);
 
-        // Main content
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        contentPanel.setBackground(Color.WHITE);
-
+        listModel = new DefaultListModel<>();
         List<Horario> horarios = GestorHorarios.getInstance().getHorarios();
+        System.out.println("Cargando horarios en ModificarEliminarHorarioPanel - Total: " + horarios.size());
+        horarios.forEach(listModel::addElement);
 
-        if (horarios.isEmpty()) {
-            JLabel emptyLabel = new JLabel("No hay horarios registrados", SwingConstants.CENTER);
-            emptyLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            contentPanel.add(emptyLabel);
-        } else {
-            for (Horario horario : horarios) {
-                contentPanel.add(createHorarioEntry(horario));
-                contentPanel.add(Box.createVerticalStrut(15));
-            }
+        listaHorarios = new JList<>(listModel);
+        listaHorarios.setCellRenderer(new HorarioListRenderer());
+        listaHorarios.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JScrollPane scrollPane = new JScrollPane(listaHorarios);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(244, 244, 244));
+
+        JButton modificarBtn = new JButton("Modificar");
+        modificarBtn.setBackground(new Color(52, 152, 219));
+        modificarBtn.setForeground(Color.WHITE);
+        modificarBtn.addActionListener(this::modificarHorario);
+
+        JButton eliminarBtn = new JButton("Eliminar");
+        eliminarBtn.setBackground(new Color(231, 76, 60));
+        eliminarBtn.setForeground(Color.WHITE);
+        eliminarBtn.addActionListener(this::eliminarHorario);
+
+        buttonPanel.add(modificarBtn);
+        buttonPanel.add(Box.createHorizontalStrut(20));
+        buttonPanel.add(eliminarBtn);
+
+        add(scrollPane, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void modificarHorario(ActionEvent e) {
+        Horario seleccionado = listaHorarios.getSelectedValue();
+        if (seleccionado == null) {
+            JOptionPane.showMessageDialog(frame, 
+                "Seleccione un horario para modificar", 
+                "Advertencia", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        frame.setContentPane(new EditarHorarioPanel(frame, seleccionado));
+        frame.revalidate();
+    }
+
+    private void eliminarHorario(ActionEvent e) {
+        Horario seleccionado = listaHorarios.getSelectedValue();
+        if (seleccionado == null) {
+            JOptionPane.showMessageDialog(frame, 
+                "Seleccione un horario para eliminar", 
+                "Advertencia", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        add(scrollPane, BorderLayout.CENTER);
-    }
-
-    private JPanel createHorarioEntry(Horario horario) {
-        JPanel entryPanel = new JPanel(new BorderLayout());
-        entryPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200)),
-            BorderFactory.createEmptyBorder(10, 15, 10, 15)
-        ));
-        entryPanel.setBackground(new Color(250, 250, 250));
-        entryPanel.setMaximumSize(new Dimension(700, 100));
-
-        // Panel de información
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new GridLayout(3, 1, 5, 5));
-        infoPanel.setBackground(new Color(250, 250, 250));
-
-        addInfoField(infoPanel, "ID RUTA: " + horario.getIdRuta());
-        addInfoField(infoPanel, "HORA DE SALIDA: " + horario.getHoraSalida());
-        addInfoField(infoPanel, "HORA DE LLEGADA: " + horario.getHoraLlegada());
-        addInfoField(infoPanel, "DÍAS: " + horario.getDiasSemana());
-
-        entryPanel.add(infoPanel, BorderLayout.CENTER);
-
-        // Panel de botones
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        buttonPanel.setBackground(new Color(250, 250, 250));
-
-        JButton deleteButton = createActionButton("❌", new Color(231, 76, 60));
-        deleteButton.addActionListener(e -> confirmarEliminacion(horario));
-
-        JButton editButton = createActionButton("✏️", new Color(41, 128, 185));
-        editButton.addActionListener(e -> abrirEditorHorario(horario));
-
-        buttonPanel.add(editButton);
-        buttonPanel.add(deleteButton);
-        entryPanel.add(buttonPanel, BorderLayout.EAST);
-
-        return entryPanel;
-    }
-
-    private void addInfoField(JPanel panel, String text) {
-        JLabel label = new JLabel(text);
-        label.setFont(new Font("Arial", Font.PLAIN, 14));
-        panel.add(label);
-    }
-
-    private JButton createActionButton(String text, Color color) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.PLAIN, 20));
-        button.setForeground(color);
-        button.setContentAreaFilled(false);
-        button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return button;
-    }
-
-    private void confirmarEliminacion(Horario horario) {
         int confirm = JOptionPane.showConfirmDialog(
-            frame,
-            "¿Está seguro de eliminar el horario de la ruta " + horario.getIdRuta() + "?",
-            "Confirmar eliminación",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
+            frame, 
+            "¿Está seguro de eliminar este horario? (ID: " + seleccionado.getIdHorario() + 
+            ", " + seleccionado.getEstacionOrigen() + " - " + seleccionado.getEstacionDestino() + ")", 
+            "Confirmar eliminación", 
+            JOptionPane.YES_NO_OPTION
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
-            GestorHorarios.getInstance().getHorarios().remove(horario);
-            JOptionPane.showMessageDialog(
-                frame,
-                "Horario eliminado correctamente",
-                "Éxito",
-                JOptionPane.INFORMATION_MESSAGE
-            );
-            refreshPanel();
+            System.out.println("Intentando eliminar horario - ID: " + seleccionado.getIdHorario());
+            GestorHorarios.getInstance().printHorarios(); // Depuración antes
+            
+            boolean removed = GestorHorarios.getInstance().eliminarHorario(seleccionado.getIdHorario());
+
+            GestorHorarios.getInstance().printHorarios(); // Depuración después
+            
+            if (removed) {
+                listModel.removeElement(seleccionado);
+                System.out.println("Horario eliminado de JList - Total elementos: " + listModel.size());
+                JOptionPane.showMessageDialog(frame, 
+                    "Horario eliminado correctamente", 
+                    "Éxito", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                System.out.println("Fallo al eliminar horario de GestorHorarios");
+                JOptionPane.showMessageDialog(frame, 
+                    "Error al eliminar el horario", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
-    private void abrirEditorHorario(Horario horario) {
-        frame.setContentPane(new EditarHorarioPanel(frame, horario));
-        frame.revalidate();
-    }
-
-    private void refreshPanel() {
-        frame.setContentPane(new ModificarEliminarHorarioPanel(frame));
-        frame.revalidate();
+    private static class HorarioListRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, 
+                                                     boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof Horario) {
+                Horario h = (Horario) value;
+                setText(String.format("ID: %s - %s a %s, Salida: %s, Llegada: %s, Fecha: %s",
+                    h.getIdHorario(), h.getEstacionOrigen(), h.getEstacionDestino(),
+                    h.getHoraSalida(), h.getHoraLlegada(), h.getFecha()));
+            }
+            return this;
+        }
     }
 }
