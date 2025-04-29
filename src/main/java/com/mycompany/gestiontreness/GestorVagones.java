@@ -6,6 +6,7 @@ package com.mycompany.gestiontreness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GestorVagones {
     private static GestorVagones instance;
@@ -13,7 +14,7 @@ public class GestorVagones {
 
     private GestorVagones() {
         vagones = new ArrayList<>();
-        System.out.println("Nueva instancia de GestorVagones creada");
+        inicializarVagones();
     }
 
     public static synchronized GestorVagones getInstance() {
@@ -23,34 +24,34 @@ public class GestorVagones {
         return instance;
     }
 
-    public void agregarVagon(Vagon vagon) {
-        vagones.add(vagon);
-        System.out.println("Vagón agregado - ID: " + vagon.getIdVagon() + ", Total vagones: " + vagones.size());
+    private void inicializarVagones() {
+        // Ejemplo: Vagones para TREN-1 y TREN-2
+        vagones.add(new Vagon("VAGON-1", "Carga", "TREN-1"));
+        vagones.add(new Vagon("VAGON-2", "Pasajeros", "TREN-1"));
+        vagones.add(new Vagon("VAGON-3", "Pasajeros", "TREN-1"));
+        vagones.add(new Vagon("VAGON-4", "Carga", "TREN-2"));
+        vagones.add(new Vagon("VAGON-5", "Pasajeros", "TREN-2"));
+        vagones.add(new Vagon("VAGON-6", "Pasajeros", "TREN-2"));
     }
 
     public List<Vagon> getVagones() {
         return new ArrayList<>(vagones);
     }
 
-    public boolean eliminarVagon(String idVagon) {
-        boolean removed = vagones.removeIf(v -> v.getIdVagon().equals(idVagon));
-        if (removed) {
-            System.out.println("Vagón eliminado - ID: " + idVagon + ", Total vagones: " + vagones.size());
-        } else {
-            System.out.println("No se encontró vagón con ID: " + idVagon);
-        }
-        return removed;
+    public List<Vagon> getVagonesPorTren(String idTren) {
+        return vagones.stream()
+                .filter(v -> v.getIdTren().equals(idTren))
+                .collect(Collectors.toList());
     }
 
-    public void printVagones() {
-        System.out.println("Lista de vagones:");
-        if (vagones.isEmpty()) {
-            System.out.println("  (Vacía)");
-        } else {
-            for (Vagon v : vagones) {
-                System.out.println("  ID: " + v.getIdVagon() + ", Total Vagones: " + v.getTotalVagones() +
-                                   ", Asientos Totales: " + v.getTotalAsientos());
-            }
-        }
+    public boolean validarProporcionVagones(String idTren) {
+        List<Vagon> vagonesTren = getVagonesPorTren(idTren);
+        long vagonesCarga = vagonesTren.stream().filter(v -> v.getTipo().equals("Carga")).count();
+        long vagonesPasajeros = vagonesTren.stream().filter(v -> v.getTipo().equals("Pasajeros")).count();
+        return vagonesCarga * 2 >= vagonesPasajeros;
+    }
+
+    public void agregarVagon(Vagon vagon) {
+        vagones.add(vagon);
     }
 }

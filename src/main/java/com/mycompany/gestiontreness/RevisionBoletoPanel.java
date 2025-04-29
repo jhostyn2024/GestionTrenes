@@ -9,7 +9,8 @@ import java.awt.*;
 
 public class RevisionBoletoPanel extends JPanel {
     private JFrame frame;
-    private JTextField txtIdBoleto, txtIdTren, txtIdRuta, txtIdHorario;
+    private JTextField txtIdBoleto;
+    private JTextArea txtResultado;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
     private final Color GOLD_COLOR = new Color(198, 168, 77);
 
@@ -21,39 +22,46 @@ public class RevisionBoletoPanel extends JPanel {
     }
 
     private void createUI() {
-        // Header
         JPanel header = new JPanel();
         header.setBackground(BLUE_COLOR);
         header.setPreferredSize(new Dimension(800, 100));
-        JLabel title = new JLabel("REVISAR BOLETO PARA ABORDAR", SwingConstants.CENTER);
+        JLabel title = new JLabel("REVISIÓN DE BOLETO (ABORDAJE)", SwingConstants.CENTER);
         title.setForeground(Color.WHITE);
         title.setFont(new Font("Arial", Font.BOLD, 28));
         header.add(title);
         add(header, BorderLayout.NORTH);
 
-        // Formulario
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
         txtIdBoleto = new JTextField();
-        txtIdTren = new JTextField();
-        txtIdRuta = new JTextField();
-        txtIdHorario = new JTextField();
+        txtResultado = new JTextArea();
+        txtResultado.setEditable(false);
+        txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
 
         addFormField(formPanel, "ID Boleto:", txtIdBoleto);
-        addFormField(formPanel, "ID Tren:", txtIdTren);
-        addFormField(formPanel, "ID Ruta:", txtIdRuta);
-        addFormField(formPanel, "ID Horario:", txtIdHorario);
 
-        JButton btnValidar = new JButton("VALIDAR BOLETO");
+        JButton btnValidar = new JButton("VALIDAR");
         btnValidar.setBackground(GOLD_COLOR);
         btnValidar.setForeground(Color.WHITE);
         btnValidar.setFont(new Font("Arial", Font.BOLD, 16));
         btnValidar.addActionListener(e -> validarBoleto());
 
+        JButton btnVolver = new JButton("VOLVER");
+        btnVolver.setBackground(new Color(150, 40, 40));
+        btnVolver.setForeground(Color.WHITE);
+        btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVolver.addActionListener(e -> {
+            frame.setContentPane(new MainMenuPanel(frame));
+            frame.revalidate();
+        });
+
+        formPanel.add(btnValidar);
+        formPanel.add(btnVolver);
+
         add(new JScrollPane(formPanel), BorderLayout.CENTER);
-        add(btnValidar, BorderLayout.SOUTH);
+        add(new JScrollPane(txtResultado), BorderLayout.SOUTH);
     }
 
     private void addFormField(JPanel panel, String label, JComponent field) {
@@ -67,22 +75,24 @@ public class RevisionBoletoPanel extends JPanel {
 
     private void validarBoleto() {
         String idBoleto = txtIdBoleto.getText().trim();
-        String idTren = txtIdTren.getText().trim();
-        String idRuta = txtIdRuta.getText().trim();
-        String idHorario = txtIdHorario.getText().trim();
-
-        if (idBoleto.isEmpty() || idTren.isEmpty() || idRuta.isEmpty() || idHorario.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+        if (idBoleto.isEmpty()) {
+            txtResultado.setText("Ingrese un ID de boleto");
             return;
         }
 
-        boolean valido = GestorBoletos.getInstance().validarBoleto(idBoleto, idTren, idRuta, idHorario);
-        if (valido) {
-            JOptionPane.showMessageDialog(frame, "Boleto válido. Puede abordar.");
-            frame.setContentPane(new MenuPasajerosPanel(frame));
-            frame.revalidate();
-        } else {
-            JOptionPane.showMessageDialog(frame, "Boleto inválido o ya usado", "Error", JOptionPane.ERROR_MESSAGE);
+        boolean valido = GestorBoletos.getInstance().validarBoleto(idBoleto);
+        Boleto boleto = GestorBoletos.getInstance().buscarBoletoPorId(idBoleto);
+
+        if (boleto == null) {
+            txtResultado.setText("No se encontró boleto con ID: " + idBoleto);
+            return;
         }
+
+        StringBuilder resultado = new StringBuilder("Resultado de validación:\n");
+        resultado.append("Boleto ID: ").append(boleto.getIdBoleto()).append("\n");
+        resultado.append("Pasajero: ").append(boleto.getNombre()).append(" ").append(boleto.getApellido()).append("\n");
+        resultado.append("Categoría: ").append(boleto.getCategoriaPasajero()).append("\n");
+        resultado.append("Estado: ").append(valido ? "Válido para abordar" : "No válido (usado o fecha inválida)").append("\n");
+        txtResultado.setText(resultado.toString());
     }
 }

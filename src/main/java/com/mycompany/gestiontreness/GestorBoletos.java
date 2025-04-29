@@ -4,6 +4,7 @@
  */
 package com.mycompany.gestiontreness;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,24 @@ public class GestorBoletos {
             }
         }
         return resultados;
+    }
+
+    public boolean validarBoleto(String idBoleto) {
+        Boleto boleto = buscarBoletoPorId(idBoleto);
+        if (boleto == null) {
+            return false;
+        }
+        // Validar que el boleto no esté usado y que la fecha de salida sea válida
+        return !boleto.isUsado() && boleto.getFechaSalida().isAfter(LocalDateTime.now());
+    }
+
+    public boolean marcarBoletoUsado(String idBoleto) {
+        Boleto boleto = buscarBoletoPorId(idBoleto);
+        if (boleto == null) {
+            return false;
+        }
+        boleto.marcarBoletoUsado();
+        return true;
     }
 
     public List<Boleto> getBoletos() {

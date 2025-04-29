@@ -25,6 +25,7 @@ public class Boleto {
     private LocalDateTime fechaLlegada;
     private PersonaContacto contacto;
     private List<Equipaje> equipajes;
+    private boolean usado;
 
     public Boleto(String idBoleto, String idRuta, String idHorario, String idTren, String nombre, String apellido,
                   String idPasajero, String tipoIdentificacion, String direccion, List<String> telefonos,
@@ -47,6 +48,7 @@ public class Boleto {
         this.fechaLlegada = fechaLlegada;
         this.contacto = contacto;
         this.equipajes = equipajes;
+        this.usado = false;
     }
 
     // Getters
@@ -67,4 +69,10 @@ public class Boleto {
     public LocalDateTime getFechaLlegada() { return fechaLlegada; }
     public PersonaContacto getContacto() { return contacto; }
     public List<Equipaje> getEquipajes() { return equipajes; }
+    public boolean isUsado() { return usado; }
+
+    // Métodos para gestión de uso
+    public void marcarBoletoUsado() {
+        this.usado = true;
+    }
 }

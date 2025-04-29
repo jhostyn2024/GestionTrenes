@@ -22,7 +22,6 @@ public class ControlEquipajePanel extends JPanel {
     }
 
     private void createUI() {
-        // Header
         JPanel header = new JPanel();
         header.setBackground(BLUE_COLOR);
         header.setPreferredSize(new Dimension(800, 100));
@@ -32,7 +31,6 @@ public class ControlEquipajePanel extends JPanel {
         header.add(title);
         add(header, BorderLayout.NORTH);
 
-        // Formulario
         JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
@@ -100,7 +98,6 @@ public class ControlEquipajePanel extends JPanel {
                     resultado.append("Estado: ").append(equipaje.getPeso() <= 80 ? "Válido" : "Excede límite de 80 kg").append("\n\n");
                 }
             }
-            // Validar número de maletas
             if (boleto.getEquipajes().size() > 2) {
                 resultado.append("Advertencia: El pasajero tiene más de 2 maletas\n");
             }

@@ -21,7 +21,6 @@ public class GestionTrenesPanel extends JPanel {
     }
 
     private void createUI() {
-        // Header
         JPanel header = new JPanel();
         header.setBackground(BLUE_COLOR);
         header.setPreferredSize(new Dimension(800, 100));
@@ -31,9 +30,12 @@ public class GestionTrenesPanel extends JPanel {
         header.add(title);
         add(header, BorderLayout.NORTH);
 
-        // Tabla de trenes
         String[] columnas = {"ID Tren", "Nombre", "Tipo", "Capacidad Carga", "Kilometraje"};
         List<Tren> trenes = GestorTrenes.getInstance().getTrenes();
+        if (trenes == null) {
+            JOptionPane.showMessageDialog(frame, "Error al cargar trenes", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String[][] datos = new String[trenes.size()][5];
         for (int i = 0; i < trenes.size(); i++) {
             Tren tren = trenes.get(i);
@@ -50,7 +52,6 @@ public class GestionTrenesPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(tablaTrenes);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Botones
         JPanel buttonsPanel = new JPanel(new FlowLayout());
         buttonsPanel.setBackground(new Color(240, 240, 240));
 

@@ -4,57 +4,38 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
 public class Vagon {
-    private int totalVagones;
-    private int vagonesConEquipaje;
-    private int totalAsientos;
-    private int asientosEstandar;
-    private int asientosEjecutivo;
-    private int asientosPremium;
-    private String idVagon; // Campo para identificación única
+    private String idVagon;
+    private String tipo; // "Carga" o "Pasajeros"
+    private String idTren; // Tren al que pertenece
+    private int capacidadPasajeros; // 40 para vagones de pasajeros
+    private int lugaresPremium; // 4
+    private int lugaresEjecutiva; // 8
+    private int lugaresEstandar; // 22
 
-    public Vagon(int totalVagones, int vagonesConEquipaje, int totalAsientos, 
-                 int asientosEstandar, int asientosEjecutivo, int asientosPremium) {
-        this.totalVagones = totalVagones;
-        this.vagonesConEquipaje = vagonesConEquipaje;
-        this.totalAsientos = totalAsientos;
-        this.asientosEstandar = asientosEstandar;
-        this.asientosEjecutivo = asientosEjecutivo;
-        this.asientosPremium = asientosPremium;
-        this.idVagon = "VAG-" + System.currentTimeMillis(); // ID único basado en timestamp
+    public Vagon(String idVagon, String tipo, String idTren) {
+        this.idVagon = idVagon;
+        this.tipo = tipo;
+        this.idTren = idTren;
+        if (tipo.equals("Pasajeros")) {
+            this.capacidadPasajeros = 40;
+            this.lugaresPremium = 4;
+            this.lugaresEjecutiva = 8;
+            this.lugaresEstandar = 22;
+        } else {
+            this.capacidadPasajeros = 0;
+            this.lugaresPremium = 0;
+            this.lugaresEjecutiva = 0;
+            this.lugaresEstandar = 0;
+        }
     }
 
     // Getters
-    public int getTotalVagones() { return totalVagones; }
-    public int getVagonesConEquipaje() { return vagonesConEquipaje; }
-    public int getTotalAsientos() { return totalAsientos; }
-    public int getAsientosEstandar() { return asientosEstandar; }
-    public int getAsientosEjecutivo() { return asientosEjecutivo; }
-    public int getAsientosPremium() { return asientosPremium; }
     public String getIdVagon() { return idVagon; }
-
-    // Setters
-    public void setTotalVagones(int totalVagones) { this.totalVagones = totalVagones; }
-    public void setVagonesConEquipaje(int vagonesConEquipaje) { this.vagonesConEquipaje = vagonesConEquipaje; }
-    public void setTotalAsientos(int totalAsientos) { this.totalAsientos = totalAsientos; }
-    public void setAsientosEstandar(int asientosEstandar) { this.asientosEstandar = asientosEstandar; }
-    public void setAsientosEjecutivo(int asientosEjecutivo) { this.asientosEjecutivo = asientosEjecutivo; }
-    public void setAsientosPremium(int asientosPremium) { this.asientosPremium = asientosPremium; }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Vagon other = (Vagon) obj;
-        return idVagon.equals(other.idVagon);
-    }
-
-    @Override
-    public int hashCode() {
-        return idVagon.hashCode();
-    }
+    public String getTipo() { return tipo; }
+    public String getIdTren() { return idTren; }
+    public int getCapacidadPasajeros() { return capacidadPasajeros; }
+    public int getLugaresPremium() { return lugaresPremium; }
+    public int getLugaresEjecutiva() { return lugaresEjecutiva; }
+    public int getLugaresEstandar() { return lugaresEstandar; }
 }
