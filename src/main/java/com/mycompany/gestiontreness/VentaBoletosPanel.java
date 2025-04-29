@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class VentaBoletosPanel extends JPanel {
@@ -77,9 +78,9 @@ public class VentaBoletosPanel extends JPanel {
         txtContactoApellido = new JTextField();
         txtContactoTelefono = new JTextField();
 
-        txtEquipajeId1 = new JTextField("EQ1-" + System.currentTimeMillis());
+        txtEquipajeId1 = new JTextField("EQ1-" + UUID.randomUUID().toString().substring(0, 8));
         txtEquipajePeso1 = new JTextField();
-        txtEquipajeId2 = new JTextField("EQ2-" + System.currentTimeMillis());
+        txtEquipajeId2 = new JTextField("EQ2-" + UUID.randomUUID().toString().substring(0, 8));
         txtEquipajePeso2 = new JTextField();
         List<String> vagonesCarga = GestorVagones.getInstance().getVagones().stream()
                 .filter(v -> v.getTipo().equals("Carga"))
@@ -119,7 +120,10 @@ public class VentaBoletosPanel extends JPanel {
         btnComprar.setBackground(GOLD_COLOR);
         btnComprar.setForeground(Color.WHITE);
         btnComprar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnComprar.addActionListener(e -> comprarBoleto());
+        btnComprar.addActionListener(e -> {
+            System.out.println("Botón COMPRAR presionado en VentaBoletosPanel");
+            comprarBoleto();
+        });
 
         add(new JScrollPane(formPanel), BorderLayout.CENTER);
         add(btnComprar, BorderLayout.SOUTH);
@@ -187,18 +191,21 @@ public class VentaBoletosPanel extends JPanel {
                 txtContactoTelefono.getText().isEmpty() || cbVagonCarga.getSelectedItem() == null ||
                 cbHorarios.getSelectedItem() == null || cbTrenes.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(frame, "Complete todos los campos, incluyendo ruta, horario y tren", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Campos incompletos en comprarBoleto");
             return;
         }
 
         String selectedVagon = (String) cbVagonCarga.getSelectedItem();
         if (selectedVagon.equals("Sin vagones de carga disponibles")) {
             JOptionPane.showMessageDialog(frame, "No hay vagones de carga disponibles", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Sin vagones de carga disponibles");
             return;
         }
 
         String selectedHorario = (String) cbHorarios.getSelectedItem();
         if (selectedHorario.equals("Sin horarios disponibles") || selectedHorario.equals("Seleccione una ruta")) {
             JOptionPane.showMessageDialog(frame, "No hay horarios disponibles para la ruta seleccionada", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Sin horarios disponibles");
             return;
         }
 
@@ -224,20 +231,24 @@ public class VentaBoletosPanel extends JPanel {
             pesoEquipaje2 = txtEquipajePeso2.getText().isEmpty() ? 0 : Double.parseDouble(txtEquipajePeso2.getText());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(frame, "Peso de equipaje inválido", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Peso de equipaje inválido: " + e.getMessage());
             return;
         }
         String idVagonCarga = (String) cbVagonCarga.getSelectedItem();
 
         if (pesoEquipaje1 > 80 || pesoEquipaje2 > 80) {
             JOptionPane.showMessageDialog(frame, "Cada maleta no puede exceder 80 kg", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Peso de equipaje excede 80 kg");
             return;
         }
         if (!idEquipaje1.isEmpty() && pesoEquipaje1 <= 0) {
             JOptionPane.showMessageDialog(frame, "Especifique el peso de la maleta 1", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Peso de maleta 1 no especificado");
             return;
         }
         if (!idEquipaje2.isEmpty() && pesoEquipaje2 <= 0) {
             JOptionPane.showMessageDialog(frame, "Especifique el peso de la maleta 2", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Peso de maleta 2 no especificado");
             return;
         }
 
@@ -247,15 +258,16 @@ public class VentaBoletosPanel extends JPanel {
                 .orElse(null);
         if (vagon == null || !vagon.getTipo().equals("Carga")) {
             JOptionPane.showMessageDialog(frame, "Vagón de carga inválido", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Vagón de carga inválido: " + idVagonCarga);
             return;
         }
 
         if (!GestorVagones.getInstance().validarProporcionVagones(idTren)) {
             JOptionPane.showMessageDialog(frame, "No hay suficientes vagones de carga para este tren", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Proporción de vagones inválida para tren: " + idTren);
             return;
         }
 
-        // Validar capacidad de pasajeros
         List<Vagon> vagonesPasajeros = GestorVagones.getInstance().getVagonesPorTren(idTren).stream()
                 .filter(v -> v.getTipo().equals("Pasajeros"))
                 .collect(Collectors.toList());
@@ -265,10 +277,10 @@ public class VentaBoletosPanel extends JPanel {
                 .toList().size();
         if (boletosVendidos >= capacidadTotal) {
             JOptionPane.showMessageDialog(frame, "No hay asientos disponibles en este tren", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("No hay asientos disponibles en tren: " + idTren);
             return;
         }
 
-        // Validar asignación de asiento según categoría
         int disponibles;
         switch (categoria) {
             case "Premium":
@@ -286,6 +298,7 @@ public class VentaBoletosPanel extends JPanel {
                 .toList().size();
         if (ocupados >= disponibles) {
             JOptionPane.showMessageDialog(frame, "No hay asientos disponibles en la categoría " + categoria, "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("No hay asientos disponibles en categoría: " + categoria);
             return;
         }
 
@@ -295,6 +308,7 @@ public class VentaBoletosPanel extends JPanel {
                 .orElse(null);
         if (horario == null) {
             JOptionPane.showMessageDialog(frame, "Horario inválido", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Horario inválido: " + idHorario);
             return;
         }
 
@@ -304,6 +318,7 @@ public class VentaBoletosPanel extends JPanel {
                 .orElse(null);
         if (ruta == null) {
             JOptionPane.showMessageDialog(frame, "Ruta inválida", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Ruta inválida: " + idRuta);
             return;
         }
         double basePrecio = ruta.getDistancia() * 0.1;
@@ -319,6 +334,7 @@ public class VentaBoletosPanel extends JPanel {
                     .with(LocalTime.parse(horario.getHoraSalida(), DateTimeFormatter.ofPattern("HH:mm")));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, "Formato de hora inválido en el horario", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("Formato de hora inválido: " + e.getMessage());
             return;
         }
         double distancia = ruta.getDistancia();
@@ -334,14 +350,17 @@ public class VentaBoletosPanel extends JPanel {
             equipajes.add(new Equipaje(idEquipaje2, pesoEquipaje2, idVagonCarga));
         }
 
+        String idBoleto = "BOL-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         Boleto boleto = new Boleto(
-                "TREN-" + System.currentTimeMillis(), idRuta, idHorario, idTren, nombre, apellido,
+                idBoleto, idRuta, idHorario, idTren, nombre, apellido,
                 idPasajero, tipoId, direccion, telefonos, lugar, categoria, precio,
                 fechaSalida, fechaLlegada, contacto, equipajes
         );
 
         GestorBoletos.getInstance().agregarBoleto(boleto);
-        JOptionPane.showMessageDialog(frame, "Boleto comprado exitosamente - ID: " + boleto.getIdBoleto());
+        System.out.println("Boleto creado con ID: " + idBoleto);
+        JOptionPane.showMessageDialog(frame, "Boleto comprado exitosamente\nID Boleto: " + idBoleto + 
+            "\nGuarde este ID para validación", "Compra Exitosa", JOptionPane.INFORMATION_MESSAGE);
         frame.setContentPane(new MenuPasajerosPanel(frame));
         frame.revalidate();
     }

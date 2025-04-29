@@ -80,7 +80,7 @@ public class ControlEquipajePanel extends JPanel {
             return;
         }
 
-        List<Boleto> boletos = GestorBoletos.getInstance().buscarBoletosPorEquipaje(idEquipaje);
+        var boletos = GestorBoletos.getInstance().buscarBoletosPorEquipaje(idEquipaje);
         if (boletos.isEmpty()) {
             txtResultado.setText("No se encontró equipaje con ID: " + idEquipaje);
             return;

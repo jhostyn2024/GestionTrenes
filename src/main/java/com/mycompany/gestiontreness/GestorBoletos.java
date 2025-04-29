@@ -7,6 +7,7 @@ package com.mycompany.gestiontreness;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GestorBoletos {
     private static GestorBoletos instance;
@@ -14,6 +15,7 @@ public class GestorBoletos {
 
     private GestorBoletos() {
         boletos = new ArrayList<>();
+        System.out.println("GestorBoletos inicializado");
     }
 
     public static synchronized GestorBoletos getInstance() {
@@ -24,44 +26,64 @@ public class GestorBoletos {
     }
 
     public void agregarBoleto(Boleto boleto) {
+        System.out.println("Agregando boleto con ID: " + boleto.getIdBoleto());
         boletos.add(boleto);
+        System.out.println("Boletos almacenados: " + boletos.size() + " [" + 
+            boletos.stream().map(Boleto::getIdBoleto).collect(Collectors.joining(", ")) + "]");
     }
 
     public Boleto buscarBoletoPorId(String idBoleto) {
-        return boletos.stream()
-                .filter(b -> b.getIdBoleto().equals(idBoleto))
+        System.out.println("Buscando boleto con ID: " + idBoleto);
+        Boleto boleto = boletos.stream()
+                .filter(b -> b.getIdBoleto().equals(idBoleto.trim()))
                 .findFirst()
                 .orElse(null);
+        if (boleto == null) {
+            System.out.println("Boleto no encontrado. IDs disponibles: [" + 
+                boletos.stream().map(Boleto::getIdBoleto).collect(Collectors.joining(", ")) + "]");
+        } else {
+            System.out.println("Boleto encontrado: " + boleto.getIdBoleto());
+        }
+        return boleto;
     }
 
     public List<Boleto> buscarBoletosPorEquipaje(String idEquipaje) {
+        System.out.println("Buscando boletos con equipaje ID: " + idEquipaje);
         List<Boleto> resultados = new ArrayList<>();
         for (Boleto boleto : boletos) {
             for (Equipaje equipaje : boleto.getEquipajes()) {
-                if (equipaje.getIdEquipaje().equals(idEquipaje)) {
+                if (equipaje.getIdEquipaje().equals(idEquipaje.trim())) {
                     resultados.add(boleto);
+                    System.out.println("Boleto encontrado para equipaje: " + boleto.getIdBoleto());
                     break;
                 }
             }
         }
+        System.out.println("Total boletos encontrados para equipaje: " + resultados.size());
         return resultados;
     }
 
     public boolean validarBoleto(String idBoleto) {
+        System.out.println("Validando boleto con ID: " + idBoleto);
         Boleto boleto = buscarBoletoPorId(idBoleto);
         if (boleto == null) {
+            System.out.println("Boleto no encontrado para validación");
             return false;
         }
-        // Validar que el boleto no esté usado y que la fecha de salida sea válida
-        return !boleto.isUsado() && boleto.getFechaSalida().isAfter(LocalDateTime.now());
+        boolean valido = !boleto.isUsado() && boleto.getFechaSalida().isAfter(LocalDateTime.now());
+        System.out.println("Resultado de validación: " + valido);
+        return valido;
     }
 
     public boolean marcarBoletoUsado(String idBoleto) {
+        System.out.println("Marcando boleto como usado: " + idBoleto);
         Boleto boleto = buscarBoletoPorId(idBoleto);
         if (boleto == null) {
+            System.out.println("Boleto no encontrado para marcar como usado");
             return false;
         }
         boleto.marcarBoletoUsado();
+        System.out.println("Boleto marcado como usado: " + idBoleto);
         return true;
     }
 

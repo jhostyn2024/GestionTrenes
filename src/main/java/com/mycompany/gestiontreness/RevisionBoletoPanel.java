@@ -42,17 +42,21 @@ public class RevisionBoletoPanel extends JPanel {
 
         addFormField(formPanel, "ID Boleto:", txtIdBoleto);
 
-        JButton btnValidar = new JButton("VALIDAR");
+        JButton btnValidar = new JButton("VERIFICAR");
         btnValidar.setBackground(GOLD_COLOR);
         btnValidar.setForeground(Color.WHITE);
         btnValidar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnValidar.addActionListener(e -> validarBoleto());
+        btnValidar.addActionListener(e -> {
+            System.out.println("Botón VERIFICAR presionado en RevisionBoletoPanel");
+            validarBoleto();
+        });
 
         JButton btnVolver = new JButton("VOLVER");
         btnVolver.setBackground(new Color(150, 40, 40));
         btnVolver.setForeground(Color.WHITE);
         btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
         btnVolver.addActionListener(e -> {
+            System.out.println("Navegando a MainMenuPanel desde RevisionBoletoPanel");
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         });
@@ -74,9 +78,11 @@ public class RevisionBoletoPanel extends JPanel {
     }
 
     private void validarBoleto() {
-        String idBoleto = txtIdBoleto.getText().trim();
+        String idBoleto = txtIdBoleto.getText().trim().toUpperCase();
+        System.out.println("Validando boleto con ID: " + idBoleto);
         if (idBoleto.isEmpty()) {
             txtResultado.setText("Ingrese un ID de boleto");
+            System.out.println("ID de boleto vacío");
             return;
         }
 
@@ -84,7 +90,9 @@ public class RevisionBoletoPanel extends JPanel {
         Boleto boleto = GestorBoletos.getInstance().buscarBoletoPorId(idBoleto);
 
         if (boleto == null) {
-            txtResultado.setText("No se encontró boleto con ID: " + idBoleto);
+            txtResultado.setText("No se encontró boleto con ID: " + idBoleto + 
+                "\nAsegúrese de ingresar el ID exactamente como se mostró al comprar");
+            System.out.println("Boleto no encontrado: " + idBoleto);
             return;
         }
 
@@ -94,5 +102,7 @@ public class RevisionBoletoPanel extends JPanel {
         resultado.append("Categoría: ").append(boleto.getCategoriaPasajero()).append("\n");
         resultado.append("Estado: ").append(valido ? "Válido para abordar" : "No válido (usado o fecha inválida)").append("\n");
         txtResultado.setText(resultado.toString());
+        txtResultado.repaint();
+        System.out.println("Validación completada: " + (valido ? "Válido" : "No válido"));
     }
 }

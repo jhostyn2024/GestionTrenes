@@ -31,7 +31,7 @@ public class GestionTrenesPanel extends JPanel {
         add(header, BorderLayout.NORTH);
 
         String[] columnas = {"ID Tren", "Nombre", "Tipo", "Capacidad Carga", "Kilometraje"};
-        List<Tren> trenes = GestorTrenes.getInstance().getTrenes();
+        var trenes = GestorTrenes.getInstance().getTrenes();
         if (trenes == null) {
             JOptionPane.showMessageDialog(frame, "Error al cargar trenes", "Error", JOptionPane.ERROR_MESSAGE);
             return;
