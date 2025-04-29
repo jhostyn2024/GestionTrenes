@@ -75,4 +75,8 @@ public class GestorHorarios {
     boolean modificarHorario(String idHorario, String idRuta, String horaSalida, String diasSemana) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    Object getHorariosPorRuta(String idRuta) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

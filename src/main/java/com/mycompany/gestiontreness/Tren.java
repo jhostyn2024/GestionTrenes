@@ -19,17 +19,17 @@ public class Tren {
     @JsonProperty("estado")
     private String estado;
 
-    public Tren() {}
-
-    public Tren(String idTren, String nombre, int capacidad, String estado) {
-        this.idTren = idTren;
-        this.nombre = nombre;
-        this.capacidad = capacidad;
-        this.estado = estado;
+    public Tren() {
+        this.idTren = "";
+        this.nombre = "";
+        this.estado = "Activo";
     }
 
-    Tren(String idTren, String nombre, String tipoTren, double kilometraje) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Tren(String idTren, String nombre, int capacidad, String estado) {
+        this.idTren = idTren != null ? idTren : "";
+        this.nombre = nombre != null ? nombre : "";
+        this.capacidad = capacidad;
+        this.estado = estado != null ? estado : "Activo";
     }
 
     public String getIdTren() { return idTren; }
@@ -37,12 +37,28 @@ public class Tren {
     public int getCapacidad() { return capacidad; }
     public String getEstado() { return estado; }
 
-    public void setIdTren(String idTren) { this.idTren = idTren; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setIdTren(String idTren) { this.idTren = idTren != null ? idTren : ""; }
+    public void setNombre(String nombre) { this.nombre = nombre != null ? nombre : ""; }
     public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setEstado(String estado) { this.estado = estado != null ? estado : "Activo"; }
 
-    Object getKilometraje() {
+    @Override
+    public String toString() {
+        return "Tren[idTren=" + (idTren != null ? idTren : "null") +
+               ", nombre=" + (nombre != null ? nombre : "null") +
+               ", capacidad=" + capacidad +
+               ", estado=" + (estado != null ? estado : "null") + "]";
+    }
+
+    AbstractStringBuilder getTipoTren() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    AbstractStringBuilder getCapacidadCarga() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    AbstractStringBuilder getKilometraje() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

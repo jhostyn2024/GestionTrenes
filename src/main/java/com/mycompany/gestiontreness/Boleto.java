@@ -5,6 +5,8 @@
 package com.mycompany.gestiontreness;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class Boleto {
     @JsonProperty("idBoleto")
@@ -40,6 +42,10 @@ public class Boleto {
         this.estado = estado;
     }
 
+    Boleto(String idBoleto, String idRuta, String idHorario, String idTren, String nombre, String apellido, String idPasajero, String tipoId, String direccion, List<String> telefonos, String lugar, String categoria, double precio, LocalDateTime fechaSalida, LocalDateTime fechaLlegada, PersonaContacto contacto, List<Equipaje> equipajes) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public String getIdBoleto() { return idBoleto; }
     public String getIdHorario() { return idHorario; }
     public String getIdVagon() { return idVagon; }
@@ -61,6 +67,14 @@ public class Boleto {
     }
 
     boolean isUsado() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getIdTren() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getCategoriaPasajero() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

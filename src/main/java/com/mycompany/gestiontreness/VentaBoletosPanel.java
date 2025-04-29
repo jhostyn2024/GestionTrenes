@@ -145,7 +145,7 @@ public class VentaBoletosPanel extends JPanel {
         String selectedRuta = (String) cbRutas.getSelectedItem();
         if (selectedRuta != null) {
             String idRuta = selectedRuta.split(":")[0];
-            List<Horario> horarios = GestorHorarios.getInstance().getHorariosPorRuta(idRuta);
+            List<Horario> horarios = (List<Horario>) GestorHorarios.getInstance().getHorariosPorRuta(idRuta);
             if (horarios.isEmpty()) {
                 cbHorarios.addItem("Sin horarios disponibles");
                 cbHorarios.setEnabled(false);

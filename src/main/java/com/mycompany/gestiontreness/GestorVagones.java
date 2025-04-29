@@ -70,4 +70,16 @@ public class GestorVagones {
                 .filter(vagon -> "Activo".equals(vagon.getEstado()))
                 .collect(Collectors.toList());
     }
+
+    void printVagones() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    boolean validarProporcionVagones(String idTren) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getVagonesPorTren(String idTren) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

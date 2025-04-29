@@ -70,4 +70,8 @@ public class GestorRutas {
                 .filter(ruta -> "Activa".equals(ruta.getEstado()))
                 .collect(Collectors.toList());
     }
+
+    Ruta encontrarRutaMasCorta(String origen, String destino) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
