@@ -36,6 +36,10 @@ public class Horario {
         this.estado = estado;
     }
 
+    Horario(String idRuta, String horaSalida, String horaLlegada, String diasSemana) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public String getIdHorario() { return idHorario; }
     public String getIdRuta() { return idRuta; }
     public String getIdTren() { return idTren; }
