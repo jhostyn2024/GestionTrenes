@@ -5,6 +5,7 @@
 package com.mycompany.gestiontreness;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GestorRutas {
     private static GestorRutas instance;
@@ -23,7 +24,7 @@ public class GestorRutas {
     }
 
     private void inicializarRutas() {
-        // Añadir rutas predefinidas (solo una dirección para evitar duplicados)
+        // Añadir rutas predefinidas
         rutas.add(new Ruta("RUTA-1", "Cabecera del Llano", "San Francisco", 30.0, "Activa"));
         rutas.add(new Ruta("RUTA-2", "Cabecera del Llano", "La Universidad", 40.0, "Activa"));
         rutas.add(new Ruta("RUTA-3", "Cabecera del Llano", "Sotomayor", 50.0, "Activa"));
