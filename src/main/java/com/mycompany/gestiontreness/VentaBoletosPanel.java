@@ -16,10 +16,11 @@ public class VentaBoletosPanel extends JPanel {
     private JFrame frame;
     private JComboBox<String> cbRutas;
     private JComboBox<String> cbHorarios;
+    private JComboBox<String> cbTrenes;
     private JTextField txtNombre, txtApellido, txtIdentificacion, txtDireccion, txtTelefono, txtLugar;
     private JComboBox<String> cbTipoIdentificacion, cbCategoriaPasajero;
     private JTextField txtContactoNombre, txtContactoApellido, txtContactoTelefono;
-    private JTextField txtEquipajeId, txtEquipajePeso;
+    private JTextField txtEquipajeId1, txtEquipajePeso1, txtEquipajeId2, txtEquipajePeso2;
     private JComboBox<String> cbVagonCarga;
     private JButton btnRecomendarRuta;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
@@ -48,11 +49,15 @@ public class VentaBoletosPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        // Campos de ruta y horario
+        // Campos de ruta, horario y tren
         cbRutas = new JComboBox<>(GestorRutas.getInstance().getRutasOptimas().stream()
+                .filter(r -> !GestorHorarios.getInstance().getHorariosPorRuta(r.getIdRuta()).isEmpty())
                 .map(r -> r.getIdRuta() + ": " + r.getEstacionOrigen() + " a " + r.getEstacionDestino() + " (" + r.getDistancia() + " km)")
                 .toArray(String[]::new));
         cbHorarios = new JComboBox<>();
+        cbTrenes = new JComboBox<>(GestorTrenes.getInstance().getTrenes().stream()
+                .map(t -> t.getIdTren() + ": " + t.getNombre())
+                .toArray(String[]::new));
         updateHorarios();
         cbRutas.addActionListener(e -> updateHorarios());
 
@@ -68,8 +73,8 @@ public class VentaBoletosPanel extends JPanel {
         cbTipoIdentificacion = new JComboBox<>(new String[]{"Cédula", "Pasaporte", "DNI"});
         txtDireccion = new JTextField();
         txtTelefono = new JTextField();
-        cbCategoriaPasajero = new JComboBox<>(new String[]{"Adulto", "Niño", "Estudiante", "Tercera Edad"});
-        txtLugar = new JTextField("Asiento 1A"); // Ejemplo, puede ser dinámico
+        cbCategoriaPasajero = new JComboBox<>(new String[]{"Premium", "Ejecutiva", "Estándar"});
+        txtLugar = new JTextField("Asiento 1A"); // Debería ser dinámico según vagón
 
         // Campos de contacto
         txtContactoNombre = new JTextField();
@@ -77,16 +82,27 @@ public class VentaBoletosPanel extends JPanel {
         txtContactoTelefono = new JTextField();
 
         // Campos de equipaje
-        txtEquipajeId = new JTextField("EQ-" + System.currentTimeMillis());
-        txtEquipajePeso = new JTextField();
-        cbVagonCarga = new JComboBox<>(GestorVagones.getInstance().getVagones().stream()
-                .filter(v -> v.getTipo().equals("Carga"))
+        txtEquipajeId1 = new JTextField("EQ1-" + System.currentTimeMillis());
+        txtEquipajePeso1 = new JTextField();
+        txtEquipajeId2 = new JTextField("EQ2-" + System.currentTimeMillis());
+        txtEquipajePeso2 = new JTextField();
+        List<String> vagonesCarga = GestorVagones.getInstance().getVagones().stream()
+                .filter(v -> v.getTipo() != null && v.getTipo().equals("Carga"))
                 .map(Vagon::getIdVagon)
-                .toArray(String[]::new));
+                .collect(Collectors.toList());
+        if (vagonesCarga.isEmpty()) {
+            vagonesCarga.add("Sin vagones de carga disponibles");
+            cbVagonCarga = new JComboBox<>(vagonesCarga.toArray(String[]::new));
+            cbVagonCarga.setEnabled(false);
+        } else {
+            cbVagonCarga = new JComboBox<>(vagonesCarga.toArray(String[]::new));
+            cbVagonCarga.setEnabled(true);
+        }
 
         // Añadir campos al formulario
         addFormField(formPanel, "Ruta:", cbRutas);
         addFormField(formPanel, "Horario:", cbHorarios);
+        addFormField(formPanel, "Tren:", cbTrenes);
         addFormField(formPanel, "", btnRecomendarRuta);
         addFormField(formPanel, "Nombre:", txtNombre);
         addFormField(formPanel, "Apellido:", txtApellido);
@@ -99,8 +115,10 @@ public class VentaBoletosPanel extends JPanel {
         addFormField(formPanel, "Contacto Nombre:", txtContactoNombre);
         addFormField(formPanel, "Contacto Apellido:", txtContactoApellido);
         addFormField(formPanel, "Contacto Teléfono:", txtContactoTelefono);
-        addFormField(formPanel, "ID Equipaje:", txtEquipajeId);
-        addFormField(formPanel, "Peso Equipaje (kg):", txtEquipajePeso);
+        addFormField(formPanel, "ID Equipaje 1:", txtEquipajeId1);
+        addFormField(formPanel, "Peso Equipaje 1 (kg):", txtEquipajePeso1);
+        addFormField(formPanel, "ID Equipaje 2:", txtEquipajeId2);
+        addFormField(formPanel, "Peso Equipaje 2 (kg):", txtEquipajePeso2);
         addFormField(formPanel, "Vagón de Carga:", cbVagonCarga);
 
         // Botón de compra
@@ -130,8 +148,17 @@ public class VentaBoletosPanel extends JPanel {
         String selectedRuta = (String) cbRutas.getSelectedItem();
         if (selectedRuta != null) {
             String idRuta = selectedRuta.split(":")[0];
-            GestorHorarios.getInstance().getHorariosPorRuta(idRuta).stream()
-                    .forEach(h -> cbHorarios.addItem(h.getIdHorario() + ": " + h.getHoraSalida() + " (" + h.getDiasSemana() + ")"));
+            List<Horario> horarios = GestorHorarios.getInstance().getHorariosPorRuta(idRuta);
+            if (horarios.isEmpty()) {
+                cbHorarios.addItem("Sin horarios disponibles");
+                cbHorarios.setEnabled(false);
+            } else {
+                horarios.forEach(h -> cbHorarios.addItem(h.getIdHorario() + ": " + h.getHoraSalida() + " (" + h.getDiasSemana() + ")"));
+                cbHorarios.setEnabled(true);
+            }
+        } else {
+            cbHorarios.addItem("Seleccione una ruta");
+            cbHorarios.setEnabled(false);
         }
     }
 
@@ -165,15 +192,30 @@ public class VentaBoletosPanel extends JPanel {
                 txtIdentificacion.getText().isEmpty() || txtDireccion.getText().isEmpty() ||
                 txtTelefono.getText().isEmpty() || txtLugar.getText().isEmpty() ||
                 txtContactoNombre.getText().isEmpty() || txtContactoApellido.getText().isEmpty() ||
-                txtContactoTelefono.getText().isEmpty() || txtEquipajePeso.getText().isEmpty() ||
-                cbVagonCarga.getSelectedItem() == null || cbHorarios.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(frame, "Complete todos los campos, incluyendo ruta y horario", "Error", JOptionPane.ERROR_MESSAGE);
+                txtContactoTelefono.getText().isEmpty() || cbVagonCarga.getSelectedItem() == null ||
+                cbHorarios.getSelectedItem() == null || cbTrenes.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(frame, "Complete todos los campos, incluyendo ruta, horario y tren", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar selección de vagón
+        String selectedVagon = (String) cbVagonCarga.getSelectedItem();
+        if (selectedVagon.equals("Sin vagones de carga disponibles")) {
+            JOptionPane.showMessageDialog(frame, "No hay vagones de carga disponibles", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar selección de horario
+        String selectedHorario = (String) cbHorarios.getSelectedItem();
+        if (selectedHorario.equals("Sin horarios disponibles") || selectedHorario.equals("Seleccione una ruta")) {
+            JOptionPane.showMessageDialog(frame, "No hay horarios disponibles para la ruta seleccionada", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Obtener datos
         String idRuta = ((String) cbRutas.getSelectedItem()).split(":")[0];
-        String idHorario = ((String) cbHorarios.getSelectedItem()).split(":")[0];
+        String idHorario = selectedHorario.split(":")[0];
+        String idTren = ((String) cbTrenes.getSelectedItem()).split(":")[0];
         String nombre = txtNombre.getText();
         String apellido = txtApellido.getText();
         String idPasajero = txtIdentificacion.getText();
@@ -185,22 +227,38 @@ public class VentaBoletosPanel extends JPanel {
         String contactoNombre = txtContactoNombre.getText();
         String contactoApellido = txtContactoApellido.getText();
         List<String> contactoTelefonos = List.of(txtContactoTelefono.getText());
-        String idEquipaje = txtEquipajeId.getText();
-        double pesoEquipaje;
+        String idEquipaje1 = txtEquipajeId1.getText();
+        String idEquipaje2 = txtEquipajeId2.getText();
+        double pesoEquipaje1, pesoEquipaje2;
         try {
-            pesoEquipaje = Double.parseDouble(txtEquipajePeso.getText());
+            pesoEquipaje1 = txtEquipajePeso1.getText().isEmpty() ? 0 : Double.parseDouble(txtEquipajePeso1.getText());
+            pesoEquipaje2 = txtEquipajePeso2.getText().isEmpty() ? 0 : Double.parseDouble(txtEquipajePeso2.getText());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(frame, "Peso de equipaje inválido", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         String idVagonCarga = (String) cbVagonCarga.getSelectedItem();
 
+        // Validar equipaje (máximo 2 maletas, 80 kg cada una)
+        if (pesoEquipaje1 > 80 || pesoEquipaje2 > 80) {
+            JOptionPane.showMessageDialog(frame, "Cada maleta no puede exceder 80 kg", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!idEquipaje1.isEmpty() && pesoEquipaje1 <= 0) {
+            JOptionPane.showMessageDialog(frame, "Especifique el peso de la maleta 1", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!idEquipaje2.isEmpty() && pesoEquipaje2 <= 0) {
+            JOptionPane.showMessageDialog(frame, "Especifique el peso de la maleta 2", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         // Validar vagón de carga
         Vagon vagon = GestorVagones.getInstance().getVagones().stream()
                 .filter(v -> v.getIdVagon().equals(idVagonCarga))
                 .findFirst()
                 .orElse(null);
-        if (vagon == null) {
+        if (vagon == null || !vagon.getTipo().equals("Carga")) {
             JOptionPane.showMessageDialog(frame, "Vagón de carga inválido", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -215,30 +273,51 @@ public class VentaBoletosPanel extends JPanel {
             return;
         }
 
-        // Calcular precio (basado en distancia)
+        // Calcular precio (basado en distancia y categoría)
         Ruta ruta = GestorRutas.getInstance().getRutas().stream()
                 .filter(r -> r.getIdRuta().equals(idRuta))
                 .findFirst()
                 .orElse(null);
-        double precio = ruta != null ? ruta.getDistancia() * 0.1 : 50.0; // $0.1 por km
+        if (ruta == null) {
+            JOptionPane.showMessageDialog(frame, "Ruta inválida", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        double basePrecio = ruta.getDistancia() * 0.1;
+        double precio = switch (categoria) {
+            case "Premium" -> basePrecio * 1.5;
+            case "Ejecutiva" -> basePrecio * 1.2;
+            default -> basePrecio; // Estándar
+        };
 
         // Calcular fechas basadas en el horario
-        LocalDateTime fechaSalida = LocalDateTime.now()
-                .with(LocalTime.parse(horario.getHoraSalida(), DateTimeFormatter.ofPattern("HH:mm")));
+        LocalDateTime fechaSalida;
+        try {
+            fechaSalida = LocalDateTime.now()
+                    .with(LocalTime.parse(horario.getHoraSalida(), DateTimeFormatter.ofPattern("HH:mm")));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Formato de hora inválido en el horario", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         // Estimar fecha de llegada (1 hora por cada 50 km, aproximado)
-        double distancia = ruta != null ? ruta.getDistancia() : 50.0;
+        double distancia = ruta.getDistancia();
         long horasViaje = Math.round(distancia / 50.0);
         LocalDateTime fechaLlegada = fechaSalida.plusHours(horasViaje);
 
         // Crear objetos
         PersonaContacto contacto = new PersonaContacto(contactoNombre, contactoApellido, contactoTelefonos);
-        Equipaje equipaje = new Equipaje(idEquipaje, pesoEquipaje, idVagonCarga);
+        List<Equipaje> equipajes = new ArrayList<>();
+        if (!idEquipaje1.isEmpty() && pesoEquipaje1 > 0) {
+            equipajes.add(new Equipaje(idEquipaje1, pesoEquipaje1, idVagonCarga));
+        }
+        if (!idEquipaje2.isEmpty() && pesoEquipaje2 > 0) {
+            equipajes.add(new Equipaje(idEquipaje2, pesoEquipaje2, idVagonCarga));
+        }
 
         // Crear boleto
         Boleto boleto = new Boleto(
-                "TREN-" + System.currentTimeMillis(), idRuta, idHorario, nombre, apellido,
+                "TREN-" + System.currentTimeMillis(), idRuta, idHorario, idTren, nombre, apellido,
                 idPasajero, tipoId, direccion, telefonos, lugar, categoria, precio,
-                fechaSalida, fechaLlegada, contacto, equipaje
+                fechaSalida, fechaLlegada, contacto, equipajes
         );
 
         // Guardar boleto

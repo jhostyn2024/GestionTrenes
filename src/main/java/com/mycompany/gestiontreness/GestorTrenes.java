@@ -4,11 +4,6 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +13,7 @@ public class GestorTrenes {
 
     private GestorTrenes() {
         trenes = new ArrayList<>();
+        inicializarTrenes();
     }
 
     public static synchronized GestorTrenes getInstance() {
@@ -27,32 +23,31 @@ public class GestorTrenes {
         return instance;
     }
 
+    private void inicializarTrenes() {
+        trenes.add(new Tren("TREN-1", "Expreso Llano", "Mercedes-Benz", 0.0));
+        trenes.add(new Tren("TREN-2", "Rápido Universidad", "Arnold", 0.0));
+    }
+
     public void agregarTren(Tren tren) {
         trenes.add(tren);
     }
 
-    public boolean eliminarTren(String identificador) {
-        return trenes.removeIf(t -> t.getIdentificador().equals(identificador));
+    public boolean eliminarTren(String idTren) {
+        return trenes.removeIf(t -> t.getIdTren().equals(idTren));
     }
 
-    public Tren buscarTren(String identificador) {
-        return trenes.stream()
-                .filter(t -> t.getIdentificador().equals(identificador))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public List<Tren> getTrenes() {
-        return new ArrayList<>(trenes);
-    }
-
-    public boolean actualizarTren(String idOriginal, Tren trenActualizado) {
-        for (int i = 0; i < trenes.size(); i++) {
-            if (trenes.get(i).getIdentificador().equals(idOriginal)) {
-                trenes.set(i, trenActualizado);
+    public boolean modificarTren(String idTren, String nombre, double kilometraje) {
+        for (Tren tren : trenes) {
+            if (tren.getIdTren().equals(idTren)) {
+                tren.setNombre(nombre);
+                tren.setKilometraje(kilometraje);
                 return true;
             }
         }
         return false;
+    }
+
+    public List<Tren> getTrenes() {
+        return new ArrayList<>(trenes);
     }
 }

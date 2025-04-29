@@ -6,152 +6,142 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class EditarHorarioPanel extends JPanel {
     private JFrame frame;
-    private Horario horarioOriginal;
-    
-    private JTextField txtIdRuta;
-    private JTextField txtHoraSalida;
-    private JTextField txtHoraLlegada;
-    private JTextField txtDiasSemana;
+    private JComboBox<String> cbHorarios;
+    private JTextField txtIdRuta, txtHoraSalida, txtDiasSemana;
+    private final Color BLUE_COLOR = new Color(0, 86, 179);
+    private final Color GOLD_COLOR = new Color(198, 168, 77);
 
-    public EditarHorarioPanel(JFrame frame, Horario horario) {
+    public EditarHorarioPanel(JFrame frame) {
         this.frame = frame;
-        this.horarioOriginal = horario;
         setLayout(new BorderLayout());
-        setBackground(new Color(244, 244, 244));
-        initializeUI();
+        setBackground(new Color(240, 240, 240));
+        createUI();
     }
 
-    private void initializeUI() {
-        createHeader();
-        createFormPanel();
-    }
-
-    private void createHeader() {
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(new Color(26, 38, 116));
-        header.setPreferredSize(new Dimension(800, 80));
-
+    private void createUI() {
+        // Header
+        JPanel header = new JPanel();
+        header.setBackground(BLUE_COLOR);
+        header.setPreferredSize(new Dimension(800, 100));
         JLabel title = new JLabel("EDITAR HORARIO", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
         title.setForeground(Color.WHITE);
-
-        JButton backButton = new JButton("Cancelar");
-        backButton.setBackground(new Color(205, 163, 74));
-        backButton.setForeground(Color.WHITE);
-        backButton.addActionListener(e -> {
-            frame.setContentPane(new ModificarEliminarHorarioPanel(frame));
-            frame.revalidate();
-        });
-
-        header.add(backButton, BorderLayout.WEST);
-        header.add(title, BorderLayout.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        header.add(title);
         add(header, BorderLayout.NORTH);
-    }
 
-    private void createFormPanel() {
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        // Formulario
+        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        txtIdRuta = createFormField(formPanel, "ID Ruta:", horarioOriginal.getIdRuta());
-        txtHoraSalida = createFormField(formPanel, "Hora Salida (HH:mm):", horarioOriginal.getHoraSalida());
-        txtHoraLlegada = createFormField(formPanel, "Hora Llegada (HH:mm):", horarioOriginal.getHoraLlegada());
-        txtDiasSemana = createFormField(formPanel, "Días Semana (ej. Lunes,Miércoles):", horarioOriginal.getDiasSemana());
+        // Lista de horarios
+        cbHorarios = new JComboBox<>(GestorHorarios.getInstance().getHorarios().stream()
+                .map(h -> h.getIdHorario() + ": " + h.getIdRuta() + " - " + h.getHoraSalida() + " (" + h.getDiasSemana() + ")")
+                .toArray(String[]::new));
+        cbHorarios.addActionListener(e -> cargarDatosHorario());
 
-        JButton btnGuardar = new JButton("GUARDAR CAMBIOS");
-        btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnGuardar.setBackground(new Color(39, 174, 96));
-        btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnGuardar.addActionListener(this::guardarCambios);
+        txtIdRuta = new JTextField();
+        txtHoraSalida = new JTextField();
+        txtDiasSemana = new JTextField();
 
-        formPanel.add(Box.createVerticalStrut(30));
-        formPanel.add(btnGuardar);
+        addFormField(formPanel, "Seleccionar Horario:", cbHorarios);
+        addFormField(formPanel, "ID Ruta:", txtIdRuta);
+        addFormField(formPanel, "Hora Salida (HH:mm):", txtHoraSalida);
+        addFormField(formPanel, "Días Semana:", txtDiasSemana);
+
+        JButton btnEditar = new JButton("GUARDAR CAMBIOS");
+        btnEditar.setBackground(GOLD_COLOR);
+        btnEditar.setForeground(Color.WHITE);
+        btnEditar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnEditar.addActionListener(e -> editarHorario());
+
+        JButton btnVolver = new JButton("VOLVER");
+        btnVolver.setBackground(new Color(150, 40, 40));
+        btnVolver.setForeground(Color.WHITE);
+        btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVolver.addActionListener(e -> {
+            frame.setContentPane(new GestionHorariosPanel(frame));
+            frame.revalidate();
+        });
+
+        formPanel.add(btnEditar);
+        formPanel.add(btnVolver);
 
         add(new JScrollPane(formPanel), BorderLayout.CENTER);
+
+        // Cargar datos del primer horario (si existe)
+        if (cbHorarios.getItemCount() > 0) {
+            cbHorarios.setSelectedIndex(0);
+            cargarDatosHorario();
+        }
     }
 
-    private JTextField createFormField(JPanel panel, String label, String value) {
-        JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        fieldPanel.setBackground(Color.WHITE);
-        fieldPanel.setMaximumSize(new Dimension(500, 50));
-
+    private void addFormField(JPanel panel, String label, JComponent field) {
         JLabel lbl = new JLabel(label);
-        lbl.setPreferredSize(new Dimension(180, 25));
-
-        JTextField textField = new JTextField(value, 20);
-        textField.setFont(new Font("Arial", Font.PLAIN, 14));
-
-        fieldPanel.add(lbl);
-        fieldPanel.add(textField);
-        panel.add(fieldPanel);
-        panel.add(Box.createVerticalStrut(10));
-
-        return textField;
+        lbl.setFont(new Font("Arial", Font.BOLD, 14));
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(200, 30));
+        panel.add(lbl);
+        panel.add(field);
     }
 
-    private void guardarCambios(ActionEvent e) {
-        if (!validarCampos()) {
+    private void cargarDatosHorario() {
+        String selectedHorario = (String) cbHorarios.getSelectedItem();
+        if (selectedHorario != null) {
+            String idHorario = selectedHorario.split(":")[0];
+            Horario horario = GestorHorarios.getInstance().getHorarios().stream()
+                    .filter(h -> h.getIdHorario().equals(idHorario))
+                    .findFirst()
+                    .orElse(null);
+            if (horario != null) {
+                txtIdRuta.setText(horario.getIdRuta());
+                txtHoraSalida.setText(horario.getHoraSalida());
+                txtDiasSemana.setText(horario.getDiasSemana());
+            }
+        }
+    }
+
+    private void editarHorario() {
+        String selectedHorario = (String) cbHorarios.getSelectedItem();
+        if (selectedHorario == null) {
+            JOptionPane.showMessageDialog(frame, "Seleccione un horario", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        try {
-            // Actualizar los campos de horarioOriginal directamente
-            horarioOriginal.setIdRuta(txtIdRuta.getText().trim());
-            horarioOriginal.setHoraSalida(txtHoraSalida.getText().trim());
-            horarioOriginal.setHoraLlegada(txtHoraLlegada.getText().trim());
-            horarioOriginal.setDiasSemana(txtDiasSemana.getText().trim());
-
-            // Depuración
-            System.out.println("Horario actualizado - ID: " + horarioOriginal.getIdHorario());
-            System.out.println("Nuevos valores: Ruta=" + horarioOriginal.getIdRuta() +
-                              ", Salida=" + horarioOriginal.getHoraSalida() +
-                              ", Días=" + horarioOriginal.getDiasSemana());
-
-            JOptionPane.showMessageDialog(frame, 
-                "Horario actualizado correctamente", 
-                "Éxito", 
-                JOptionPane.INFORMATION_MESSAGE);
-                
-            frame.setContentPane(new ModificarEliminarHorarioPanel(frame));
-            frame.revalidate();
-        } catch (Exception ex) {
-            System.out.println("Error al guardar horario: " + ex.getMessage());
-            JOptionPane.showMessageDialog(frame, 
-                "Error al guardar los cambios", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private boolean validarCampos() {
-        if (txtIdRuta.getText().trim().isEmpty() ||
-            txtHoraSalida.getText().trim().isEmpty() ||
-            txtHoraLlegada.getText().trim().isEmpty() ||
-            txtDiasSemana.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(frame, 
-                "Todos los campos son obligatorios", 
-                "Error de validación", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        // Validación de formato de hora (HH:mm)
+        String idHorario = selectedHorario.split(":")[0];
+        String idRuta = txtIdRuta.getText().trim();
         String horaSalida = txtHoraSalida.getText().trim();
-        String horaLlegada = txtHoraLlegada.getText().trim();
-        if (!horaSalida.matches("\\d{2}:\\d{2}") || !horaLlegada.matches("\\d{2}:\\d{2}")) {
-            JOptionPane.showMessageDialog(frame, 
-                "Las horas deben tener el formato HH:mm", 
-                "Error de validación", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
+        String diasSemana = txtDiasSemana.getText().trim();
+
+        if (idRuta.isEmpty() || horaSalida.isEmpty() || diasSemana.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        return true;
+        // Validar formato de hora (HH:mm)
+        if (!horaSalida.matches("\\d{2}:\\d{2}")) {
+            JOptionPane.showMessageDialog(frame, "Formato de hora inválido (use HH:mm)", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar que la ruta exista
+        boolean rutaExiste = GestorRutas.getInstance().getRutas().stream()
+                .anyMatch(r -> r.getIdRuta().equals(idRuta));
+        if (!rutaExiste) {
+            JOptionPane.showMessageDialog(frame, "ID de ruta inválido", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        boolean exito = GestorHorarios.getInstance().modificarHorario(idHorario, idRuta, horaSalida, diasSemana);
+        if (exito) {
+            JOptionPane.showMessageDialog(frame, "Horario editado exitosamente - ID: " + idHorario);
+            frame.setContentPane(new GestionHorariosPanel(frame));
+            frame.revalidate();
+        } else {
+            JOptionPane.showMessageDialog(frame, "No se pudo editar el horario", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
