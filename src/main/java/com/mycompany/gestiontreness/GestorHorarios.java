@@ -71,4 +71,8 @@ public class GestorHorarios {
                 .filter(horario -> "Activo".equals(horario.getEstado()))
                 .collect(Collectors.toList());
     }
+
+    boolean modificarHorario(String idHorario, String idRuta, String horaSalida, String diasSemana) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

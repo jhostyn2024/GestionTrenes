@@ -65,4 +65,12 @@ public class GestorBoletos {
     public List<Boleto> getBoletos() {
         return new ArrayList<>(boletos);
     }
+
+    Boleto buscarBoletoPorId(String idBoleto) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    boolean marcarBoletoUsado(String idBoleto) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

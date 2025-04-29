@@ -53,4 +53,12 @@ public class Horario {
     public void setFechaSalida(String fechaSalida) { this.fechaSalida = fechaSalida; }
     public void setFechaLlegada(String fechaLlegada) { this.fechaLlegada = fechaLlegada; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    String getHoraSalida() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    String getDiasSemana() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -28,6 +28,10 @@ public class Tren {
         this.estado = estado;
     }
 
+    Tren(String idTren, String nombre, String tipoTren, double kilometraje) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public String getIdTren() { return idTren; }
     public String getNombre() { return nombre; }
     public int getCapacidad() { return capacidad; }
@@ -37,4 +41,8 @@ public class Tren {
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    Object getKilometraje() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

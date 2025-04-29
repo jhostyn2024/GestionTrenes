@@ -69,4 +69,8 @@ public class GestorTrenes {
                 .filter(tren -> "Activo".equals(tren.getEstado()))
                 .collect(Collectors.toList());
     }
+
+    boolean modificarTren(String idTren, String nombre, double kilometraje) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -32,6 +32,10 @@ public class Vagon {
         this.estado = estado;
     }
 
+    Vagon(int parseInt, int parseInt0, int parseInt1, int parseInt2, int parseInt3, int parseInt4) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public String getIdVagon() { return idVagon; }
     public String getIdTren() { return idTren; }
     public String getTipo() { return tipo; }
@@ -43,4 +47,28 @@ public class Vagon {
     public void setTipo(String tipo) { this.tipo = tipo; }
     public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    Object getTotalVagones() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getVagonesConEquipaje() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getTotalAsientos() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getAsientosEstandar() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getAsientosEjecutivo() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getAsientosPremium() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
