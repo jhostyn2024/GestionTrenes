@@ -32,6 +32,10 @@ public class Tren {
         this.estado = estado != null ? estado : "Activo";
     }
 
+    Tren(String idTren, String nombre, String tipoTren, double kilometraje) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public String getIdTren() { return idTren; }
     public String getNombre() { return nombre; }
     public int getCapacidad() { return capacidad; }
@@ -55,6 +59,10 @@ public class Tren {
     }
 
     AbstractStringBuilder getCapacidadCarga() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getKilometraje() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
