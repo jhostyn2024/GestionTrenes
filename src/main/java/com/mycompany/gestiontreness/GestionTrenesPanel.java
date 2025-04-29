@@ -46,6 +46,7 @@ public class GestionTrenesPanel extends JPanel {
         tablaTrenes = new JTable(datos, columnas);
         tablaTrenes.setFont(new Font("Arial", Font.PLAIN, 14));
         tablaTrenes.setRowHeight(25);
+        tablaTrenes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(tablaTrenes);
         add(scrollPane, BorderLayout.CENTER);
 
@@ -57,19 +58,34 @@ public class GestionTrenesPanel extends JPanel {
         btnAgregar.setBackground(GOLD_COLOR);
         btnAgregar.setForeground(Color.WHITE);
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnAgregar.addActionListener(e -> agregarTren());
+        btnAgregar.addActionListener(e -> {
+            frame.setContentPane(new AgregarTrenPanel(frame));
+            frame.revalidate();
+        });
 
         JButton btnModificar = new JButton("MODIFICAR TREN");
         btnModificar.setBackground(GOLD_COLOR);
         btnModificar.setForeground(Color.WHITE);
         btnModificar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnModificar.addActionListener(e -> modificarTren());
+        btnModificar.addActionListener(e -> {
+            int selectedRow = tablaTrenes.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(frame, "Seleccione un tren", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String idTren = (String) tablaTrenes.getValueAt(selectedRow, 0);
+            frame.setContentPane(new ModificarEliminarTrenPanel(frame, idTren));
+            frame.revalidate();
+        });
 
-        JButton btnEliminar = new JButton("ELIMINAR TREN");
-        btnEliminar.setBackground(GOLD_COLOR);
-        btnEliminar.setForeground(Color.WHITE);
-        btnEliminar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnEliminar.addActionListener(e -> eliminarTren());
+        JButton btnListar = new JButton("LISTAR TRENES");
+        btnListar.setBackground(GOLD_COLOR);
+        btnListar.setForeground(Color.WHITE);
+        btnListar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnListar.addActionListener(e -> {
+            frame.setContentPane(new ListaTrenesPanel(frame));
+            frame.revalidate();
+        });
 
         JButton btnVolver = new JButton("VOLVER");
         btnVolver.setBackground(new Color(150, 40, 40));
@@ -82,105 +98,8 @@ public class GestionTrenesPanel extends JPanel {
 
         buttonsPanel.add(btnAgregar);
         buttonsPanel.add(btnModificar);
-        buttonsPanel.add(btnEliminar);
+        buttonsPanel.add(btnListar);
         buttonsPanel.add(btnVolver);
         add(buttonsPanel, BorderLayout.SOUTH);
-    }
-
-    private void agregarTren() {
-        JTextField txtIdTren = new JTextField();
-        JTextField txtNombre = new JTextField();
-        JComboBox<String> cbTipoTren = new JComboBox<>(new String[]{"Mercedes-Benz", "Arnold"});
-        JTextField txtKilometraje = new JTextField("0.0");
-        Object[] message = {
-                "ID Tren:", txtIdTren,
-                "Nombre:", txtNombre,
-                "Tipo Tren:", cbTipoTren,
-                "Kilometraje:", txtKilometraje
-        };
-        int option = JOptionPane.showConfirmDialog(frame, message, "Agregar Tren", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            String idTren = txtIdTren.getText().trim();
-            String nombre = txtNombre.getText().trim();
-            String tipoTren = (String) cbTipoTren.getSelectedItem();
-            double kilometraje;
-            try {
-                kilometraje = Double.parseDouble(txtKilometraje.getText().trim());
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(frame, "Kilometraje inválido", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (idTren.isEmpty() || nombre.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            Tren tren = new Tren(idTren, nombre, tipoTren, kilometraje);
-            GestorTrenes.getInstance().agregarTren(tren);
-            JOptionPane.showMessageDialog(frame, "Tren agregado exitosamente");
-            frame.setContentPane(new GestionTrenesPanel(frame));
-            frame.revalidate();
-        }
-    }
-
-    private void modificarTren() {
-        int selectedRow = tablaTrenes.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(frame, "Seleccione un tren", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String idTren = (String) tablaTrenes.getValueAt(selectedRow, 0);
-        JTextField txtNombre = new JTextField((String) tablaTrenes.getValueAt(selectedRow, 1));
-        JTextField txtKilometraje = new JTextField((String) tablaTrenes.getValueAt(selectedRow, 4));
-        Object[] message = {
-                "Nombre:", txtNombre,
-                "Kilometraje:", txtKilometraje
-        };
-        int option = JOptionPane.showConfirmDialog(frame, message, "Modificar Tren", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            String nombre = txtNombre.getText().trim();
-            double kilometraje;
-            try {
-                kilometraje = Double.parseDouble(txtKilometraje.getText().trim());
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(frame, "Kilometraje inválido", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (nombre.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            boolean exito = GestorTrenes.getInstance().modificarTren(idTren, nombre, kilometraje);
-            if (exito) {
-                JOptionPane.showMessageDialog(frame, "Tren modificado exitosamente");
-                frame.setContentPane(new GestionTrenesPanel(frame));
-                frame.revalidate();
-            } else {
-                JOptionPane.showMessageDialog(frame, "No se encontró el tren", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void eliminarTren() {
-        int selectedRow = tablaTrenes.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(frame, "Seleccione un tren", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String idTren = (String) tablaTrenes.getValueAt(selectedRow, 0);
-        int confirm = JOptionPane.showConfirmDialog(frame, "¿Eliminar tren " + idTren + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean exito = GestorTrenes.getInstance().eliminarTren(idTren);
-            if (exito) {
-                JOptionPane.showMessageDialog(frame, "Tren eliminado exitosamente");
-                frame.setContentPane(new GestionTrenesPanel(frame));
-                frame.revalidate();
-            } else {
-                JOptionPane.showMessageDialog(frame, "No se encontró el tren", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
     }
 }

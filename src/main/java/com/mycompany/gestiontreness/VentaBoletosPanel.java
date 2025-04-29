@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VentaBoletosPanel extends JPanel {
     private JFrame frame;
@@ -51,7 +52,7 @@ public class VentaBoletosPanel extends JPanel {
 
         // Campos de ruta, horario y tren
         cbRutas = new JComboBox<>(GestorRutas.getInstance().getRutasOptimas().stream()
-                .filter(r -> !GestorHorarios.getInstance().getHorariosPorRuta(r.getIdRuta()).isEmpty())
+                .filter(r -> !GestorHorarios.getInstance().getHorariosPor GEDRuta(r.getIdRuta()).isEmpty())
                 .map(r -> r.getIdRuta() + ": " + r.getEstacionOrigen() + " a " + r.getEstacionDestino() + " (" + r.getDistancia() + " km)")
                 .toArray(String[]::new));
         cbHorarios = new JComboBox<>();
@@ -74,7 +75,7 @@ public class VentaBoletosPanel extends JPanel {
         txtDireccion = new JTextField();
         txtTelefono = new JTextField();
         cbCategoriaPasajero = new JComboBox<>(new String[]{"Premium", "Ejecutiva", "Estándar"});
-        txtLugar = new JTextField("Asiento 1A"); // Debería ser dinámico según vagón
+        txtLugar = new JTextField(); // Debería asignarse según vagón
 
         // Campos de contacto
         txtContactoNombre = new JTextField();
@@ -263,6 +264,17 @@ public class VentaBoletosPanel extends JPanel {
             return;
         }
 
+        // Validar proporción de vagones (1 carga por 2 pasajeros, simplificado)
+        List<Vagon> vagonesTren = GestorVagones.getInstance().getVagones().stream()
+                .filter(v -> v.getIdVagon().startsWith(idTren)) // Asumir ID de vagón incluye idTren
+                .collect(Collectors.toList());
+        long vagonesCarga = vagonesTren.stream().filter(v -> v.getTipo().equals("Carga")).count();
+        long vagonesPasajeros = vagonesTren.stream().filter(v -> v.getTipo().equals("Pasajeros")).count();
+        if (vagonesCarga * 2 < vagonesPasajeros) {
+            JOptionPane.showMessageDialog(frame, "No hay suficientes vagones de carga para este tren", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         // Obtener horario para calcular fechas
         Horario horario = GestorHorarios.getInstance().getHorarios().stream()
                 .filter(h -> h.getIdHorario().equals(idHorario))
@@ -298,7 +310,6 @@ public class VentaBoletosPanel extends JPanel {
             JOptionPane.showMessageDialog(frame, "Formato de hora inválido en el horario", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        // Estimar fecha de llegada (1 hora por cada 50 km, aproximado)
         double distancia = ruta.getDistancia();
         long horasViaje = Math.round(distancia / 50.0);
         LocalDateTime fechaLlegada = fechaSalida.plusHours(horasViaje);

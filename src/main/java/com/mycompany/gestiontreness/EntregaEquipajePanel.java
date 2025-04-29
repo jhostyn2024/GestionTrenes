@@ -10,6 +10,7 @@ import java.awt.*;
 public class EntregaEquipajePanel extends JPanel {
     private JFrame frame;
     private JTextField txtIdBoleto;
+    private JTextArea txtResultado;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
     private final Color GOLD_COLOR = new Color(198, 168, 77);
 
@@ -32,22 +33,37 @@ public class EntregaEquipajePanel extends JPanel {
         add(header, BorderLayout.NORTH);
 
         // Formulario
-        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
         txtIdBoleto = new JTextField();
+        txtResultado = new JTextArea();
+        txtResultado.setEditable(false);
+        txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
 
         addFormField(formPanel, "ID Boleto:", txtIdBoleto);
 
-        JButton btnEntregar = new JButton("ENTREGAR EQUIPAJE");
+        JButton btnEntregar = new JButton("ENTREGAR");
         btnEntregar.setBackground(GOLD_COLOR);
         btnEntregar.setForeground(Color.WHITE);
         btnEntregar.setFont(new Font("Arial", Font.BOLD, 16));
         btnEntregar.addActionListener(e -> entregarEquipaje());
 
+        JButton btnVolver = new JButton("VOLVER");
+        btnVolver.setBackground(new Color(150, 40, 40));
+        btnVolver.setForeground(Color.WHITE);
+        btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVolver.addActionListener(e -> {
+            frame.setContentPane(new MainMenuPanel(frame));
+            frame.revalidate();
+        });
+
+        formPanel.add(btnEntregar);
+        formPanel.add(btnVolver);
+
         add(new JScrollPane(formPanel), BorderLayout.CENTER);
-        add(btnEntregar, BorderLayout.SOUTH);
+        add(new JScrollPane(txtResultado), BorderLayout.SOUTH);
     }
 
     private void addFormField(JPanel panel, String label, JComponent field) {
@@ -61,27 +77,29 @@ public class EntregaEquipajePanel extends JPanel {
 
     private void entregarEquipaje() {
         String idBoleto = txtIdBoleto.getText().trim();
-
         if (idBoleto.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Ingrese el ID del boleto", "Error", JOptionPane.ERROR_MESSAGE);
+            txtResultado.setText("Ingrese un ID de boleto");
             return;
         }
 
-        Boleto boleto = GestorBoletos.getInstance().buscarBoleto(idBoleto);
+        Boleto boleto = GestorBoletos.getInstance().buscarBoletoPorId(idBoleto);
         if (boleto == null) {
-            JOptionPane.showMessageDialog(frame, "Boleto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+            txtResultado.setText("No se encontró boleto con ID: " + idBoleto);
             return;
         }
 
-        Equipaje equipaje = boleto.getEquipaje();
-        if (equipaje == null) {
-            JOptionPane.showMessageDialog(frame, "No hay equipaje asociado al boleto", "Error", JOptionPane.ERROR_MESSAGE);
+        if (boleto.getEquipajes().isEmpty()) {
+            txtResultado.setText("El boleto no tiene equipaje registrado");
             return;
         }
 
-        JOptionPane.showMessageDialog(frame, "Equipaje entregado - ID: " + equipaje.getIdEquipaje() +
-                "\nPeso: " + equipaje.getPeso() + " kg\nVagón: " + equipaje.getIdVagonCarga());
-        frame.setContentPane(new MenuPasajerosPanel(frame));
-        frame.revalidate();
+        StringBuilder resultado = new StringBuilder("Equipaje entregado:\n");
+        for (Equipaje equipaje : boleto.getEquipajes()) {
+            resultado.append("ID Equipaje: ").append(equipaje.getIdEquipaje()).append("\n");
+            resultado.append("Peso: ").append(equipaje.getPeso()).append(" kg\n");
+            resultado.append("Vagón de Carga: ").append(equipaje.getIdVagonCarga()).append("\n");
+            resultado.append("Pasajero: ").append(boleto.getNombre()).append(" ").append(boleto.getApellido()).append("\n\n");
+        }
+        txtResultado.setText(resultado.toString());
     }
 }

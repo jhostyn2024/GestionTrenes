@@ -9,7 +9,8 @@ import java.awt.*;
 
 public class ControlEquipajePanel extends JPanel {
     private JFrame frame;
-    private JTextField txtIdBoleto, txtIdEquipaje, txtPeso, txtIdVagonCarga;
+    private JTextField txtIdEquipaje;
+    private JTextArea txtResultado;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
     private final Color GOLD_COLOR = new Color(198, 168, 77);
 
@@ -32,28 +33,37 @@ public class ControlEquipajePanel extends JPanel {
         add(header, BorderLayout.NORTH);
 
         // Formulario
-        JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         formPanel.setBackground(Color.WHITE);
 
-        txtIdBoleto = new JTextField();
-        txtIdEquipaje = new JTextField("EQ-" + System.currentTimeMillis());
-        txtPeso = new JTextField();
-        txtIdVagonCarga = new JTextField();
+        txtIdEquipaje = new JTextField();
+        txtResultado = new JTextArea();
+        txtResultado.setEditable(false);
+        txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        addFormField(formPanel, "ID Boleto:", txtIdBoleto);
         addFormField(formPanel, "ID Equipaje:", txtIdEquipaje);
-        addFormField(formPanel, "Peso (kg):", txtPeso);
-        addFormField(formPanel, "ID Vagón Carga:", txtIdVagonCarga);
 
-        JButton btnRegistrar = new JButton("REGISTRAR EQUIPAJE");
-        btnRegistrar.setBackground(GOLD_COLOR);
-        btnRegistrar.setForeground(Color.WHITE);
-        btnRegistrar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnRegistrar.addActionListener(e -> registrarEquipaje());
+        JButton btnVerificar = new JButton("VERIFICAR");
+        btnVerificar.setBackground(GOLD_COLOR);
+        btnVerificar.setForeground(Color.WHITE);
+        btnVerificar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVerificar.addActionListener(e -> verificarEquipaje());
+
+        JButton btnVolver = new JButton("VOLVER");
+        btnVolver.setBackground(new Color(150, 40, 40));
+        btnVolver.setForeground(Color.WHITE);
+        btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVolver.addActionListener(e -> {
+            frame.setContentPane(new MainMenuPanel(frame));
+            frame.revalidate();
+        });
+
+        formPanel.add(btnVerificar);
+        formPanel.add(btnVolver);
 
         add(new JScrollPane(formPanel), BorderLayout.CENTER);
-        add(btnRegistrar, BorderLayout.SOUTH);
+        add(new JScrollPane(txtResultado), BorderLayout.SOUTH);
     }
 
     private void addFormField(JPanel panel, String label, JComponent field) {
@@ -65,54 +75,36 @@ public class ControlEquipajePanel extends JPanel {
         panel.add(field);
     }
 
-    private void registrarEquipaje() {
-        String idBoleto = txtIdBoleto.getText().trim();
+    private void verificarEquipaje() {
         String idEquipaje = txtIdEquipaje.getText().trim();
-        String pesoStr = txtPeso.getText().trim();
-        String idVagonCarga = txtIdVagonCarga.getText().trim();
-
-        if (idBoleto.isEmpty() || idEquipaje.isEmpty() || pesoStr.isEmpty() || idVagonCarga.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+        if (idEquipaje.isEmpty()) {
+            txtResultado.setText("Ingrese un ID de equipaje");
             return;
         }
 
-        double peso;
-        try {
-            peso = Double.parseDouble(pesoStr);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(frame, "Peso inválido", "Error", JOptionPane.ERROR_MESSAGE);
+        List<Boleto> boletos = GestorBoletos.getInstance().buscarBoletosPorEquipaje(idEquipaje);
+        if (boletos.isEmpty()) {
+            txtResultado.setText("No se encontró equipaje con ID: " + idEquipaje);
             return;
         }
 
-        // Validar boleto
-        Boleto boleto = GestorBoletos.getInstance().buscarBoleto(idBoleto);
-        if (boleto == null) {
-            JOptionPane.showMessageDialog(frame, "Boleto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+        StringBuilder resultado = new StringBuilder("Equipaje encontrado:\n");
+        for (Boleto boleto : boletos) {
+            for (Equipaje equipaje : boleto.getEquipajes()) {
+                if (equipaje.getIdEquipaje().equals(idEquipaje)) {
+                    resultado.append("ID Equipaje: ").append(equipaje.getIdEquipaje()).append("\n");
+                    resultado.append("Peso: ").append(equipaje.getPeso()).append(" kg\n");
+                    resultado.append("Vagón de Carga: ").append(equipaje.getIdVagonCarga()).append("\n");
+                    resultado.append("Pasajero: ").append(boleto.getNombre()).append(" ").append(boleto.getApellido()).append("\n");
+                    resultado.append("Boleto ID: ").append(boleto.getIdBoleto()).append("\n");
+                    resultado.append("Estado: ").append(equipaje.getPeso() <= 80 ? "Válido" : "Excede límite de 80 kg").append("\n\n");
+                }
+            }
+            // Validar número de maletas
+            if (boleto.getEquipajes().size() > 2) {
+                resultado.append("Advertencia: El pasajero tiene más de 2 maletas\n");
+            }
         }
-
-        // Validar vagón
-        Vagon vagon = GestorVagones.getInstance().getVagones().stream()
-                .filter(v -> v.getIdVagon().equals(idVagonCarga))
-                .findFirst()
-                .orElse(null);
-        if (vagon == null) {
-            JOptionPane.showMessageDialog(frame, "Vagón de carga inválido", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Crear equipaje
-        Equipaje equipaje = new Equipaje(idEquipaje, peso, idVagonCarga);
-        boleto.setEquipaje(equipaje);
-
-        // Persistir cambios en GestorBoletos
-        boolean exito = GestorBoletos.getInstance().actualizarBoleto(boleto);
-        if (exito) {
-            JOptionPane.showMessageDialog(frame, "Equipaje registrado exitosamente - ID: " + idEquipaje);
-            frame.setContentPane(new MenuPasajerosPanel(frame));
-            frame.revalidate();
-        } else {
-            JOptionPane.showMessageDialog(frame, "Error al registrar equipaje", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        txtResultado.setText(resultado.toString());
     }
 }
