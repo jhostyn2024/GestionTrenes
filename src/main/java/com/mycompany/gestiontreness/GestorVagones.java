@@ -11,10 +11,11 @@ import java.util.stream.Collectors;
 public class GestorVagones {
     private static GestorVagones instance;
     private List<Vagon> vagones;
+    private static final String FILE_PATH = "data/vagones.json";
 
     private GestorVagones() {
-        vagones = new ArrayList<>();
-        inicializarVagones();
+        vagones = JsonUtil.readJson(FILE_PATH, Vagon.class);
+        System.out.println("GestorVagones inicializado con " + vagones.size() + " vagones cargados");
     }
 
     public static synchronized GestorVagones getInstance() {
@@ -24,14 +25,12 @@ public class GestorVagones {
         return instance;
     }
 
-    private void inicializarVagones() {
-        // Ejemplo: Vagones para TREN-1 y TREN-2
-        vagones.add(new Vagon("VAGON-1", "Carga", "TREN-1"));
-        vagones.add(new Vagon("VAGON-2", "Pasajeros", "TREN-1"));
-        vagones.add(new Vagon("VAGON-3", "Pasajeros", "TREN-1"));
-        vagones.add(new Vagon("VAGON-4", "Carga", "TREN-2"));
-        vagones.add(new Vagon("VAGON-5", "Pasajeros", "TREN-2"));
-        vagones.add(new Vagon("VAGON-6", "Pasajeros", "TREN-2"));
+    public void agregarVagon(Vagon vagon) {
+        System.out.println("Agregando vagón con ID: " + vagon.getIdVagon());
+        vagones.add(vagon);
+        JsonUtil.writeJson(FILE_PATH, vagones);
+        System.out.println("Vagones almacenados: " + vagones.size() + " [" + 
+            vagones.stream().map(Vagon::getIdVagon).collect(Collectors.joining(", ")) + "]");
     }
 
     public List<Vagon> getVagones() {
@@ -46,13 +45,9 @@ public class GestorVagones {
 
     public boolean validarProporcionVagones(String idTren) {
         List<Vagon> vagonesTren = getVagonesPorTren(idTren);
-        long vagonesCarga = vagonesTren.stream().filter(v -> v.getTipo().equals("Carga")).count();
-        long vagonesPasajeros = vagonesTren.stream().filter(v -> v.getTipo().equals("Pasajeros")).count();
-        return vagonesCarga * 2 >= vagonesPasajeros;
-    }
-
-    public void agregarVagon(Vagon vagon) {
-        vagones.add(vagon);
+        long pasajeros = vagonesTren.stream().filter(v -> v.getTipo().equals("Pasajeros")).count();
+        long carga = vagonesTren.stream().filter(v -> v.getTipo().equals("Carga")).count();
+        return pasajeros >= 2 * carga; // Proporción 1:2
     }
 
     void printVagones() {

@@ -4,44 +4,69 @@
  */
 package com.mycompany.gestiontreness;
 
-public class Vagon {
-    private String idVagon;
-    private String tipo; // "Carga" o "Pasajeros"
-    private String idTren; // Tren al que pertenece
-    private int capacidadPasajeros; // 40 para vagones de pasajeros
-    private int lugaresPremium; // 4
-    private int lugaresEjecutiva; // 8
-    private int lugaresEstandar; // 22
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public Vagon(String idVagon, String tipo, String idTren) {
+public class Vagon {
+    @JsonProperty("idVagon")
+    private String idVagon;
+
+    @JsonProperty("idTren")
+    private String idTren;
+
+    @JsonProperty("tipo")
+    private String tipo; // "Pasajeros" o "Carga"
+
+    @JsonProperty("capacidadPasajeros")
+    private int capacidadPasajeros;
+
+    @JsonProperty("lugaresPremium")
+    private int lugaresPremium;
+
+    @JsonProperty("lugaresEjecutiva")
+    private int lugaresEjecutiva;
+
+    @JsonProperty("lugaresEstandar")
+    private int lugaresEstandar;
+
+    @JsonProperty("capacidadCarga")
+    private double capacidadCarga; // En kg, para vagones de carga
+
+    public Vagon() {
+    }
+
+    public Vagon(String idVagon, String idTren, String tipo, int capacidadPasajeros, 
+                 int lugaresPremium, int lugaresEjecutiva, int lugaresEstandar, double capacidadCarga) {
         this.idVagon = idVagon;
-        this.tipo = tipo;
         this.idTren = idTren;
-        if (tipo.equals("Pasajeros")) {
-            this.capacidadPasajeros = 40;
-            this.lugaresPremium = 4;
-            this.lugaresEjecutiva = 8;
-            this.lugaresEstandar = 22;
-        } else {
-            this.capacidadPasajeros = 0;
-            this.lugaresPremium = 0;
-            this.lugaresEjecutiva = 0;
-            this.lugaresEstandar = 0;
-        }
+        this.tipo = tipo;
+        this.capacidadPasajeros = capacidadPasajeros;
+        this.lugaresPremium = lugaresPremium;
+        this.lugaresEjecutiva = lugaresEjecutiva;
+        this.lugaresEstandar = lugaresEstandar;
+        this.capacidadCarga = capacidadCarga;
     }
 
     Vagon(int parseInt, int parseInt0, int parseInt1, int parseInt2, int parseInt3, int parseInt4) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    // Getters
     public String getIdVagon() { return idVagon; }
-    public String getTipo() { return tipo; }
     public String getIdTren() { return idTren; }
+    public String getTipo() { return tipo; }
     public int getCapacidadPasajeros() { return capacidadPasajeros; }
     public int getLugaresPremium() { return lugaresPremium; }
     public int getLugaresEjecutiva() { return lugaresEjecutiva; }
     public int getLugaresEstandar() { return lugaresEstandar; }
+    public double getCapacidadCarga() { return capacidadCarga; }
+
+    public void setIdVagon(String idVagon) { this.idVagon = idVagon; }
+    public void setIdTren(String idTren) { this.idTren = idTren; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public void setCapacidadPasajeros(int capacidadPasajeros) { this.capacidadPasajeros = capacidadPasajeros; }
+    public void setLugaresPremium(int lugaresPremium) { this.lugaresPremium = lugaresPremium; }
+    public void setLugaresEjecutiva(int lugaresEjecutiva) { this.lugaresEjecutiva = lugaresEjecutiva; }
+    public void setLugaresEstandar(int lugaresEstandar) { this.lugaresEstandar = lugaresEstandar; }
+    public void setCapacidadCarga(double capacidadCarga) { this.capacidadCarga = capacidadCarga; }
 
     Object getTotalVagones() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

@@ -60,7 +60,7 @@ public class EditarRutaPanel extends JPanel {
         txtEstacionOrigen = createFormField(formPanel, "Estación Origen:", rutaOriginal.getEstacionOrigen());
         txtEstacionDestino = createFormField(formPanel, "Estación Destino:", rutaOriginal.getEstacionDestino());
         txtDistancia = createFormField(formPanel, "Distancia (km):", String.valueOf(rutaOriginal.getDistancia()));
-        comboEstado = createComboBox(formPanel, "Estado:", new String[]{"Activa", "Inactiva"}, rutaOriginal.getEstado());
+        comboEstado = createComboBox(formPanel, "Estado:", new String[]{"Activa", "Inactiva"}, (String) rutaOriginal.getEstado());
 
         JButton btnGuardar = new JButton("GUARDAR CAMBIOS");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);

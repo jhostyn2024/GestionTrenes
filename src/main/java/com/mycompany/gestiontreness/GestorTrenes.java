@@ -6,14 +6,16 @@ package com.mycompany.gestiontreness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GestorTrenes {
     private static GestorTrenes instance;
     private List<Tren> trenes;
+    private static final String FILE_PATH = "data/trenes.json";
 
     private GestorTrenes() {
-        trenes = new ArrayList<>();
-        inicializarTrenes();
+        trenes = JsonUtil.readJson(FILE_PATH, Tren.class);
+        System.out.println("GestorTrenes inicializado con " + trenes.size() + " trenes cargados");
     }
 
     public static synchronized GestorTrenes getInstance() {
@@ -23,31 +25,23 @@ public class GestorTrenes {
         return instance;
     }
 
-    private void inicializarTrenes() {
-        trenes.add(new Tren("TREN-1", "Expreso Llano", "Mercedes-Benz", 0.0));
-        trenes.add(new Tren("TREN-2", "Rápido Universidad", "Arnold", 0.0));
-    }
-
     public void agregarTren(Tren tren) {
+        System.out.println("Agregando tren con ID: " + tren.getIdTren());
         trenes.add(tren);
-    }
-
-    public boolean eliminarTren(String idTren) {
-        return trenes.removeIf(t -> t.getIdTren().equals(idTren));
-    }
-
-    public boolean modificarTren(String idTren, String nombre, double kilometraje) {
-        for (Tren tren : trenes) {
-            if (tren.getIdTren().equals(idTren)) {
-                tren.setNombre(nombre);
-                tren.setKilometraje(kilometraje);
-                return true;
-            }
-        }
-        return false;
+        JsonUtil.writeJson(FILE_PATH, trenes);
+        System.out.println("Trenes almacenados: " + trenes.size() + " [" + 
+            trenes.stream().map(Tren::getIdTren).collect(Collectors.joining(", ")) + "]");
     }
 
     public List<Tren> getTrenes() {
         return new ArrayList<>(trenes);
+    }
+
+    boolean modificarTren(String idTren, String nombre, double kilometraje) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    boolean eliminarTren(String idTren) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

@@ -42,7 +42,7 @@ public class GestionRutasPanel extends JPanel {
             datos[i][1] = ruta.getEstacionOrigen();
             datos[i][2] = ruta.getEstacionDestino();
             datos[i][3] = String.valueOf(ruta.getDistancia());
-            datos[i][4] = ruta.getEstado();
+            datos[i][4] = (String) ruta.getEstado();
         }
         tablaRutas = new JTable(datos, columnas);
         tablaRutas.setFont(new Font("Arial", Font.PLAIN, 14));

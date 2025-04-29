@@ -12,10 +12,11 @@ import java.util.stream.Collectors;
 public class GestorBoletos {
     private static GestorBoletos instance;
     private List<Boleto> boletos;
+    private static final String FILE_PATH = "data/boletos.json";
 
     private GestorBoletos() {
-        boletos = new ArrayList<>();
-        System.out.println("GestorBoletos inicializado");
+        boletos = JsonUtil.readJson(FILE_PATH, Boleto.class);
+        System.out.println("GestorBoletos inicializado con " + boletos.size() + " boletos cargados");
     }
 
     public static synchronized GestorBoletos getInstance() {
@@ -28,6 +29,7 @@ public class GestorBoletos {
     public void agregarBoleto(Boleto boleto) {
         System.out.println("Agregando boleto con ID: " + boleto.getIdBoleto());
         boletos.add(boleto);
+        JsonUtil.writeJson(FILE_PATH, boletos);
         System.out.println("Boletos almacenados: " + boletos.size() + " [" + 
             boletos.stream().map(Boleto::getIdBoleto).collect(Collectors.joining(", ")) + "]");
     }
@@ -83,6 +85,7 @@ public class GestorBoletos {
             return false;
         }
         boleto.marcarBoletoUsado();
+        JsonUtil.writeJson(FILE_PATH, boletos);
         System.out.println("Boleto marcado como usado: " + idBoleto);
         return true;
     }

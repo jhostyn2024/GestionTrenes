@@ -4,29 +4,48 @@
  */
 package com.mycompany.gestiontreness;
 
-public class Tren {
-    private String idTren;
-    private String nombre;
-    private String tipoTren; // "Mercedes-Benz" o "Arnold"
-    private int capacidadCarga; // Máximo 28 o 32 vagones
-    private double kilometraje;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public Tren(String idTren, String nombre, String tipoTren, double kilometraje) {
-        this.idTren = idTren;
-        this.nombre = nombre;
-        this.tipoTren = tipoTren;
-        this.capacidadCarga = tipoTren.equals("Mercedes-Benz") ? 28 : 32;
-        this.kilometraje = kilometraje;
+public class Tren {
+    @JsonProperty("idTren")
+    private String idTren;
+
+    @JsonProperty("nombre")
+    private String nombre;
+
+    @JsonProperty("capacidadTotal")
+    private int capacidadTotal;
+
+    public Tren() {
     }
 
-    // Getters
+    public Tren(String idTren, String nombre, int capacidadTotal) {
+        this.idTren = idTren;
+        this.nombre = nombre;
+        this.capacidadTotal = capacidadTotal;
+    }
+
+    Tren(String idTren, String nombre, String tipoTren, double kilometraje) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public String getIdTren() { return idTren; }
     public String getNombre() { return nombre; }
-    public String getTipoTren() { return tipoTren; }
-    public int getCapacidadCarga() { return capacidadCarga; }
-    public double getKilometraje() { return kilometraje; }
+    public int getCapacidadTotal() { return capacidadTotal; }
 
-    // Setters
+    public void setIdTren(String idTren) { this.idTren = idTren; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setKilometraje(double kilometraje) { this.kilometraje = kilometraje; }
+    public void setCapacidadTotal(int capacidadTotal) { this.capacidadTotal = capacidadTotal; }
+
+    Object getKilometraje() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    String getTipoTren() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getCapacidadCarga() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
