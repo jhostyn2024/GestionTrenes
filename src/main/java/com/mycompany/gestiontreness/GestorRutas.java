@@ -6,6 +6,7 @@ package com.mycompany.gestiontreness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GestorRutas {
     private static GestorRutas instance;
@@ -67,15 +68,6 @@ public class GestorRutas {
     public List<Ruta> getRutasOptimas() {
         return rutas.stream()
                 .filter(ruta -> "Activa".equals(ruta.getEstado()))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-    }
-
-    public Ruta encontrarRutaMasCorta(String origen, String destino) {
-        return rutas.stream()
-                .filter(r -> r.getEstacionOrigen().equalsIgnoreCase(origen) && 
-                             r.getEstacionDestino().equalsIgnoreCase(destino) && 
-                             "Activa".equals(r.getEstado()))
-                .findFirst()
-                .orElse(null);
+                .collect(Collectors.toList());
     }
 }

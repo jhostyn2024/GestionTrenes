@@ -43,7 +43,7 @@ public class GestionRutasPanel extends JPanel {
         txtDestino = new JTextField();
         txtDistancia = new JTextField();
         cbEstado = new JComboBox<>(new String[]{"Activa", "Inactiva"});
-        txtResultado = new JTextArea();
+        txtResultado = new JTextArea(5, 20);
         txtResultado.setEditable(false);
         txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -59,12 +59,6 @@ public class GestionRutasPanel extends JPanel {
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 16));
         btnAgregar.addActionListener(e -> agregarRuta());
 
-        JButton btnModificar = new JButton("MODIFICAR");
-        btnModificar.setBackground(GOLD_COLOR);
-        btnModificar.setForeground(Color.WHITE);
-        btnModificar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnModificar.addActionListener(e -> modificarRuta());
-
         JButton btnVolver = new JButton("VOLVER");
         btnVolver.setBackground(new Color(100, 100, 100));
         btnVolver.setForeground(Color.WHITE);
@@ -76,7 +70,6 @@ public class GestionRutasPanel extends JPanel {
         });
 
         formPanel.add(btnAgregar);
-        formPanel.add(btnModificar);
         formPanel.add(btnVolver);
 
         add(new JScrollPane(formPanel), BorderLayout.CENTER);
@@ -93,77 +86,53 @@ public class GestionRutasPanel extends JPanel {
     }
 
     private void agregarRuta() {
-        String idRuta = txtIdRuta.getText().trim();
-        String origen = txtOrigen.getText().trim();
-        String destino = txtDestino.getText().trim();
-        String distanciaStr = txtDistancia.getText().trim();
-        String estado = (String) cbEstado.getSelectedItem();
-
-        if (origen.isEmpty() || destino.isEmpty() || distanciaStr.isEmpty()) {
-            txtResultado.setText("Complete todos los campos");
-            System.out.println("Campos incompletos en agregarRuta");
-            return;
-        }
-
-        double distancia;
         try {
-            distancia = Double.parseDouble(distanciaStr);
-            if (distancia <= 0) {
-                txtResultado.setText("La distancia debe ser mayor que 0");
-                System.out.println("Distancia inválida: " + distanciaStr);
+            String idRuta = txtIdRuta.getText().trim();
+            String origen = txtOrigen.getText().trim();
+            String destino = txtDestino.getText().trim();
+            String distanciaStr = txtDistancia.getText().trim();
+            String estado = (String) cbEstado.getSelectedItem();
+
+            if (origen.isEmpty() || destino.isEmpty() || distanciaStr.isEmpty()) {
+                txtResultado.setText("Error: Complete los campos obligatorios (Origen, Destino, Distancia).");
+                System.out.println("Campos incompletos en agregarRuta");
                 return;
             }
-        } catch (NumberFormatException e) {
-            txtResultado.setText("Distancia inválida");
-            System.out.println("Error en formato de distancia: " + e.getMessage());
-            return;
-        }
 
-        Ruta ruta = new Ruta(idRuta, origen, destino, distancia, estado);
-        GestorRutas.getInstance().agregarRuta(ruta);
-        txtResultado.setText("Ruta agregada exitosamente\nID: " + idRuta + "\nOrigen: " + origen + 
-                             "\nDestino: " + destino + "\nDistancia: " + distancia + " km\nEstado: " + estado);
-        System.out.println("Ruta agregada: " + idRuta);
-        txtResultado.repaint();
-        txtIdRuta.setText("RUTA-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-    }
-
-    private void modificarRuta() {
-        String idRuta = txtIdRuta.getText().trim();
-        String origen = txtOrigen.getText().trim();
-        String destino = txtDestino.getText().trim();
-        String distanciaStr = txtDistancia.getText().trim();
-        String estado = (String) cbEstado.getSelectedItem();
-
-        if (idRuta.isEmpty() || origen.isEmpty() || destino.isEmpty() || distanciaStr.isEmpty()) {
-            txtResultado.setText("Complete todos los campos");
-            System.out.println("Campos incompletos en modificarRuta");
-            return;
-        }
-
-        double distancia;
-        try {
-            distancia = Double.parseDouble(distanciaStr);
-            if (distancia <= 0) {
-                txtResultado.setText("La distancia debe ser mayor que 0");
-                System.out.println("Distancia inválida: " + distanciaStr);
+            if (!origen.matches("[a-zA-Z ]+") || !destino.matches("[a-zA-Z ]+")) {
+                txtResultado.setText("Error: Origen y Destino solo deben contener letras y espacios.");
+                System.out.println("Origen o Destino inválido en agregarRuta");
                 return;
             }
-        } catch (NumberFormatException e) {
-            txtResultado.setText("Distancia inválida");
-            System.out.println("Error en formato de distancia: " + e.getMessage());
-            return;
-        }
 
-        boolean exito = GestorRutas.getInstance().modificarRuta(idRuta, origen, destino, distancia, estado);
-        if (exito) {
-            txtResultado.setText("Ruta modificada exitosamente\nID: " + idRuta + "\nOrigen: " + origen + 
-                                 "\nDestino: " + destino + "\nDistancia: " + distancia + " km\nEstado: " + estado);
-            System.out.println("Ruta modificada: " + idRuta);
-        } else {
-            txtResultado.setText("No se encontró la ruta con ID: " + idRuta);
-            System.out.println("No se pudo modificar ruta: " + idRuta);
+            double distancia;
+            try {
+                distancia = Double.parseDouble(distanciaStr);
+                if (distancia <= 0) {
+                    txtResultado.setText("Error: La distancia debe ser mayor a 0.");
+                    System.out.println("Distancia inválida en agregarRuta");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                txtResultado.setText("Error: La distancia debe ser un número válido.");
+                System.out.println("Formato de distancia inválido en agregarRuta");
+                return;
+            }
+
+            Ruta ruta = new Ruta(idRuta, origen, destino, distancia, estado);
+            GestorRutas.getInstance().agregarRuta(ruta);
+            txtResultado.setText("Ruta agregada exitosamente:\nID: " + idRuta + "\nOrigen: " + origen + "\nDestino: " + destino + "\nDistancia: " + distancia + " km\nEstado: " + estado);
+            System.out.println("Ruta agregada: " + idRuta);
+
+            txtIdRuta.setText("RUTA-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+            txtOrigen.setText("");
+            txtDestino.setText("");
+            txtDistancia.setText("");
+            cbEstado.setSelectedIndex(0);
+        } catch (Exception e) {
+            txtResultado.setText("Error al agregar ruta: " + e.getMessage());
+            System.err.println("Excepción en agregarRuta: " + e.getMessage());
+            e.printStackTrace();
         }
-        txtResultado.repaint();
     }
 }

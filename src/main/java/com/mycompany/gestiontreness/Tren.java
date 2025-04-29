@@ -13,39 +13,28 @@ public class Tren {
     @JsonProperty("nombre")
     private String nombre;
 
-    @JsonProperty("capacidadTotal")
-    private int capacidadTotal;
+    @JsonProperty("capacidad")
+    private int capacidad;
 
-    public Tren() {
-    }
+    @JsonProperty("estado")
+    private String estado;
 
-    public Tren(String idTren, String nombre, int capacidadTotal) {
+    public Tren() {}
+
+    public Tren(String idTren, String nombre, int capacidad, String estado) {
         this.idTren = idTren;
         this.nombre = nombre;
-        this.capacidadTotal = capacidadTotal;
-    }
-
-    Tren(String idTren, String nombre, String tipoTren, double kilometraje) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.capacidad = capacidad;
+        this.estado = estado;
     }
 
     public String getIdTren() { return idTren; }
     public String getNombre() { return nombre; }
-    public int getCapacidadTotal() { return capacidadTotal; }
+    public int getCapacidad() { return capacidad; }
+    public String getEstado() { return estado; }
 
     public void setIdTren(String idTren) { this.idTren = idTren; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setCapacidadTotal(int capacidadTotal) { this.capacidadTotal = capacidadTotal; }
-
-    Object getKilometraje() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    String getTipoTren() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    Object getCapacidadCarga() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
+    public void setEstado(String estado) { this.estado = estado; }
 }
