@@ -31,27 +31,51 @@ public class GestorRutas {
         System.out.println("Rutas almacenadas: " + rutas.size());
     }
 
+    public boolean modificarRuta(String idRuta, String origen, String destino, double distancia, String estado) {
+        System.out.println("Modificando ruta con ID: " + idRuta);
+        for (Ruta ruta : rutas) {
+            if (ruta.getIdRuta().equals(idRuta)) {
+                ruta.setEstacionOrigen(origen);
+                ruta.setEstacionDestino(destino);
+                ruta.setDistancia(distancia);
+                ruta.setEstado(estado);
+                JsonUtil.writeJson(FILE_PATH, rutas);
+                System.out.println("Ruta modificada y almacenada: " + idRuta);
+                return true;
+            }
+        }
+        System.out.println("Ruta no encontrada para modificar: " + idRuta);
+        return false;
+    }
+
+    public boolean eliminarRuta(String idRuta) {
+        System.out.println("Eliminando ruta con ID: " + idRuta);
+        boolean removed = rutas.removeIf(ruta -> ruta.getIdRuta().equals(idRuta));
+        if (removed) {
+            JsonUtil.writeJson(FILE_PATH, rutas);
+            System.out.println("Ruta eliminada y almacenada: " + idRuta);
+        } else {
+            System.out.println("Ruta no encontrada para eliminar: " + idRuta);
+        }
+        return removed;
+    }
+
     public List<Ruta> getRutas() {
         return new ArrayList<>(rutas);
     }
 
     public List<Ruta> getRutasOptimas() {
-        return new ArrayList<>(rutas);
+        return rutas.stream()
+                .filter(ruta -> "Activa".equals(ruta.getEstado()))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public Ruta encontrarRutaMasCorta(String origen, String destino) {
         return rutas.stream()
                 .filter(r -> r.getEstacionOrigen().equalsIgnoreCase(origen) && 
-                             r.getEstacionDestino().equalsIgnoreCase(destino))
+                             r.getEstacionDestino().equalsIgnoreCase(destino) && 
+                             "Activa".equals(r.getEstado()))
                 .findFirst()
                 .orElse(null);
-    }
-
-    void modificarRuta(String idRuta, String estacionOrigen, String estacionDestino, double distancia, String estado) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    boolean eliminarRuta(String idRuta) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

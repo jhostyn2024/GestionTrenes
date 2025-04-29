@@ -19,33 +19,29 @@ public class Ruta {
     @JsonProperty("distancia")
     private double distancia;
 
+    @JsonProperty("estado")
+    private String estado; // "Activa" o "Inactiva"
+
     public Ruta() {
     }
 
-    public Ruta(String idRuta, String estacionOrigen, String estacionDestino, double distancia) {
+    public Ruta(String idRuta, String estacionOrigen, String estacionDestino, double distancia, String estado) {
         this.idRuta = idRuta;
         this.estacionOrigen = estacionOrigen;
         this.estacionDestino = estacionDestino;
         this.distancia = distancia;
+        this.estado = estado;
     }
 
-    Ruta(String idRuta, String origen, String destino, double distancia, String estado) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    // Getters
     public String getIdRuta() { return idRuta; }
     public String getEstacionOrigen() { return estacionOrigen; }
     public String getEstacionDestino() { return estacionDestino; }
     public double getDistancia() { return distancia; }
+    public String getEstado() { return estado; }
 
-    // Setters
     public void setIdRuta(String idRuta) { this.idRuta = idRuta; }
     public void setEstacionOrigen(String estacionOrigen) { this.estacionOrigen = estacionOrigen; }
     public void setEstacionDestino(String estacionDestino) { this.estacionDestino = estacionDestino; }
     public void setDistancia(double distancia) { this.distancia = distancia; }
-
-    Object getEstado() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public void setEstado(String estado) { this.estado = estado; }
 }

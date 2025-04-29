@@ -6,11 +6,13 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import java.util.UUID;
 
 public class GestionRutasPanel extends JPanel {
     private JFrame frame;
-    private JTable tablaRutas;
+    private JTextField txtIdRuta, txtOrigen, txtDestino, txtDistancia;
+    private JComboBox<String> cbEstado;
+    private JTextArea txtResultado;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
     private final Color GOLD_COLOR = new Color(198, 168, 77);
 
@@ -22,7 +24,6 @@ public class GestionRutasPanel extends JPanel {
     }
 
     private void createUI() {
-        // Header
         JPanel header = new JPanel();
         header.setBackground(BLUE_COLOR);
         header.setPreferredSize(new Dimension(800, 100));
@@ -32,142 +33,137 @@ public class GestionRutasPanel extends JPanel {
         header.add(title);
         add(header, BorderLayout.NORTH);
 
-        // Tabla de rutas
-        String[] columnas = {"ID Ruta", "Origen", "Destino", "Distancia (km)", "Estado"};
-        List<Ruta> rutas = GestorRutas.getInstance().getRutas();
-        String[][] datos = new String[rutas.size()][5];
-        for (int i = 0; i < rutas.size(); i++) {
-            Ruta ruta = rutas.get(i);
-            datos[i][0] = ruta.getIdRuta();
-            datos[i][1] = ruta.getEstacionOrigen();
-            datos[i][2] = ruta.getEstacionDestino();
-            datos[i][3] = String.valueOf(ruta.getDistancia());
-            datos[i][4] = (String) ruta.getEstado();
-        }
-        tablaRutas = new JTable(datos, columnas);
-        tablaRutas.setFont(new Font("Arial", Font.PLAIN, 14));
-        tablaRutas.setRowHeight(25);
-        JScrollPane scrollPane = new JScrollPane(tablaRutas);
-        add(scrollPane, BorderLayout.CENTER);
+        JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
+        formPanel.setBackground(Color.WHITE);
 
-        // Botones
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
-        buttonsPanel.setBackground(new Color(240, 240, 240));
+        txtIdRuta = new JTextField("RUTA-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        txtIdRuta.setEditable(false);
+        txtOrigen = new JTextField();
+        txtDestino = new JTextField();
+        txtDistancia = new JTextField();
+        cbEstado = new JComboBox<>(new String[]{"Activa", "Inactiva"});
+        txtResultado = new JTextArea();
+        txtResultado.setEditable(false);
+        txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        JButton btnAgregar = new JButton("AGREGAR RUTA");
+        addFormField(formPanel, "ID Ruta:", txtIdRuta);
+        addFormField(formPanel, "Origen:", txtOrigen);
+        addFormField(formPanel, "Destino:", txtDestino);
+        addFormField(formPanel, "Distancia (km):", txtDistancia);
+        addFormField(formPanel, "Estado:", cbEstado);
+
+        JButton btnAgregar = new JButton("AGREGAR");
         btnAgregar.setBackground(GOLD_COLOR);
         btnAgregar.setForeground(Color.WHITE);
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 16));
         btnAgregar.addActionListener(e -> agregarRuta());
 
-        JButton btnModificar = new JButton("MODIFICAR RUTA");
+        JButton btnModificar = new JButton("MODIFICAR");
         btnModificar.setBackground(GOLD_COLOR);
         btnModificar.setForeground(Color.WHITE);
         btnModificar.setFont(new Font("Arial", Font.BOLD, 16));
         btnModificar.addActionListener(e -> modificarRuta());
 
-        JButton btnEliminar = new JButton("ELIMINAR RUTA");
-        btnEliminar.setBackground(GOLD_COLOR);
-        btnEliminar.setForeground(Color.WHITE);
-        btnEliminar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnEliminar.addActionListener(e -> eliminarRuta());
-
         JButton btnVolver = new JButton("VOLVER");
-        btnVolver.setBackground(new Color(150, 40, 40));
+        btnVolver.setBackground(new Color(100, 100, 100));
         btnVolver.setForeground(Color.WHITE);
         btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
         btnVolver.addActionListener(e -> {
+            System.out.println("Navegando a MainMenuPanel desde GestionRutasPanel");
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         });
 
-        buttonsPanel.add(btnAgregar);
-        buttonsPanel.add(btnModificar);
-        buttonsPanel.add(btnEliminar);
-        buttonsPanel.add(btnVolver);
-        add(buttonsPanel, BorderLayout.SOUTH);
+        formPanel.add(btnAgregar);
+        formPanel.add(btnModificar);
+        formPanel.add(btnVolver);
+
+        add(new JScrollPane(formPanel), BorderLayout.CENTER);
+        add(new JScrollPane(txtResultado), BorderLayout.SOUTH);
+    }
+
+    private void addFormField(JPanel panel, String label, JComponent field) {
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("Arial", Font.BOLD, 14));
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(200, 30));
+        panel.add(lbl);
+        panel.add(field);
     }
 
     private void agregarRuta() {
-        JTextField txtOrigen = new JTextField();
-        JTextField txtDestino = new JTextField();
-        JTextField txtDistancia = new JTextField();
-        JComboBox<String> cbEstado = new JComboBox<>(new String[]{"Activa", "Inactiva"});
-        Object[] message = {
-                "Origen:", txtOrigen,
-                "Destino:", txtDestino,
-                "Distancia (km):", txtDistancia,
-                "Estado:", cbEstado
-        };
-        int option = JOptionPane.showConfirmDialog(frame, message, "Agregar Ruta", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            try {
-                double distancia = Double.parseDouble(txtDistancia.getText());
-                String idRuta = "RUTA-" + (GestorRutas.getInstance().getRutas().size() + 1);
-                Ruta ruta = new Ruta(idRuta, txtOrigen.getText(), txtDestino.getText(), distancia, (String) cbEstado.getSelectedItem());
-                GestorRutas.getInstance().agregarRuta(ruta);
-                JOptionPane.showMessageDialog(frame, "Ruta agregada exitosamente");
-                frame.setContentPane(new GestionRutasPanel(frame));
-                frame.revalidate();
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(frame, "Distancia inválida", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        String idRuta = txtIdRuta.getText().trim();
+        String origen = txtOrigen.getText().trim();
+        String destino = txtDestino.getText().trim();
+        String distanciaStr = txtDistancia.getText().trim();
+        String estado = (String) cbEstado.getSelectedItem();
+
+        if (origen.isEmpty() || destino.isEmpty() || distanciaStr.isEmpty()) {
+            txtResultado.setText("Complete todos los campos");
+            System.out.println("Campos incompletos en agregarRuta");
+            return;
         }
+
+        double distancia;
+        try {
+            distancia = Double.parseDouble(distanciaStr);
+            if (distancia <= 0) {
+                txtResultado.setText("La distancia debe ser mayor que 0");
+                System.out.println("Distancia inválida: " + distanciaStr);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            txtResultado.setText("Distancia inválida");
+            System.out.println("Error en formato de distancia: " + e.getMessage());
+            return;
+        }
+
+        Ruta ruta = new Ruta(idRuta, origen, destino, distancia, estado);
+        GestorRutas.getInstance().agregarRuta(ruta);
+        txtResultado.setText("Ruta agregada exitosamente\nID: " + idRuta + "\nOrigen: " + origen + 
+                             "\nDestino: " + destino + "\nDistancia: " + distancia + " km\nEstado: " + estado);
+        System.out.println("Ruta agregada: " + idRuta);
+        txtResultado.repaint();
+        txtIdRuta.setText("RUTA-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
     }
 
     private void modificarRuta() {
-        int selectedRow = tablaRutas.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(frame, "Seleccione una ruta", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String idRuta = (String) tablaRutas.getValueAt(selectedRow, 0);
-        JTextField txtOrigen = new JTextField((String) tablaRutas.getValueAt(selectedRow, 1));
-        JTextField txtDestino = new JTextField((String) tablaRutas.getValueAt(selectedRow, 2));
-        JTextField txtDistancia = new JTextField((String) tablaRutas.getValueAt(selectedRow, 3));
-        JComboBox<String> cbEstado = new JComboBox<>(new String[]{"Activa", "Inactiva"});
-        cbEstado.setSelectedItem(tablaRutas.getValueAt(selectedRow, 4));
-        Object[] message = {
-                "Origen:", txtOrigen,
-                "Destino:", txtDestino,
-                "Distancia (km):", txtDistancia,
-                "Estado:", cbEstado
-        };
-        int option = JOptionPane.showConfirmDialog(frame, message, "Modificar Ruta", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            try {
-                double distancia = Double.parseDouble(txtDistancia.getText());
-                boolean exito = GestorRutas.getInstance().modificarRuta(idRuta, txtOrigen.getText(), txtDestino.getText(), distancia, (String) cbEstado.getSelectedItem());
-                if (exito) {
-                    JOptionPane.showMessageDialog(frame, "Ruta modificada exitosamente");
-                    frame.setContentPane(new GestionRutasPanel(frame));
-                    frame.revalidate();
-                } else {
-                    JOptionPane.showMessageDialog(frame, "No se encontró la ruta", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(frame, "Distancia inválida", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
+        String idRuta = txtIdRuta.getText().trim();
+        String origen = txtOrigen.getText().trim();
+        String destino = txtDestino.getText().trim();
+        String distanciaStr = txtDistancia.getText().trim();
+        String estado = (String) cbEstado.getSelectedItem();
 
-    private void eliminarRuta() {
-        int selectedRow = tablaRutas.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(frame, "Seleccione una ruta", "Error", JOptionPane.ERROR_MESSAGE);
+        if (idRuta.isEmpty() || origen.isEmpty() || destino.isEmpty() || distanciaStr.isEmpty()) {
+            txtResultado.setText("Complete todos los campos");
+            System.out.println("Campos incompletos en modificarRuta");
             return;
         }
-        String idRuta = (String) tablaRutas.getValueAt(selectedRow, 0);
-        int confirm = JOptionPane.showConfirmDialog(frame, "¿Eliminar ruta " + idRuta + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean exito = GestorRutas.getInstance().eliminarRuta(idRuta);
-            if (exito) {
-                JOptionPane.showMessageDialog(frame, "Ruta eliminada exitosamente");
-                frame.setContentPane(new GestionRutasPanel(frame));
-                frame.revalidate();
-            } else {
-                JOptionPane.showMessageDialog(frame, "No se encontró la ruta", "Error", JOptionPane.ERROR_MESSAGE);
+
+        double distancia;
+        try {
+            distancia = Double.parseDouble(distanciaStr);
+            if (distancia <= 0) {
+                txtResultado.setText("La distancia debe ser mayor que 0");
+                System.out.println("Distancia inválida: " + distanciaStr);
+                return;
             }
+        } catch (NumberFormatException e) {
+            txtResultado.setText("Distancia inválida");
+            System.out.println("Error en formato de distancia: " + e.getMessage());
+            return;
         }
+
+        boolean exito = GestorRutas.getInstance().modificarRuta(idRuta, origen, destino, distancia, estado);
+        if (exito) {
+            txtResultado.setText("Ruta modificada exitosamente\nID: " + idRuta + "\nOrigen: " + origen + 
+                                 "\nDestino: " + destino + "\nDistancia: " + distancia + " km\nEstado: " + estado);
+            System.out.println("Ruta modificada: " + idRuta);
+        } else {
+            txtResultado.setText("No se encontró la ruta con ID: " + idRuta);
+            System.out.println("No se pudo modificar ruta: " + idRuta);
+        }
+        txtResultado.repaint();
     }
 }
