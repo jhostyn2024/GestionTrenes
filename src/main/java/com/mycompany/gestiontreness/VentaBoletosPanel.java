@@ -7,6 +7,8 @@ package com.mycompany.gestiontreness;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,8 @@ public class VentaBoletosPanel extends JPanel {
     private JTextField txtNombre, txtApellido, txtIdentificacion, txtDireccion, txtTelefono, txtLugar;
     private JComboBox<String> cbTipoIdentificacion, cbCategoriaPasajero;
     private JTextField txtContactoNombre, txtContactoApellido, txtContactoTelefono;
-    private JTextField txtEquipajeId, txtEquipajePeso, txtVagonCarga;
+    private JTextField txtEquipajeId, txtEquipajePeso;
+    private JComboBox<String> cbVagonCarga;
     private JButton btnRecomendarRuta;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
     private final Color GOLD_COLOR = new Color(198, 168, 77);
@@ -76,7 +79,10 @@ public class VentaBoletosPanel extends JPanel {
         // Campos de equipaje
         txtEquipajeId = new JTextField("EQ-" + System.currentTimeMillis());
         txtEquipajePeso = new JTextField();
-        txtVagonCarga = new JTextField();
+        cbVagonCarga = new JComboBox<>(GestorVagones.getInstance().getVagones().stream()
+                .filter(v -> v.getTipo().equals("Carga"))
+                .map(Vagon::getIdVagon)
+                .toArray(String[]::new));
 
         // Añadir campos al formulario
         addFormField(formPanel, "Ruta:", cbRutas);
@@ -95,7 +101,7 @@ public class VentaBoletosPanel extends JPanel {
         addFormField(formPanel, "Contacto Teléfono:", txtContactoTelefono);
         addFormField(formPanel, "ID Equipaje:", txtEquipajeId);
         addFormField(formPanel, "Peso Equipaje (kg):", txtEquipajePeso);
-        addFormField(formPanel, "Vagón de Carga:", txtVagonCarga);
+        addFormField(formPanel, "Vagón de Carga:", cbVagonCarga);
 
         // Botón de compra
         JButton btnComprar = new JButton("COMPRAR");
@@ -124,8 +130,7 @@ public class VentaBoletosPanel extends JPanel {
         String selectedRuta = (String) cbRutas.getSelectedItem();
         if (selectedRuta != null) {
             String idRuta = selectedRuta.split(":")[0];
-            GestorHorarios.getInstance().getHorarios().stream()
-                    .filter(h -> h.getIdRuta().equals(idRuta))
+            GestorHorarios.getInstance().getHorariosPorRuta(idRuta).stream()
                     .forEach(h -> cbHorarios.addItem(h.getIdHorario() + ": " + h.getHoraSalida() + " (" + h.getDiasSemana() + ")"));
         }
     }
@@ -161,14 +166,14 @@ public class VentaBoletosPanel extends JPanel {
                 txtTelefono.getText().isEmpty() || txtLugar.getText().isEmpty() ||
                 txtContactoNombre.getText().isEmpty() || txtContactoApellido.getText().isEmpty() ||
                 txtContactoTelefono.getText().isEmpty() || txtEquipajePeso.getText().isEmpty() ||
-                txtVagonCarga.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+                cbVagonCarga.getSelectedItem() == null || cbHorarios.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(frame, "Complete todos los campos, incluyendo ruta y horario", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Obtener datos
         String idRuta = ((String) cbRutas.getSelectedItem()).split(":")[0];
-        String idHorario = cbHorarios.getSelectedItem() != null ? ((String) cbHorarios.getSelectedItem()).split(":")[0] : "";
+        String idHorario = ((String) cbHorarios.getSelectedItem()).split(":")[0];
         String nombre = txtNombre.getText();
         String apellido = txtApellido.getText();
         String idPasajero = txtIdentificacion.getText();
@@ -188,7 +193,7 @@ public class VentaBoletosPanel extends JPanel {
             JOptionPane.showMessageDialog(frame, "Peso de equipaje inválido", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        String idVagonCarga = txtVagonCarga.getText();
+        String idVagonCarga = (String) cbVagonCarga.getSelectedItem();
 
         // Validar vagón de carga
         Vagon vagon = GestorVagones.getInstance().getVagones().stream()
@@ -200,6 +205,16 @@ public class VentaBoletosPanel extends JPanel {
             return;
         }
 
+        // Obtener horario para calcular fechas
+        Horario horario = GestorHorarios.getInstance().getHorarios().stream()
+                .filter(h -> h.getIdHorario().equals(idHorario))
+                .findFirst()
+                .orElse(null);
+        if (horario == null) {
+            JOptionPane.showMessageDialog(frame, "Horario inválido", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         // Calcular precio (basado en distancia)
         Ruta ruta = GestorRutas.getInstance().getRutas().stream()
                 .filter(r -> r.getIdRuta().equals(idRuta))
@@ -207,12 +222,17 @@ public class VentaBoletosPanel extends JPanel {
                 .orElse(null);
         double precio = ruta != null ? ruta.getDistancia() * 0.1 : 50.0; // $0.1 por km
 
+        // Calcular fechas basadas en el horario
+        LocalDateTime fechaSalida = LocalDateTime.now()
+                .with(LocalTime.parse(horario.getHoraSalida(), DateTimeFormatter.ofPattern("HH:mm")));
+        // Estimar fecha de llegada (1 hora por cada 50 km, aproximado)
+        double distancia = ruta != null ? ruta.getDistancia() : 50.0;
+        long horasViaje = Math.round(distancia / 50.0);
+        LocalDateTime fechaLlegada = fechaSalida.plusHours(horasViaje);
+
         // Crear objetos
         PersonaContacto contacto = new PersonaContacto(contactoNombre, contactoApellido, contactoTelefonos);
         Equipaje equipaje = new Equipaje(idEquipaje, pesoEquipaje, idVagonCarga);
-        // Fechas ficticias (deberían venir del horario o calcularse)
-        LocalDateTime fechaSalida = LocalDateTime.now().plusHours(1);
-        LocalDateTime fechaLlegada = LocalDateTime.now().plusHours(3);
 
         // Crear boleto
         Boleto boleto = new Boleto(

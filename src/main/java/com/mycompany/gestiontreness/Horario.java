@@ -4,22 +4,16 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
 public class Horario {
-    private String idHorario; 
-    private String idRuta; 
-    private String horaSalida; 
-    private String horaLlegada; 
-    private String diasSemana; 
+    private String idHorario;
+    private String idRuta;
+    private String horaSalida; // Formato HH:mm, ej. "08:00"
+    private String diasSemana; // Ej. "Lunes a Viernes"
 
-    public Horario(String idRuta, String horaSalida, String horaLlegada, String diasSemana) {
-        this.idHorario = "HOR-" + System.currentTimeMillis(); // ID único basado en timestamp
+    public Horario(String idHorario, String idRuta, String horaSalida, String diasSemana) {
+        this.idHorario = idHorario;
         this.idRuta = idRuta;
         this.horaSalida = horaSalida;
-        this.horaLlegada = horaLlegada;
         this.diasSemana = diasSemana;
     }
 
@@ -27,25 +21,10 @@ public class Horario {
     public String getIdHorario() { return idHorario; }
     public String getIdRuta() { return idRuta; }
     public String getHoraSalida() { return horaSalida; }
-    public String getHoraLlegada() { return horaLlegada; }
     public String getDiasSemana() { return diasSemana; }
 
-    // Setters (para edición)
+    // Setters
     public void setIdRuta(String idRuta) { this.idRuta = idRuta; }
     public void setHoraSalida(String horaSalida) { this.horaSalida = horaSalida; }
-    public void setHoraLlegada(String horaLlegada) { this.horaLlegada = horaLlegada; }
     public void setDiasSemana(String diasSemana) { this.diasSemana = diasSemana; }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Horario other = (Horario) obj;
-        return idHorario.equals(other.idHorario);
-    }
-
-    @Override
-    public int hashCode() {
-        return idHorario.hashCode();
-    }
 }
