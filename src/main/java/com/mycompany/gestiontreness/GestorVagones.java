@@ -54,4 +54,12 @@ public class GestorVagones {
     public void agregarVagon(Vagon vagon) {
         vagones.add(vagon);
     }
+
+    void printVagones() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    boolean eliminarVagon(String idVagon) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
