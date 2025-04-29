@@ -76,4 +76,5 @@ public class Boleto {
 
     // Setters
     public void setUsado(boolean usado) { this.usado = usado; }
+    public void setEquipaje(Equipaje equipaje) { this.equipaje = equipaje; }
 }

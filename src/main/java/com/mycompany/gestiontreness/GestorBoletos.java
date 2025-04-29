@@ -65,4 +65,16 @@ public class GestorBoletos {
         System.out.println("No se pudo marcar boleto como usado - ID: " + idBoleto);
         return false;
     }
+
+    public boolean actualizarBoleto(Boleto boletoActualizado) {
+        for (int i = 0; i < boletos.size(); i++) {
+            if (boletos.get(i).getIdBoleto().equals(boletoActualizado.getIdBoleto())) {
+                boletos.set(i, boletoActualizado);
+                System.out.println("Boleto actualizado - ID: " + boletoActualizado.getIdBoleto());
+                return true;
+            }
+        }
+        System.out.println("No se encontró boleto para actualizar - ID: " + boletoActualizado.getIdBoleto());
+        return false;
+    }
 }

@@ -103,9 +103,16 @@ public class ControlEquipajePanel extends JPanel {
 
         // Crear equipaje
         Equipaje equipaje = new Equipaje(idEquipaje, peso, idVagonCarga);
-        boleto.setEquipaje(equipaje); // Nota: Esto no persiste en GestorBoletos, solo en el objeto local
-        JOptionPane.showMessageDialog(frame, "Equipaje registrado exitosamente - ID: " + idEquipaje);
-        frame.setContentPane(new MenuPasajerosPanel(frame));
-        frame.revalidate();
+        boleto.setEquipaje(equipaje);
+
+        // Persistir cambios en GestorBoletos
+        boolean exito = GestorBoletos.getInstance().actualizarBoleto(boleto);
+        if (exito) {
+            JOptionPane.showMessageDialog(frame, "Equipaje registrado exitosamente - ID: " + idEquipaje);
+            frame.setContentPane(new MenuPasajerosPanel(frame));
+            frame.revalidate();
+        } else {
+            JOptionPane.showMessageDialog(frame, "Error al registrar equipaje", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
