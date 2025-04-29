@@ -2,15 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.mycompany.gestiontreness;
+
+/**
+ *
+ * @author jhost
+ */
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class MainMenuPanel extends JPanel {
     private JFrame frame;
-    private final Color BLUE_COLOR = new Color(0, 86, 179);
-    private final Color GOLD_COLOR = new Color(198, 168, 77);
+    private final Color GOLD_COLOR = new Color(198, 168, 77); // Color #C6A84D
+    private final Color BLUE_COLOR = new Color(0, 86, 179); // Color azul corporativo
 
     public MainMenuPanel(JFrame frame) {
         this.frame = frame;
@@ -20,63 +30,93 @@ public class MainMenuPanel extends JPanel {
     }
 
     private void createUI() {
+        // Header
         JPanel header = new JPanel();
         header.setBackground(BLUE_COLOR);
         header.setPreferredSize(new Dimension(800, 100));
-        JLabel title = new JLabel("MENÚ PRINCIPAL", SwingConstants.CENTER);
+        
+        JLabel title = new JLabel("MEDINET - MENÚ PRINCIPAL", SwingConstants.CENTER);
         title.setForeground(Color.WHITE);
         title.setFont(new Font("Arial", Font.BOLD, 28));
         header.add(title);
+        
         add(header, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(6, 1, 10, 10));
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        buttonPanel.setBackground(Color.WHITE);
+        // Botones principales
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(40, 150, 40, 150));
+        buttonsPanel.setBackground(new Color(240, 240, 240));
 
-        addButton(buttonPanel, "Gestionar Rutas", () -> {
-            System.out.println("Navegando a GestionRutasPanel");
+        // Botones del menú
+        JButton btnGestionGeneral = createMenuButton("GESTIÓN GENERAL");
+        btnGestionGeneral.addActionListener(e -> {
+            frame.setContentPane(new GestionGeneralPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnGestionHorarios = createMenuButton("GESTIÓN DE HORARIOS");
+        btnGestionHorarios.addActionListener(e -> {
+            frame.setContentPane(new GestionHorariosPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnGestionRutas = createMenuButton("GESTIÓN DE RUTAS");
+        btnGestionRutas.addActionListener(e -> {
             frame.setContentPane(new GestionRutasPanel(frame));
             frame.revalidate();
         });
 
-        addButton(buttonPanel, "Modificar/Eliminar Ruta", () -> {
-            System.out.println("Navegando a ModificarEliminarRutaPanel");
-            frame.setContentPane(new ModificarEliminarRutaPanel(frame));
+        JButton btnGestionEmpleados = createMenuButton("GESTIÓN DE EMPLEADOS");
+        btnGestionEmpleados.addActionListener(e -> {
+            frame.setContentPane(new GestionEmpleadosPanel(frame));
             frame.revalidate();
         });
 
-        addButton(buttonPanel, "Comprar Boleto", () -> {
-            System.out.println("Navegando a VentaBoletosPanel");
-            frame.setContentPane(new VentaBoletosPanel(frame));
-            frame.revalidate();
-        });
+        // Agregar botones al panel
+        buttonsPanel.add(btnGestionGeneral);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnGestionHorarios);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnGestionRutas);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnGestionEmpleados);
 
-        addButton(buttonPanel, "Revisión de Boleto (Abordaje)", () -> {
-            System.out.println("Navegando a RevisionBoletoPanel");
-            frame.setContentPane(new RevisionBoletoPanel(frame));
-            frame.revalidate();
-        });
+        add(buttonsPanel, BorderLayout.CENTER);
 
-        addButton(buttonPanel, "Validación de Boleto (Trayecto)", () -> {
-            System.out.println("Navegando a ValidacionTrayectoPanel");
-            frame.setContentPane(new ValidacionTrayectoPanel(frame));
-            frame.revalidate();
-        });
-
-        addButton(buttonPanel, "Salir", () -> {
-            System.out.println("Saliendo de la aplicación");
-            System.exit(0);
-        });
-
-        add(buttonPanel, BorderLayout.CENTER);
+        // Footer
+        JPanel footer = new JPanel();
+        footer.setBackground(new Color(240, 240, 240));
+        
+        JButton exitButton = new JButton("SALIR DEL SISTEMA");
+        exitButton.setBackground(new Color(150, 40, 40));
+        exitButton.setForeground(Color.WHITE);
+        exitButton.setFont(new Font("Arial", Font.BOLD, 14));
+        exitButton.addActionListener(e -> System.exit(0));
+        
+        footer.add(exitButton);
+        add(footer, BorderLayout.SOUTH);
     }
 
-    private void addButton(JPanel panel, String text, Runnable action) {
+    private JButton createMenuButton(String text) {
         JButton button = new JButton(text);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setBackground(GOLD_COLOR);
         button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 16));
-        button.addActionListener(e -> action.run());
-        panel.add(button);
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setPreferredSize(new Dimension(350, 60));
+        button.setMaximumSize(new Dimension(350, 60));
+        
+        // Efecto hover
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(210, 180, 90));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(GOLD_COLOR);
+            }
+        });
+        
+        return button;
     }
 }
