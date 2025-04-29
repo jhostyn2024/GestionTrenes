@@ -4,19 +4,15 @@
  */
 package com.mycompany.gestiontreness;
 
-/**
- *
- * @author jhost
- */
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class GestionRutasPanel extends JPanel {
-    private final JFrame frame;
-    private final Color GOLD_COLOR = new Color(198, 168, 77); // Color #C6A84D
-    private final Color BLUE_COLOR = new Color(0, 86, 179); // Color azul corporativo
+    private JFrame frame;
+    private JTable tablaRutas;
+    private final Color BLUE_COLOR = new Color(0, 86, 179);
+    private final Color GOLD_COLOR = new Color(198, 168, 77);
 
     public GestionRutasPanel(JFrame frame) {
         this.frame = frame;
@@ -29,97 +25,149 @@ public class GestionRutasPanel extends JPanel {
         // Header
         JPanel header = new JPanel();
         header.setBackground(BLUE_COLOR);
-        header.setPreferredSize(new Dimension(800, 80));
-        
+        header.setPreferredSize(new Dimension(800, 100));
         JLabel title = new JLabel("GESTIÓN DE RUTAS", SwingConstants.CENTER);
         title.setForeground(Color.WHITE);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setFont(new Font("Arial", Font.BOLD, 28));
         header.add(title);
-        
         add(header, BorderLayout.NORTH);
 
-        // Main content
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(40, 150, 40, 150));
-        contentPanel.setBackground(new Color(240, 240, 240));
+        // Tabla de rutas
+        String[] columnas = {"ID Ruta", "Origen", "Destino", "Distancia (km)", "Estado"};
+        List<Ruta> rutas = GestorRutas.getInstance().getRutas();
+        String[][] datos = new String[rutas.size()][5];
+        for (int i = 0; i < rutas.size(); i++) {
+            Ruta ruta = rutas.get(i);
+            datos[i][0] = ruta.getIdRuta();
+            datos[i][1] = ruta.getEstacionOrigen();
+            datos[i][2] = ruta.getEstacionDestino();
+            datos[i][3] = String.valueOf(ruta.getDistancia());
+            datos[i][4] = ruta.getEstado();
+        }
+        tablaRutas = new JTable(datos, columnas);
+        tablaRutas.setFont(new Font("Arial", Font.PLAIN, 14));
+        tablaRutas.setRowHeight(25);
+        JScrollPane scrollPane = new JScrollPane(tablaRutas);
+        add(scrollPane, BorderLayout.CENTER);
 
-        // Botón Agregar Ruta
-        JButton btnAgregar = createMenuButton("AGREGAR");
-        btnAgregar.addActionListener(e -> {
-            frame.setContentPane(new AgregarRutaPanel(frame));
-            frame.revalidate();
-        });
-        
-        // Botón Disponibilidad
-        JButton btnDisponibilidad = createMenuButton("DISPONIBILIDAD");
-        btnDisponibilidad.addActionListener(e -> {
-            frame.setContentPane(new DisponibilidadRutasPanel(frame));
-            frame.revalidate();
-        });
-        
-        // Botón Modificar/Eliminar
-        JButton btnModificarEliminar = createMenuButton("ELIMINAR O MODIFICAR");
-        btnModificarEliminar.addActionListener(e -> {
-            frame.setContentPane(new ModificarEliminarRutaPanel(frame));
-            frame.revalidate();
-        });
+        // Botones
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.setBackground(new Color(240, 240, 240));
 
-        // Botón Ruta más Corta
-        JButton btnRutaMasCorta = createMenuButton("RUTA MÁS CORTA");
-        btnRutaMasCorta.addActionListener(e -> {
-            frame.setContentPane(new RutaMasCortaPanel(frame));
-            frame.revalidate();
-        });
+        JButton btnAgregar = new JButton("AGREGAR RUTA");
+        btnAgregar.setBackground(GOLD_COLOR);
+        btnAgregar.setForeground(Color.WHITE);
+        btnAgregar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnAgregar.addActionListener(e -> agregarRuta());
 
-        // Añadir botones al panel
-        contentPanel.add(btnAgregar);
-        contentPanel.add(Box.createVerticalStrut(20));
-        contentPanel.add(btnDisponibilidad);
-        contentPanel.add(Box.createVerticalStrut(20));
-        contentPanel.add(btnModificarEliminar);
-        contentPanel.add(Box.createVerticalStrut(20));
-        contentPanel.add(btnRutaMasCorta);
+        JButton btnModificar = new JButton("MODIFICAR RUTA");
+        btnModificar.setBackground(GOLD_COLOR);
+        btnModificar.setForeground(Color.WHITE);
+        btnModificar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnModificar.addActionListener(e -> modificarRuta());
 
-        add(contentPanel, BorderLayout.CENTER);
+        JButton btnEliminar = new JButton("ELIMINAR RUTA");
+        btnEliminar.setBackground(GOLD_COLOR);
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnEliminar.addActionListener(e -> eliminarRuta());
 
-        // Footer
-        JPanel footer = new JPanel();
-        footer.setBackground(new Color(240, 240, 240));
-        
-        JButton backButton = new JButton("VOLVER AL MENÚ PRINCIPAL");
-        backButton.setBackground(GOLD_COLOR);
-        backButton.setForeground(Color.WHITE);
-        backButton.setFont(new Font("Arial", Font.BOLD, 14));
-        backButton.addActionListener(e -> {
+        JButton btnVolver = new JButton("VOLVER");
+        btnVolver.setBackground(new Color(150, 40, 40));
+        btnVolver.setForeground(Color.WHITE);
+        btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVolver.addActionListener(e -> {
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         });
-        
-        footer.add(backButton);
-        add(footer, BorderLayout.SOUTH);
+
+        buttonsPanel.add(btnAgregar);
+        buttonsPanel.add(btnModificar);
+        buttonsPanel.add(btnEliminar);
+        buttonsPanel.add(btnVolver);
+        add(buttonsPanel, BorderLayout.SOUTH);
     }
 
-    private JButton createMenuButton(String text) {
-        JButton button = new JButton(text);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setBackground(GOLD_COLOR);
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 16));
-        button.setPreferredSize(new Dimension(300, 50));
-        button.setMaximumSize(new Dimension(300, 50));
-        button.setFocusPainted(false);
-        
-        // Efecto hover
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(210, 180, 90)); // Color más claro al pasar el mouse
+    private void agregarRuta() {
+        JTextField txtOrigen = new JTextField();
+        JTextField txtDestino = new JTextField();
+        JTextField txtDistancia = new JTextField();
+        JComboBox<String> cbEstado = new JComboBox<>(new String[]{"Activa", "Inactiva"});
+        Object[] message = {
+                "Origen:", txtOrigen,
+                "Destino:", txtDestino,
+                "Distancia (km):", txtDistancia,
+                "Estado:", cbEstado
+        };
+        int option = JOptionPane.showConfirmDialog(frame, message, "Agregar Ruta", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                double distancia = Double.parseDouble(txtDistancia.getText());
+                String idRuta = "RUTA-" + (GestorRutas.getInstance().getRutas().size() + 1);
+                Ruta ruta = new Ruta(idRuta, txtOrigen.getText(), txtDestino.getText(), distancia, (String) cbEstado.getSelectedItem());
+                GestorRutas.getInstance().agregarRuta(ruta);
+                JOptionPane.showMessageDialog(frame, "Ruta agregada exitosamente");
+                frame.setContentPane(new GestionRutasPanel(frame));
+                frame.revalidate();
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(frame, "Distancia inválida", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(GOLD_COLOR);
+        }
+    }
+
+    private void modificarRuta() {
+        int selectedRow = tablaRutas.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(frame, "Seleccione una ruta", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String idRuta = (String) tablaRutas.getValueAt(selectedRow, 0);
+        JTextField txtOrigen = new JTextField((String) tablaRutas.getValueAt(selectedRow, 1));
+        JTextField txtDestino = new JTextField((String) tablaRutas.getValueAt(selectedRow, 2));
+        JTextField txtDistancia = new JTextField((String) tablaRutas.getValueAt(selectedRow, 3));
+        JComboBox<String> cbEstado = new JComboBox<>(new String[]{"Activa", "Inactiva"});
+        cbEstado.setSelectedItem(tablaRutas.getValueAt(selectedRow, 4));
+        Object[] message = {
+                "Origen:", txtOrigen,
+                "Destino:", txtDestino,
+                "Distancia (km):", txtDistancia,
+                "Estado:", cbEstado
+        };
+        int option = JOptionPane.showConfirmDialog(frame, message, "Modificar Ruta", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                double distancia = Double.parseDouble(txtDistancia.getText());
+                boolean exito = GestorRutas.getInstance().modificarRuta(idRuta, txtOrigen.getText(), txtDestino.getText(), distancia, (String) cbEstado.getSelectedItem());
+                if (exito) {
+                    JOptionPane.showMessageDialog(frame, "Ruta modificada exitosamente");
+                    frame.setContentPane(new GestionRutasPanel(frame));
+                    frame.revalidate();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "No se encontró la ruta", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(frame, "Distancia inválida", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
-        
-        return button;
+        }
+    }
+
+    private void eliminarRuta() {
+        int selectedRow = tablaRutas.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(frame, "Seleccione una ruta", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String idRuta = (String) tablaRutas.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(frame, "¿Eliminar ruta " + idRuta + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean exito = GestorRutas.getInstance().eliminarRuta(idRuta);
+            if (exito) {
+                JOptionPane.showMessageDialog(frame, "Ruta eliminada exitosamente");
+                frame.setContentPane(new GestionRutasPanel(frame));
+                frame.revalidate();
+            } else {
+                JOptionPane.showMessageDialog(frame, "No se encontró la ruta", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }

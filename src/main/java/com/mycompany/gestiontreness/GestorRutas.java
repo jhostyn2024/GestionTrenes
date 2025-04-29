@@ -4,8 +4,7 @@
  */
 package com.mycompany.gestiontreness;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GestorRutas {
     private static GestorRutas instance;
@@ -13,7 +12,7 @@ public class GestorRutas {
 
     private GestorRutas() {
         rutas = new ArrayList<>();
-        System.out.println("Nueva instancia de GestorRutas creada");
+        inicializarRutas();
     }
 
     public static synchronized GestorRutas getInstance() {
@@ -23,34 +22,41 @@ public class GestorRutas {
         return instance;
     }
 
+    private void inicializarRutas() {
+        // Añadir rutas predefinidas (solo una dirección para evitar duplicados)
+        rutas.add(new Ruta("RUTA-1", "Cabecera del Llano", "San Francisco", 30.0, "Activa"));
+        rutas.add(new Ruta("RUTA-2", "Cabecera del Llano", "La Universidad", 40.0, "Activa"));
+        rutas.add(new Ruta("RUTA-3", "Cabecera del Llano", "Sotomayor", 50.0, "Activa"));
+        rutas.add(new Ruta("RUTA-4", "Cabecera del Llano", "La Concordia", 50.0, "Activa"));
+        rutas.add(new Ruta("RUTA-5", "La Universidad", "Girardot", 80.0, "Activa"));
+        rutas.add(new Ruta("RUTA-6", "La Universidad", "La Joya", 120.0, "Activa"));
+        rutas.add(new Ruta("RUTA-7", "La Universidad", "Kennedy", 110.0, "Activa"));
+        rutas.add(new Ruta("RUTA-8", "Sotomayor", "Provenza", 20.0, "Activa"));
+        rutas.add(new Ruta("RUTA-9", "Provenza", "La Concordia", 65.0, "Activa"));
+        rutas.add(new Ruta("RUTA-10", "La Concordia", "Diamante II", 80.0, "Activa"));
+        rutas.add(new Ruta("RUTA-11", "Diamante II", "Mutis", 30.0, "Activa"));
+        rutas.add(new Ruta("RUTA-12", "Diamante II", "Girardot", 145.0, "Activa"));
+    }
+
     public void agregarRuta(Ruta ruta) {
         rutas.add(ruta);
-        System.out.println("Ruta agregada - ID: " + ruta.getIdRuta() + ", Total rutas: " + rutas.size());
     }
 
     public boolean eliminarRuta(String idRuta) {
-        boolean removed = rutas.removeIf(r -> r.getIdRuta().equals(idRuta));
-        if (removed) {
-            System.out.println("Ruta eliminada - ID: " + idRuta + ", Total rutas: " + rutas.size());
-        } else {
-            System.out.println("No se encontró ruta con ID: " + idRuta);
-        }
-        return removed;
+        return rutas.removeIf(r -> r.getIdRuta().equals(idRuta));
     }
 
-    public void modificarRuta(String idRuta, String nuevoOrigen, String nuevoDestino, 
-                            double nuevaDistancia, String nuevoEstado) {
+    public boolean modificarRuta(String idRuta, String estacionOrigen, String estacionDestino, double distancia, String estado) {
         for (Ruta ruta : rutas) {
             if (ruta.getIdRuta().equals(idRuta)) {
-                ruta.setEstacionOrigen(nuevoOrigen);
-                ruta.setEstacionDestino(nuevoDestino);
-                ruta.setDistancia(nuevaDistancia);
-                ruta.setEstado(nuevoEstado);
-                System.out.println("Ruta modificada - ID: " + idRuta + ", Nuevo origen: " + nuevoOrigen);
-                return;
+                ruta.setEstacionOrigen(estacionOrigen);
+                ruta.setEstacionDestino(estacionDestino);
+                ruta.setDistancia(distancia);
+                ruta.setEstado(estado);
+                return true;
             }
         }
-        System.out.println("No se encontró ruta con ID: " + idRuta + " para modificar");
+        return false;
     }
 
     public List<Ruta> getRutas() {
@@ -58,51 +64,64 @@ public class GestorRutas {
     }
 
     public List<Ruta> getRutasOptimas() {
-        List<Ruta> optimas = new ArrayList<>();
-        for (Ruta ruta : rutas) {
-            if ("Óptima".equals(ruta.getEstado())) {
-                optimas.add(ruta);
-            }
-        }
-        System.out.println("Obteniendo rutas óptimas - Total: " + optimas.size());
-        return optimas;
+        return rutas.stream()
+                .filter(r -> r.getEstado().equals("Activa"))
+                .collect(Collectors.toList());
     }
 
     public Ruta encontrarRutaMasCorta(String origen, String destino) {
-        Ruta rutaMasCorta = null;
-        double menorDistancia = Double.MAX_VALUE;
-
+        // Construir grafo
+        Map<String, List<Ruta>> grafo = new HashMap<>();
         for (Ruta ruta : rutas) {
-            if (ruta.getEstacionOrigen().equalsIgnoreCase(origen) && 
-                ruta.getEstacionDestino().equalsIgnoreCase(destino)) {
-                if (ruta.getDistancia() < menorDistancia) {
-                    menorDistancia = ruta.getDistancia();
-                    rutaMasCorta = ruta;
+            grafo.computeIfAbsent(ruta.getEstacionOrigen(), k -> new ArrayList<>()).add(ruta);
+            // Añadir ruta inversa para bidireccionalidad
+            Ruta inversa = new Ruta(ruta.getIdRuta() + "-INV", ruta.getEstacionDestino(), ruta.getEstacionOrigen(),
+                    ruta.getDistancia(), ruta.getEstado());
+            grafo.computeIfAbsent(ruta.getEstacionDestino(), k -> new ArrayList<>()).add(inversa);
+        }
+
+        // Algoritmo de Dijkstra
+        Map<String, Double> distancias = new HashMap<>();
+        Map<String, Ruta> rutasPrevias = new HashMap<>();
+        PriorityQueue<String> cola = new PriorityQueue<>(Comparator.comparingDouble(distancias::get));
+        Set<String> visitados = new HashSet<>();
+
+        distancias.put(origen, 0.0);
+        cola.add(origen);
+
+        while (!cola.isEmpty()) {
+            String actual = cola.poll();
+            if (visitados.contains(actual)) continue;
+            visitados.add(actual);
+
+            if (actual.equals(destino)) break;
+
+            List<Ruta> vecinos = grafo.getOrDefault(actual, Collections.emptyList());
+            for (Ruta ruta : vecinos) {
+                String vecino = ruta.getEstacionDestino();
+                double nuevaDistancia = distancias.get(actual) + ruta.getDistancia();
+
+                if (!distancias.containsKey(vecino) || nuevaDistancia < distancias.get(vecino)) {
+                    distancias.put(vecino, nuevaDistancia);
+                    rutasPrevias.put(vecino, ruta);
+                    cola.add(vecino);
                 }
             }
         }
 
-        if (rutaMasCorta != null) {
-            System.out.println("Ruta más corta encontrada - ID: " + rutaMasCorta.getIdRuta() + 
-                              ", Origen: " + origen + ", Destino: " + destino + 
-                              ", Distancia: " + rutaMasCorta.getDistancia());
-        } else {
-            System.out.println("No se encontró ruta directa de " + origen + " a " + destino);
-        }
+        // Reconstruir ruta
+        if (!distancias.containsKey(destino)) return null;
 
-        return rutaMasCorta;
-    }
-
-    public void printRutas() {
-        System.out.println("Lista de rutas:");
-        if (rutas.isEmpty()) {
-            System.out.println("  (Vacía)");
-        } else {
-            for (Ruta r : rutas) {
-                System.out.println("  ID: " + r.getIdRuta() + ", Origen: " + r.getEstacionOrigen() +
-                                   ", Destino: " + r.getEstacionDestino() + ", Distancia: " + r.getDistancia() +
-                                   ", Estado: " + r.getEstado());
-            }
+        List<Ruta> camino = new ArrayList<>();
+        String actual = destino;
+        while (rutasPrevias.containsKey(actual)) {
+            Ruta ruta = rutasPrevias.get(actual);
+            camino.add(ruta);
+            actual = ruta.getEstacionOrigen();
         }
+        Collections.reverse(camino);
+
+        // Devolver la primera ruta del camino (simplificación para VentaBoletosPanel)
+        return camino.isEmpty() ? null : camino.get(0);
     }
 }

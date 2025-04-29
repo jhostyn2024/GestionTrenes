@@ -7,7 +7,6 @@ package com.mycompany.gestiontreness;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +46,12 @@ public class VentaBoletosPanel extends JPanel {
         formPanel.setBackground(Color.WHITE);
 
         // Campos de ruta y horario
-        cbRutas = new JComboBox<>(GestorRutas.getInstance().getRutas().stream()
-                .map(r -> r.getIdRuta() + ": " + r.getEstacionOrigen() + " a " + r.getEstacionDestino())
+        cbRutas = new JComboBox<>(GestorRutas.getInstance().getRutasOptimas().stream()
+                .map(r -> r.getIdRuta() + ": " + r.getEstacionOrigen() + " a " + r.getEstacionDestino() + " (" + r.getDistancia() + " km)")
                 .toArray(String[]::new));
         cbHorarios = new JComboBox<>();
         updateHorarios();
+        cbRutas.addActionListener(e -> updateHorarios());
 
         btnRecomendarRuta = new JButton("Recomendar Ruta Más Corta");
         btnRecomendarRuta.setBackground(GOLD_COLOR);
