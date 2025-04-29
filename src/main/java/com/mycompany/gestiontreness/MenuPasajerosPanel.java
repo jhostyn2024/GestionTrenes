@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.gestiontreness;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -33,10 +34,41 @@ public class MenuPasajerosPanel extends JPanel {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(40, 150, 40, 150));
+        buttonsPanel.setBackground(new Color(240, 240, 240));
 
         JButton btnComprarBoleto = createMenuButton("COMPRAR BOLETO");
         btnComprarBoleto.addActionListener(e -> {
             frame.setContentPane(new VentaBoletosPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnRevisarBoleto = createMenuButton("REVISAR BOLETO PARA ABORDAR");
+        btnRevisarBoleto.addActionListener(e -> {
+            frame.setContentPane(new RevisionBoletoPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnControlEquipaje = createMenuButton("CONTROL DE EQUIPAJE");
+        btnControlEquipaje.addActionListener(e -> {
+            frame.setContentPane(new ControlEquipajePanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnValidarTrayecto = createMenuButton("VALIDAR BOLETO EN TRAYECTO");
+        btnValidarTrayecto.addActionListener(e -> {
+            frame.setContentPane(new ValidacionTrayectoPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnDesembarco = createMenuButton("REGISTRAR DESEMBARCO");
+        btnDesembarco.addActionListener(e -> {
+            frame.setContentPane(new DesembarcoPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnEntregaEquipaje = createMenuButton("ENTREGA DE EQUIPAJE");
+        btnEntregaEquipaje.addActionListener(e -> {
+            frame.setContentPane(new EntregaEquipajePanel(frame));
             frame.revalidate();
         });
 
@@ -48,13 +80,25 @@ public class MenuPasajerosPanel extends JPanel {
 
         buttonsPanel.add(btnComprarBoleto);
         buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnRevisarBoleto);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnControlEquipaje);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnValidarTrayecto);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnDesembarco);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(btnEntregaEquipaje);
+        buttonsPanel.add(Box.createVerticalStrut(20));
         buttonsPanel.add(btnVerRutas);
+
         add(buttonsPanel, BorderLayout.CENTER);
 
         // Footer
         JButton btnSalir = new JButton("CERRAR SESIÓN");
         btnSalir.setBackground(new Color(150, 40, 40));
         btnSalir.setForeground(Color.WHITE);
+        btnSalir.setFont(new Font("Arial", Font.BOLD, 16));
         btnSalir.addActionListener(e -> {
             frame.setContentPane(new LoginPanel(frame));
             frame.revalidate();
@@ -70,7 +114,7 @@ public class MenuPasajerosPanel extends JPanel {
         button.setBackground(GOLD_COLOR);
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 16));
-        button.setPreferredSize(new Dimension(300, 50));
+        button.setPreferredSize(new Dimension(400, 50));
         return button;
     }
 }
