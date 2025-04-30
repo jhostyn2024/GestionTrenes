@@ -1,0 +1,4 @@
+[
+    {"idTren":"TREN-0001","nombre":"Expreso Regional","capacidad":200,"estado":"Activo"},
+    {"idTren":"TREN-0002","nombre":"Intermunicipal","capacidad":150,"estado":"Activo"}
+]

@@ -1,0 +1,5 @@
+[
+    {"idVagon":"VAGON-0001","idTren":"TREN-0001","tipo":"Primera Clase","capacidad":50,"estado":"Activo"},
+    {"idVagon":"VAGON-0002","idTren":"TREN-0001","tipo":"Económico","capacidad":100,"estado":"Activo"},
+    {"idVagon":"VAGON-0003","idTren":"TREN-0002","tipo":"Primera Clase","capacidad":40,"estado":"Activo"}
+]

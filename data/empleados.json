@@ -1,0 +1,5 @@
+[
+    {"idEmpleado":"EMP-0001","nombre":"Juan","apellido":"Pérez","rol":"Conductor","estado":"Activo"},
+    {"idEmpleado":"EMP-0002","nombre":"María","apellido":"Gómez","rol":"Administrador","estado":"Activo"},
+    {"idEmpleado":"EMP-0003","nombre":"Carlos","apellido":"López","rol":"Inspector","estado":"Activo"}
+]
