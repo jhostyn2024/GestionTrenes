@@ -36,20 +36,23 @@ public class ValidacionTrayectoPanel extends JPanel {
         formPanel.setBackground(Color.WHITE);
 
         txtIdBoleto = new JTextField();
-        txtResultado = new JTextArea(5, 20);
+        txtResultado = new JTextArea();
         txtResultado.setEditable(false);
         txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
 
         addFormField(formPanel, "ID Boleto:", txtIdBoleto);
 
-        JButton btnValidar = new JButton("VALIDAR");
+        JButton btnValidar = new JButton("VERIFICAR");
         btnValidar.setBackground(GOLD_COLOR);
         btnValidar.setForeground(Color.WHITE);
         btnValidar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnValidar.addActionListener(e -> validarBoleto());
+        btnValidar.addActionListener(e -> {
+            System.out.println("Botón VERIFICAR presionado en ValidacionTrayectoPanel");
+            validarBoleto();
+        });
 
         JButton btnVolver = new JButton("VOLVER");
-        btnVolver.setBackground(new Color(100, 100, 100));
+        btnVolver.setBackground(new Color(150, 40, 40));
         btnVolver.setForeground(Color.WHITE);
         btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
         btnVolver.addActionListener(e -> {
@@ -75,41 +78,31 @@ public class ValidacionTrayectoPanel extends JPanel {
     }
 
     private void validarBoleto() {
-        try {
-            String idBoleto = txtIdBoleto.getText().trim();
-            if (idBoleto.isEmpty()) {
-                txtResultado.setText("Error: Ingrese el ID del boleto.");
-                System.out.println("ID de boleto vacío en validarBoleto");
-                return;
-            }
-
-            GestorBoletos gestor = GestorBoletos.getInstance();
-            Boleto boleto = gestor.getBoletos().stream()
-                    .filter(b -> b.getIdBoleto().equals(idBoleto))
-                    .findFirst()
-                    .orElse(null);
-
-            if (boleto == null) {
-                txtResultado.setText("Error: No se encontró un boleto con ID: " + idBoleto);
-                System.out.println("Boleto no encontrado: " + idBoleto);
-                return;
-            }
-
-            if (!boleto.getEstado().equals("Abordado")) {
-                txtResultado.setText("Error: El boleto no ha sido abordado.\nEstado actual: " + boleto.getEstado());
-                System.out.println("Boleto no está en estado Abordado: " + idBoleto);
-                return;
-            }
-
-            boleto.setEstado("Validado");
-            gestor.modificarBoleto(boleto.getIdBoleto(), boleto.getIdHorario(), boleto.getIdVagon(), boleto.getCedula(), boleto.getNombre(), boleto.getApellido(), "Validado");
-            txtResultado.setText("Boleto validado exitosamente:\nID: " + idBoleto + "\nPasajero: " + boleto.getNombre() + " " + boleto.getApellido() + "\nEstado: Validado");
-            System.out.println("Boleto validado: " + idBoleto);
-            txtIdBoleto.setText("");
-        } catch (Exception e) {
-            txtResultado.setText("Error al validar boleto: " + e.getMessage());
-            System.err.println("Excepción en validarBoleto: " + e.getMessage());
-            e.printStackTrace();
+        String idBoleto = txtIdBoleto.getText().trim().toUpperCase();
+        System.out.println("Validando boleto con ID: " + idBoleto);
+        if (idBoleto.isEmpty()) {
+            txtResultado.setText("Ingrese un ID de boleto");
+            System.out.println("ID de boleto vacío");
+            return;
         }
+
+        boolean valido = GestorBoletos.getInstance().validarBoleto(idBoleto);
+        Boleto boleto = GestorBoletos.getInstance().buscarBoletoPorId(idBoleto);
+
+        if (boleto == null) {
+            txtResultado.setText("No se encontró boleto con ID: " + idBoleto + 
+                "\nAsegúrese de ingresar el ID exactamente como se mostró al comprar");
+            System.out.println("Boleto no encontrado: " + idBoleto);
+            return;
+        }
+
+        StringBuilder resultado = new StringBuilder("Resultado de validación:\n");
+        resultado.append("Boleto ID: ").append(boleto.getIdBoleto()).append("\n");
+        resultado.append("Pasajero: ").append(boleto.getNombre()).append(" ").append(boleto.getApellido()).append("\n");
+        resultado.append("Categoría: ").append(boleto.getCategoriaPasajero()).append("\n");
+        resultado.append("Estado: ").append(valido ? "Válido en trayecto" : "No válido (usado o fecha inválida)").append("\n");
+        txtResultado.setText(resultado.toString());
+        txtResultado.repaint();
+        System.out.println("Validación completada: " + (valido ? "Válido" : "No válido"));
     }
 }

@@ -7,22 +7,6 @@ package com.mycompany.gestiontreness;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Vagon {
-
-    static int getCapacidadPasajeros(T value) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    static int getLugaresPremium(T value) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    static int getLugaresEjecutiva(T value) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    static int getLugaresEstandar(T value) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     @JsonProperty("idVagon")
     private String idVagon;
 
@@ -30,22 +14,36 @@ public class Vagon {
     private String idTren;
 
     @JsonProperty("tipo")
-    private String tipo;
+    private String tipo; // "Pasajeros" o "Carga"
 
-    @JsonProperty("capacidad")
-    private int capacidad;
+    @JsonProperty("capacidadPasajeros")
+    private int capacidadPasajeros;
 
-    @JsonProperty("estado")
-    private String estado;
+    @JsonProperty("lugaresPremium")
+    private int lugaresPremium;
 
-    public Vagon() {}
+    @JsonProperty("lugaresEjecutiva")
+    private int lugaresEjecutiva;
 
-    public Vagon(String idVagon, String idTren, String tipo, int capacidad, String estado) {
+    @JsonProperty("lugaresEstandar")
+    private int lugaresEstandar;
+
+    @JsonProperty("capacidadCarga")
+    private double capacidadCarga; // En kg, para vagones de carga
+
+    public Vagon() {
+    }
+
+    public Vagon(String idVagon, String idTren, String tipo, int capacidadPasajeros, 
+                 int lugaresPremium, int lugaresEjecutiva, int lugaresEstandar, double capacidadCarga) {
         this.idVagon = idVagon;
         this.idTren = idTren;
         this.tipo = tipo;
-        this.capacidad = capacidad;
-        this.estado = estado;
+        this.capacidadPasajeros = capacidadPasajeros;
+        this.lugaresPremium = lugaresPremium;
+        this.lugaresEjecutiva = lugaresEjecutiva;
+        this.lugaresEstandar = lugaresEstandar;
+        this.capacidadCarga = capacidadCarga;
     }
 
     Vagon(int parseInt, int parseInt0, int parseInt1, int parseInt2, int parseInt3, int parseInt4) {
@@ -55,14 +53,20 @@ public class Vagon {
     public String getIdVagon() { return idVagon; }
     public String getIdTren() { return idTren; }
     public String getTipo() { return tipo; }
-    public int getCapacidad() { return capacidad; }
-    public String getEstado() { return estado; }
+    public int getCapacidadPasajeros() { return capacidadPasajeros; }
+    public int getLugaresPremium() { return lugaresPremium; }
+    public int getLugaresEjecutiva() { return lugaresEjecutiva; }
+    public int getLugaresEstandar() { return lugaresEstandar; }
+    public double getCapacidadCarga() { return capacidadCarga; }
 
     public void setIdVagon(String idVagon) { this.idVagon = idVagon; }
     public void setIdTren(String idTren) { this.idTren = idTren; }
     public void setTipo(String tipo) { this.tipo = tipo; }
-    public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setCapacidadPasajeros(int capacidadPasajeros) { this.capacidadPasajeros = capacidadPasajeros; }
+    public void setLugaresPremium(int lugaresPremium) { this.lugaresPremium = lugaresPremium; }
+    public void setLugaresEjecutiva(int lugaresEjecutiva) { this.lugaresEjecutiva = lugaresEjecutiva; }
+    public void setLugaresEstandar(int lugaresEstandar) { this.lugaresEstandar = lugaresEstandar; }
+    public void setCapacidadCarga(double capacidadCarga) { this.capacidadCarga = capacidadCarga; }
 
     Object getTotalVagones() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

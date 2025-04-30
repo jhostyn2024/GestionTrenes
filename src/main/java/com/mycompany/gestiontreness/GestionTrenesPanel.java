@@ -6,13 +6,10 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.UUID;
 
 public class GestionTrenesPanel extends JPanel {
     private JFrame frame;
-    private JTextField txtIdTren, txtNombre, txtCapacidad;
-    private JComboBox<String> cbEstado;
-    private JTextArea txtResultado;
+    private JTable tablaTrenes;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
     private final Color GOLD_COLOR = new Color(198, 168, 77);
 
@@ -33,102 +30,77 @@ public class GestionTrenesPanel extends JPanel {
         header.add(title);
         add(header, BorderLayout.NORTH);
 
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        formPanel.setBackground(Color.WHITE);
+        String[] columnas = {"ID Tren", "Nombre", "Tipo", "Capacidad Carga", "Kilometraje"};
+        var trenes = GestorTrenes.getInstance().getTrenes();
+        if (trenes == null) {
+            JOptionPane.showMessageDialog(frame, "Error al cargar trenes", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String[][] datos = new String[trenes.size()][5];
+        for (int i = 0; i < trenes.size(); i++) {
+            Tren tren = trenes.get(i);
+            datos[i][0] = tren.getIdTren();
+            datos[i][1] = tren.getNombre();
+            datos[i][2] = tren.getTipoTren();
+            datos[i][3] = String.valueOf(tren.getCapacidadCarga());
+            datos[i][4] = String.valueOf(tren.getKilometraje());
+        }
+        tablaTrenes = new JTable(datos, columnas);
+        tablaTrenes.setFont(new Font("Arial", Font.PLAIN, 14));
+        tablaTrenes.setRowHeight(25);
+        tablaTrenes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(tablaTrenes);
+        add(scrollPane, BorderLayout.CENTER);
 
-        txtIdTren = new JTextField("TREN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        txtIdTren.setEditable(false);
-        txtNombre = new JTextField();
-        txtCapacidad = new JTextField();
-        cbEstado = new JComboBox<>(new String[]{"Activo", "Inactivo"});
-        txtResultado = new JTextArea(5, 20);
-        txtResultado.setEditable(false);
-        txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.setBackground(new Color(240, 240, 240));
 
-        addFormField(formPanel, "ID Tren:", txtIdTren);
-        addFormField(formPanel, "Nombre:", txtNombre);
-        addFormField(formPanel, "Capacidad:", txtCapacidad);
-        addFormField(formPanel, "Estado:", cbEstado);
-
-        JButton btnAgregar = new JButton("AGREGAR");
+        JButton btnAgregar = new JButton("AGREGAR TREN");
         btnAgregar.setBackground(GOLD_COLOR);
         btnAgregar.setForeground(Color.WHITE);
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 16));
-        btnAgregar.addActionListener(e -> agregarTren());
+        btnAgregar.addActionListener(e -> {
+            frame.setContentPane(new AgregarTrenPanel(frame));
+            frame.revalidate();
+        });
+
+        JButton btnModificar = new JButton("MODIFICAR TREN");
+        btnModificar.setBackground(GOLD_COLOR);
+        btnModificar.setForeground(Color.WHITE);
+        btnModificar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnModificar.addActionListener(e -> {
+            int selectedRow = tablaTrenes.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(frame, "Seleccione un tren", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String idTren = (String) tablaTrenes.getValueAt(selectedRow, 0);
+            frame.setContentPane(new ModificarEliminarTrenPanel(frame, idTren));
+            frame.revalidate();
+        });
+
+        JButton btnListar = new JButton("LISTAR TRENES");
+        btnListar.setBackground(GOLD_COLOR);
+        btnListar.setForeground(Color.WHITE);
+        btnListar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnListar.addActionListener(e -> {
+            frame.setContentPane(new ListaTrenesPanel(frame));
+            frame.revalidate();
+        });
 
         JButton btnVolver = new JButton("VOLVER");
-        btnVolver.setBackground(new Color(100, 100, 100));
+        btnVolver.setBackground(new Color(150, 40, 40));
         btnVolver.setForeground(Color.WHITE);
         btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
         btnVolver.addActionListener(e -> {
-            System.out.println("Navegando a MainMenuPanel desde GestionTrenesPanel");
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         });
 
-        formPanel.add(btnAgregar);
-        formPanel.add(btnVolver);
-
-        add(new JScrollPane(formPanel), BorderLayout.CENTER);
-        add(new JScrollPane(txtResultado), BorderLayout.SOUTH);
-    }
-
-    private void addFormField(JPanel panel, String label, JComponent field) {
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(new Font("Arial", Font.BOLD, 14));
-        field.setFont(new Font("Arial", Font.PLAIN, 14));
-        field.setPreferredSize(new Dimension(200, 30));
-        panel.add(lbl);
-        panel.add(field);
-    }
-
-    private void agregarTren() {
-        try {
-            String idTren = txtIdTren.getText().trim();
-            String nombre = txtNombre.getText().trim();
-            String capacidadStr = txtCapacidad.getText().trim();
-            String estado = (String) cbEstado.getSelectedItem();
-
-            if (nombre.isEmpty() || capacidadStr.isEmpty()) {
-                txtResultado.setText("Error: Complete los campos obligatorios (Nombre, Capacidad).");
-                System.out.println("Campos incompletos en agregarTren");
-                return;
-            }
-
-            if (!nombre.matches("[a-zA-Z0-9 ]+")) {
-                txtResultado.setText("Error: El nombre solo debe contener letras, números y espacios.");
-                System.out.println("Nombre inválido en agregarTren");
-                return;
-            }
-
-            int capacidad;
-            try {
-                capacidad = Integer.parseInt(capacidadStr);
-                if (capacidad <= 0) {
-                    txtResultado.setText("Error: La capacidad debe ser mayor a 0.");
-                    System.out.println("Capacidad inválida en agregarTren");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                txtResultado.setText("Error: La capacidad debe ser un número válido.");
-                System.out.println("Formato de capacidad inválido en agregarTren");
-                return;
-            }
-
-            Tren tren = new Tren(idTren, nombre, capacidad, estado);
-            GestorTrenes.getInstance().agregarTren(tren);
-            txtResultado.setText("Tren agregado exitosamente:\nID: " + idTren + "\nNombre: " + nombre + "\nCapacidad: " + capacidad + "\nEstado: " + estado);
-            System.out.println("Tren agregado: " + idTren);
-
-            txtIdTren.setText("TREN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-            txtNombre.setText("");
-            txtCapacidad.setText("");
-            cbEstado.setSelectedIndex(0);
-        } catch (Exception e) {
-            txtResultado.setText("Error al agregar tren: " + e.getMessage());
-            System.err.println("Excepción en agregarTren: " + e.getMessage());
-            e.printStackTrace();
-        }
+        buttonsPanel.add(btnAgregar);
+        buttonsPanel.add(btnModificar);
+        buttonsPanel.add(btnListar);
+        buttonsPanel.add(btnVolver);
+        add(buttonsPanel, BorderLayout.SOUTH);
     }
 }

@@ -13,23 +13,16 @@ public class Tren {
     @JsonProperty("nombre")
     private String nombre;
 
-    @JsonProperty("capacidad")
-    private int capacidad;
-
-    @JsonProperty("estado")
-    private String estado;
+    @JsonProperty("capacidadTotal")
+    private int capacidadTotal;
 
     public Tren() {
-        this.idTren = "";
-        this.nombre = "";
-        this.estado = "Activo";
     }
 
-    public Tren(String idTren, String nombre, int capacidad, String estado) {
-        this.idTren = idTren != null ? idTren : "";
-        this.nombre = nombre != null ? nombre : "";
-        this.capacidad = capacidad;
-        this.estado = estado != null ? estado : "Activo";
+    public Tren(String idTren, String nombre, int capacidadTotal) {
+        this.idTren = idTren;
+        this.nombre = nombre;
+        this.capacidadTotal = capacidadTotal;
     }
 
     Tren(String idTren, String nombre, String tipoTren, double kilometraje) {
@@ -38,31 +31,21 @@ public class Tren {
 
     public String getIdTren() { return idTren; }
     public String getNombre() { return nombre; }
-    public int getCapacidad() { return capacidad; }
-    public String getEstado() { return estado; }
+    public int getCapacidadTotal() { return capacidadTotal; }
 
-    public void setIdTren(String idTren) { this.idTren = idTren != null ? idTren : ""; }
-    public void setNombre(String nombre) { this.nombre = nombre != null ? nombre : ""; }
-    public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
-    public void setEstado(String estado) { this.estado = estado != null ? estado : "Activo"; }
-
-    @Override
-    public String toString() {
-        return "Tren[idTren=" + (idTren != null ? idTren : "null") +
-               ", nombre=" + (nombre != null ? nombre : "null") +
-               ", capacidad=" + capacidad +
-               ", estado=" + (estado != null ? estado : "null") + "]";
-    }
-
-    AbstractStringBuilder getTipoTren() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    AbstractStringBuilder getCapacidadCarga() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public void setIdTren(String idTren) { this.idTren = idTren; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setCapacidadTotal(int capacidadTotal) { this.capacidadTotal = capacidadTotal; }
 
     Object getKilometraje() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    String getTipoTren() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    Object getCapacidadCarga() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

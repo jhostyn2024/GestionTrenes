@@ -29,46 +29,17 @@ public class GestorHorarios {
         System.out.println("Agregando horario con ID: " + horario.getIdHorario());
         horarios.add(horario);
         JsonUtil.writeJson(FILE_PATH, horarios);
-        System.out.println("Horarios almacenados: " + horarios.size());
-    }
-
-    public boolean modificarHorario(String idHorario, String idRuta, String idTren, String fechaSalida, String fechaLlegada, String estado) {
-        System.out.println("Modificando horario con ID: " + idHorario);
-        for (Horario horario : horarios) {
-            if (horario.getIdHorario().equals(idHorario)) {
-                horario.setIdRuta(idRuta);
-                horario.setIdTren(idTren);
-                horario.setFechaSalida(fechaSalida);
-                horario.setFechaLlegada(fechaLlegada);
-                horario.setEstado(estado);
-                JsonUtil.writeJson(FILE_PATH, horarios);
-                System.out.println("Horario modificado y almacenado: " + idHorario);
-                return true;
-            }
-        }
-        System.out.println("Horario no encontrado para modificar: " + idHorario);
-        return false;
-    }
-
-    public boolean eliminarHorario(String idHorario) {
-        System.out.println("Eliminando horario con ID: " + idHorario);
-        boolean removed = horarios.removeIf(horario -> horario.getIdHorario().equals(idHorario));
-        if (removed) {
-            JsonUtil.writeJson(FILE_PATH, horarios);
-            System.out.println("Horario eliminado y almacenado: " + idHorario);
-        } else {
-            System.out.println("Horario no encontrado para eliminar: " + idHorario);
-        }
-        return removed;
+        System.out.println("Horarios almacenados: " + horarios.size() + " [" + 
+            horarios.stream().map(Horario::getIdHorario).collect(Collectors.joining(", ")) + "]");
     }
 
     public List<Horario> getHorarios() {
         return new ArrayList<>(horarios);
     }
 
-    public List<Horario> getHorariosActivos() {
+    public List<Horario> getHorariosPorRuta(String idRuta) {
         return horarios.stream()
-                .filter(horario -> "Activo".equals(horario.getEstado()))
+                .filter(h -> h.getIdRuta().equals(idRuta))
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +47,7 @@ public class GestorHorarios {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    Object getHorariosPorRuta(String idRuta) {
+    boolean eliminarHorario(String idHorario) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

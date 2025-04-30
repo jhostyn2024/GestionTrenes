@@ -86,4 +86,3 @@ public class GestionGeneralPanel extends JPanel {
         frame.revalidate();
     }
 }
-

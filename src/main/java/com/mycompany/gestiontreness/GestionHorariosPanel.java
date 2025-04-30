@@ -6,13 +6,11 @@ package com.mycompany.gestiontreness;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.UUID;
+import java.util.List;
 
 public class GestionHorariosPanel extends JPanel {
     private JFrame frame;
-    private JTextField txtIdHorario, txtIdRuta, txtIdTren, txtFechaSalida, txtFechaLlegada;
-    private JComboBox<String> cbEstado;
-    private JTextArea txtResultado;
+    private JTable tablaHorarios;
     private final Color BLUE_COLOR = new Color(0, 86, 179);
     private final Color GOLD_COLOR = new Color(198, 168, 77);
 
@@ -24,6 +22,7 @@ public class GestionHorariosPanel extends JPanel {
     }
 
     private void createUI() {
+        // Header
         JPanel header = new JPanel();
         header.setBackground(BLUE_COLOR);
         header.setPreferredSize(new Dimension(800, 100));
@@ -33,112 +32,172 @@ public class GestionHorariosPanel extends JPanel {
         header.add(title);
         add(header, BorderLayout.NORTH);
 
-        JPanel formPanel = new JPanel(new GridLayout(7, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        formPanel.setBackground(Color.WHITE);
+        // Tabla de horarios
+        String[] columnas = {"ID Horario", "ID Ruta", "Hora Salida", "Días Semana"};
+        List<Horario> horarios = GestorHorarios.getInstance().getHorarios();
+        String[][] datos = new String[horarios.size()][4];
+        for (int i = 0; i < horarios.size(); i++) {
+            Horario horario = horarios.get(i);
+            datos[i][0] = horario.getIdHorario();
+            datos[i][1] = horario.getIdRuta();
+            datos[i][2] = horario.getHoraSalida();
+            datos[i][3] = horario.getDiasSemana();
+        }
+        tablaHorarios = new JTable(datos, columnas);
+        tablaHorarios.setFont(new Font("Arial", Font.PLAIN, 14));
+        tablaHorarios.setRowHeight(25);
+        JScrollPane scrollPane = new JScrollPane(tablaHorarios);
+        add(scrollPane, BorderLayout.CENTER);
 
-        txtIdHorario = new JTextField("HORARIO-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        txtIdHorario.setEditable(false);
-        txtIdRuta = new JTextField();
-        txtIdTren = new JTextField();
-        txtFechaSalida = new JTextField("2025-05-01T08:00:00");
-        txtFechaLlegada = new JTextField("2025-05-01T08:30:00");
-        cbEstado = new JComboBox<>(new String[]{"Activo", "Inactivo"});
-        txtResultado = new JTextArea(5, 20);
-        txtResultado.setEditable(false);
-        txtResultado.setFont(new Font("Arial", Font.PLAIN, 14));
+        // Botones
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.setBackground(new Color(240, 240, 240));
 
-        addFormField(formPanel, "ID Horario:", txtIdHorario);
-        addFormField(formPanel, "ID Ruta:", txtIdRuta);
-        addFormField(formPanel, "ID Tren:", txtIdTren);
-        addFormField(formPanel, "Fecha Salida (YYYY-MM-DDTHH:MM:SS):", txtFechaSalida);
-        addFormField(formPanel, "Fecha Llegada (YYYY-MM-DDTHH:MM:SS):", txtFechaLlegada);
-        addFormField(formPanel, "Estado:", cbEstado);
-
-        JButton btnAgregar = new JButton("AGREGAR");
+        JButton btnAgregar = new JButton("AGREGAR HORARIO");
         btnAgregar.setBackground(GOLD_COLOR);
         btnAgregar.setForeground(Color.WHITE);
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 16));
         btnAgregar.addActionListener(e -> agregarHorario());
 
+        JButton btnModificar = new JButton("MODIFICAR HORARIO");
+        btnModificar.setBackground(GOLD_COLOR);
+        btnModificar.setForeground(Color.WHITE);
+        btnModificar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnModificar.addActionListener(e -> modificarHorario());
+
+        JButton btnEliminar = new JButton("ELIMINAR HORARIO");
+        btnEliminar.setBackground(GOLD_COLOR);
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setFont(new Font("Arial", Font.BOLD, 16));
+        btnEliminar.addActionListener(e -> eliminarHorario());
+
         JButton btnVolver = new JButton("VOLVER");
-        btnVolver.setBackground(new Color(100, 100, 100));
+        btnVolver.setBackground(new Color(150, 40, 40));
         btnVolver.setForeground(Color.WHITE);
         btnVolver.setFont(new Font("Arial", Font.BOLD, 16));
         btnVolver.addActionListener(e -> {
-            System.out.println("Navegando a MainMenuPanel desde GestionHorariosPanel");
             frame.setContentPane(new MainMenuPanel(frame));
             frame.revalidate();
         });
 
-        formPanel.add(btnAgregar);
-        formPanel.add(btnVolver);
-
-        add(new JScrollPane(formPanel), BorderLayout.CENTER);
-        add(new JScrollPane(txtResultado), BorderLayout.SOUTH);
-    }
-
-    private void addFormField(JPanel panel, String label, JComponent field) {
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(new Font("Arial", Font.BOLD, 14));
-        field.setFont(new Font("Arial", Font.PLAIN, 14));
-        field.setPreferredSize(new Dimension(200, 30));
-        panel.add(lbl);
-        panel.add(field);
+        buttonsPanel.add(btnAgregar);
+        buttonsPanel.add(btnModificar);
+        buttonsPanel.add(btnEliminar);
+        buttonsPanel.add(btnVolver);
+        add(buttonsPanel, BorderLayout.SOUTH);
     }
 
     private void agregarHorario() {
-        try {
-            String idHorario = txtIdHorario.getText().trim();
+        JTextField txtIdRuta = new JTextField();
+        JTextField txtHoraSalida = new JTextField("HH:mm");
+        JTextField txtDiasSemana = new JTextField();
+        Object[] message = {
+                "ID Ruta:", txtIdRuta,
+                "Hora Salida (HH:mm):", txtHoraSalida,
+                "Días Semana:", txtDiasSemana
+        };
+        int option = JOptionPane.showConfirmDialog(frame, message, "Agregar Horario", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
             String idRuta = txtIdRuta.getText().trim();
-            String idTren = txtIdTren.getText().trim();
-            String fechaSalida = txtFechaSalida.getText().trim();
-            String fechaLlegada = txtFechaLlegada.getText().trim();
-            String estado = (String) cbEstado.getSelectedItem();
+            String horaSalida = txtHoraSalida.getText().trim();
+            String diasSemana = txtDiasSemana.getText().trim();
 
-            if (idRuta.isEmpty() || idTren.isEmpty() || fechaSalida.isEmpty() || fechaLlegada.isEmpty()) {
-                txtResultado.setText("Error: Complete los campos obligatorios (ID Ruta, ID Tren, Fechas).");
-                System.out.println("Campos incompletos en agregarHorario");
+            if (idRuta.isEmpty() || horaSalida.isEmpty() || diasSemana.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (!fechaSalida.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}") ||
-                !fechaLlegada.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
-                txtResultado.setText("Error: Formato de fecha inválido (use YYYY-MM-DDTHH:MM:SS).");
-                System.out.println("Formato de fecha inválido en agregarHorario");
+            // Validar formato de hora (HH:mm)
+            if (!horaSalida.matches("\\d{2}:\\d{2}")) {
+                JOptionPane.showMessageDialog(frame, "Formato de hora inválido (use HH:mm)", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            GestorRutas gestorRutas = GestorRutas.getInstance();
-            GestorTrenes gestorTrenes = GestorTrenes.getInstance();
-            boolean rutaExiste = gestorRutas.getRutas().stream().anyMatch(r -> r.getIdRuta().equals(idRuta));
-            boolean trenExiste = gestorTrenes.getTrenes().stream().anyMatch(t -> t.getIdTren().equals(idTren));
+            // Validar que la ruta exista
+            boolean rutaExiste = GestorRutas.getInstance().getRutas().stream()
+                    .anyMatch(r -> r.getIdRuta().equals(idRuta));
             if (!rutaExiste) {
-                txtResultado.setText("Error: El ID de ruta no existe.");
-                System.out.println("ID de ruta no encontrado: " + idRuta);
-                return;
-            }
-            if (!trenExiste) {
-                txtResultado.setText("Error: El ID de tren no existe.");
-                System.out.println("ID de tren no encontrado: " + idTren);
+                JOptionPane.showMessageDialog(frame, "ID de ruta inválido", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            Horario horario = new Horario(idHorario, idRuta, idTren, fechaSalida, fechaLlegada, estado);
+            String idHorario = "HORARIO-" + (GestorHorarios.getInstance().getHorarios().size() + 1);
+            Horario horario = new Horario(idHorario, idRuta, horaSalida, diasSemana);
             GestorHorarios.getInstance().agregarHorario(horario);
-            txtResultado.setText("Horario agregado exitosamente:\nID: " + idHorario + "\nRuta: " + idRuta + "\nTren: " + idTren + "\nSalida: " + fechaSalida + "\nLlegada: " + fechaLlegada + "\nEstado: " + estado);
-            System.out.println("Horario agregado: " + idHorario);
+            JOptionPane.showMessageDialog(frame, "Horario agregado exitosamente");
+            frame.setContentPane(new GestionHorariosPanel(frame));
+            frame.revalidate();
+        }
+    }
 
-            txtIdHorario.setText("HORARIO-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-            txtIdRuta.setText("");
-            txtIdTren.setText("");
-            txtFechaSalida.setText("2025-05-01T08:00:00");
-            txtFechaLlegada.setText("2025-05-01T08:30:00");
-            cbEstado.setSelectedIndex(0);
-        } catch (Exception e) {
-            txtResultado.setText("Error al agregar horario: " + e.getMessage());
-            System.err.println("Excepción en agregarHorario: " + e.getMessage());
-            e.printStackTrace();
+    private void modificarHorario() {
+        int selectedRow = tablaHorarios.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(frame, "Seleccione un horario", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String idHorario = (String) tablaHorarios.getValueAt(selectedRow, 0);
+        JTextField txtIdRuta = new JTextField((String) tablaHorarios.getValueAt(selectedRow, 1));
+        JTextField txtHoraSalida = new JTextField((String) tablaHorarios.getValueAt(selectedRow, 2));
+        JTextField txtDiasSemana = new JTextField((String) tablaHorarios.getValueAt(selectedRow, 3));
+        Object[] message = {
+                "ID Ruta:", txtIdRuta,
+                "Hora Salida (HH:mm):", txtHoraSalida,
+                "Días Semana:", txtDiasSemana
+        };
+        int option = JOptionPane.showConfirmDialog(frame, message, "Modificar Horario", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String idRuta = txtIdRuta.getText().trim();
+            String horaSalida = txtHoraSalida.getText().trim();
+            String diasSemana = txtDiasSemana.getText().trim();
+
+            if (idRuta.isEmpty() || horaSalida.isEmpty() || diasSemana.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Complete todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Validar formato de hora (HH:mm)
+            if (!horaSalida.matches("\\d{2}:\\d{2}")) {
+                JOptionPane.showMessageDialog(frame, "Formato de hora inválido (use HH:mm)", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Validar que la ruta exista
+            boolean rutaExiste = GestorRutas.getInstance().getRutas().stream()
+                    .anyMatch(r -> r.getIdRuta().equals(idRuta));
+            if (!rutaExiste) {
+                JOptionPane.showMessageDialog(frame, "ID de ruta inválido", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            boolean exito = GestorHorarios.getInstance().modificarHorario(idHorario, idRuta, horaSalida, diasSemana);
+            if (exito) {
+                JOptionPane.showMessageDialog(frame, "Horario modificado exitosamente");
+                frame.setContentPane(new GestionHorariosPanel(frame));
+                frame.revalidate();
+            } else {
+                JOptionPane.showMessageDialog(frame, "No se encontró el horario", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void eliminarHorario() {
+        int selectedRow = tablaHorarios.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(frame, "Seleccione un horario", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String idHorario = (String) tablaHorarios.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(frame, "¿Eliminar horario " + idHorario + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean exito = GestorHorarios.getInstance().eliminarHorario(idHorario);
+            if (exito) {
+                JOptionPane.showMessageDialog(frame, "Horario eliminado exitosamente");
+                frame.setContentPane(new GestionHorariosPanel(frame));
+                frame.revalidate();
+            } else {
+                JOptionPane.showMessageDialog(frame, "No se encontró el horario", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 }

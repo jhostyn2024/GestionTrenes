@@ -4,8 +4,10 @@
  */
 package com.mycompany.gestiontreness;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GestorBoletos {
     private static GestorBoletos instance;
@@ -28,49 +30,67 @@ public class GestorBoletos {
         System.out.println("Agregando boleto con ID: " + boleto.getIdBoleto());
         boletos.add(boleto);
         JsonUtil.writeJson(FILE_PATH, boletos);
-        System.out.println("Boletos almacenados: " + boletos.size());
+        System.out.println("Boletos almacenados: " + boletos.size() + " [" + 
+            boletos.stream().map(Boleto::getIdBoleto).collect(Collectors.joining(", ")) + "]");
     }
 
-    public boolean modificarBoleto(String idBoleto, String idHorario, String idVagon, String cedula, String nombre, String apellido, String estado) {
-        System.out.println("Modificando boleto con ID: " + idBoleto);
+    public Boleto buscarBoletoPorId(String idBoleto) {
+        System.out.println("Buscando boleto con ID: " + idBoleto);
+        Boleto boleto = boletos.stream()
+                .filter(b -> b.getIdBoleto().equals(idBoleto.trim()))
+                .findFirst()
+                .orElse(null);
+        if (boleto == null) {
+            System.out.println("Boleto no encontrado. IDs disponibles: [" + 
+                boletos.stream().map(Boleto::getIdBoleto).collect(Collectors.joining(", ")) + "]");
+        } else {
+            System.out.println("Boleto encontrado: " + boleto.getIdBoleto());
+        }
+        return boleto;
+    }
+
+    public List<Boleto> buscarBoletosPorEquipaje(String idEquipaje) {
+        System.out.println("Buscando boletos con equipaje ID: " + idEquipaje);
+        List<Boleto> resultados = new ArrayList<>();
         for (Boleto boleto : boletos) {
-            if (boleto.getIdBoleto().equals(idBoleto)) {
-                boleto.setIdHorario(idHorario);
-                boleto.setIdVagon(idVagon);
-                boleto.setCedula(cedula);
-                boleto.setNombre(nombre);
-                boleto.setApellido(apellido);
-                boleto.setEstado(estado);
-                JsonUtil.writeJson(FILE_PATH, boletos);
-                System.out.println("Boleto modificado y almacenado: " + idBoleto);
-                return true;
+            for (Equipaje equipaje : boleto.getEquipajes()) {
+                if (equipaje.getIdEquipaje().equals(idEquipaje.trim())) {
+                    resultados.add(boleto);
+                    System.out.println("Boleto encontrado para equipaje: " + boleto.getIdBoleto());
+                    break;
+                }
             }
         }
-        System.out.println("Boleto no encontrado para modificar: " + idBoleto);
-        return false;
+        System.out.println("Total boletos encontrados para equipaje: " + resultados.size());
+        return resultados;
     }
 
-    public boolean eliminarBoleto(String idBoleto) {
-        System.out.println("Eliminando boleto con ID: " + idBoleto);
-        boolean removed = boletos.removeIf(boleto -> boleto.getIdBoleto().equals(idBoleto));
-        if (removed) {
-            JsonUtil.writeJson(FILE_PATH, boletos);
-            System.out.println("Boleto eliminado y almacenado: " + idBoleto);
-        } else {
-            System.out.println("Boleto no encontrado para eliminar: " + idBoleto);
+    public boolean validarBoleto(String idBoleto) {
+        System.out.println("Validando boleto con ID: " + idBoleto);
+        Boleto boleto = buscarBoletoPorId(idBoleto);
+        if (boleto == null) {
+            System.out.println("Boleto no encontrado para validación");
+            return false;
         }
-        return removed;
+        boolean valido = !boleto.isUsado() && boleto.getFechaSalida().isAfter(LocalDateTime.now());
+        System.out.println("Resultado de validación: " + valido);
+        return valido;
+    }
+
+    public boolean marcarBoletoUsado(String idBoleto) {
+        System.out.println("Marcando boleto como usado: " + idBoleto);
+        Boleto boleto = buscarBoletoPorId(idBoleto);
+        if (boleto == null) {
+            System.out.println("Boleto no encontrado para marcar como usado");
+            return false;
+        }
+        boleto.marcarBoletoUsado();
+        JsonUtil.writeJson(FILE_PATH, boletos);
+        System.out.println("Boleto marcado como usado: " + idBoleto);
+        return true;
     }
 
     public List<Boleto> getBoletos() {
         return new ArrayList<>(boletos);
-    }
-
-    Boleto buscarBoletoPorId(String idBoleto) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    boolean marcarBoletoUsado(String idBoleto) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

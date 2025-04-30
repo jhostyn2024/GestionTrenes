@@ -20,9 +20,10 @@ public class Ruta {
     private double distancia;
 
     @JsonProperty("estado")
-    private String estado;
+    private String estado; // "Activa" o "Inactiva"
 
-    public Ruta() {}
+    public Ruta() {
+    }
 
     public Ruta(String idRuta, String estacionOrigen, String estacionDestino, double distancia, String estado) {
         this.idRuta = idRuta;

@@ -29,57 +29,32 @@ public class GestorVagones {
         System.out.println("Agregando vagón con ID: " + vagon.getIdVagon());
         vagones.add(vagon);
         JsonUtil.writeJson(FILE_PATH, vagones);
-        System.out.println("Vagones almacenados: " + vagones.size());
-    }
-
-    public boolean modificarVagon(String idVagon, String idTren, String tipo, int capacidad, String estado) {
-        System.out.println("Modificando vagón con ID: " + idVagon);
-        for (Vagon vagon : vagones) {
-            if (vagon.getIdVagon().equals(idVagon)) {
-                vagon.setIdTren(idTren);
-                vagon.setTipo(tipo);
-                vagon.setCapacidad(capacidad);
-                vagon.setEstado(estado);
-                JsonUtil.writeJson(FILE_PATH, vagones);
-                System.out.println("Vagón modificado y almacenado: " + idVagon);
-                return true;
-            }
-        }
-        System.out.println("Vagón no encontrado para modificar: " + idVagon);
-        return false;
-    }
-
-    public boolean eliminarVagon(String idVagon) {
-        System.out.println("Eliminando vagón con ID: " + idVagon);
-        boolean removed = vagones.removeIf(vagon -> vagon.getIdVagon().equals(idVagon));
-        if (removed) {
-            JsonUtil.writeJson(FILE_PATH, vagones);
-            System.out.println("Vagón eliminado y almacenado: " + idVagon);
-        } else {
-            System.out.println("Vagón no encontrado para eliminar: " + idVagon);
-        }
-        return removed;
+        System.out.println("Vagones almacenados: " + vagones.size() + " [" + 
+            vagones.stream().map(Vagon::getIdVagon).collect(Collectors.joining(", ")) + "]");
     }
 
     public List<Vagon> getVagones() {
         return new ArrayList<>(vagones);
     }
 
-    public List<Vagon> getVagonesActivos() {
+    public List<Vagon> getVagonesPorTren(String idTren) {
         return vagones.stream()
-                .filter(vagon -> "Activo".equals(vagon.getEstado()))
+                .filter(v -> v.getIdTren().equals(idTren))
                 .collect(Collectors.toList());
+    }
+
+    public boolean validarProporcionVagones(String idTren) {
+        List<Vagon> vagonesTren = getVagonesPorTren(idTren);
+        long pasajeros = vagonesTren.stream().filter(v -> v.getTipo().equals("Pasajeros")).count();
+        long carga = vagonesTren.stream().filter(v -> v.getTipo().equals("Carga")).count();
+        return pasajeros >= 2 * carga; // Proporción 1:2
     }
 
     void printVagones() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    boolean validarProporcionVagones(String idTren) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    Object getVagonesPorTren(String idTren) {
+    boolean eliminarVagon(String idVagon) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

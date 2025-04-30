@@ -6,6 +6,8 @@ package com.mycompany.gestiontreness;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
+
 public class Horario {
     @JsonProperty("idHorario")
     private String idHorario;
@@ -13,27 +15,29 @@ public class Horario {
     @JsonProperty("idRuta")
     private String idRuta;
 
-    @JsonProperty("idTren")
-    private String idTren;
+    @JsonProperty("horaSalida")
+    private String horaSalida; // Formato HH:mm
 
-    @JsonProperty("fechaSalida")
-    private String fechaSalida;
+    @JsonProperty("diasSemana")
+    private String diasSemana; // Ejemplo: "Lunes,Martes,Miércoles"
 
-    @JsonProperty("fechaLlegada")
-    private String fechaLlegada;
+    @JsonProperty("fechaInicio")
+    private LocalDateTime fechaInicio;
 
-    @JsonProperty("estado")
-    private String estado;
+    @JsonProperty("fechaFin")
+    private LocalDateTime fechaFin;
 
-    public Horario() {}
+    public Horario() {
+    }
 
-    public Horario(String idHorario, String idRuta, String idTren, String fechaSalida, String fechaLlegada, String estado) {
+    public Horario(String idHorario, String idRuta, String horaSalida, String diasSemana, 
+                   LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         this.idHorario = idHorario;
         this.idRuta = idRuta;
-        this.idTren = idTren;
-        this.fechaSalida = fechaSalida;
-        this.fechaLlegada = fechaLlegada;
-        this.estado = estado;
+        this.horaSalida = horaSalida;
+        this.diasSemana = diasSemana;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
     }
 
     Horario(String idRuta, String horaSalida, String horaLlegada, String diasSemana) {
@@ -42,23 +46,15 @@ public class Horario {
 
     public String getIdHorario() { return idHorario; }
     public String getIdRuta() { return idRuta; }
-    public String getIdTren() { return idTren; }
-    public String getFechaSalida() { return fechaSalida; }
-    public String getFechaLlegada() { return fechaLlegada; }
-    public String getEstado() { return estado; }
+    public String getHoraSalida() { return horaSalida; }
+    public String getDiasSemana() { return diasSemana; }
+    public LocalDateTime getFechaInicio() { return fechaInicio; }
+    public LocalDateTime getFechaFin() { return fechaFin; }
 
     public void setIdHorario(String idHorario) { this.idHorario = idHorario; }
     public void setIdRuta(String idRuta) { this.idRuta = idRuta; }
-    public void setIdTren(String idTren) { this.idTren = idTren; }
-    public void setFechaSalida(String fechaSalida) { this.fechaSalida = fechaSalida; }
-    public void setFechaLlegada(String fechaLlegada) { this.fechaLlegada = fechaLlegada; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    String getHoraSalida() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    String getDiasSemana() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public void setHoraSalida(String horaSalida) { this.horaSalida = horaSalida; }
+    public void setDiasSemana(String diasSemana) { this.diasSemana = diasSemana; }
+    public void setFechaInicio(LocalDateTime fechaInicio) { this.fechaInicio = fechaInicio; }
+    public void setFechaFin(LocalDateTime fechaFin) { this.fechaFin = fechaFin; }
 }
