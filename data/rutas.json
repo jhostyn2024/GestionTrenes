@@ -1,1 +1,26 @@
-[{"idRuta":"RUTA-968A35C0","estacionOrigen":"Cabecera del Llano","estacionDestino":"San Francisco","distancia":30.0,"estado":"Activa"},{"idRuta":"RUTA-FD86DCD3","estacionOrigen":"Cabecera del Llano","estacionDestino":"San Francisco","distancia":30.0,"estado":"Activa"},{"idRuta":"RUTA-2AED2122","estacionOrigen":"Cabecera del Llano","estacionDestino":"San Francisco","distancia":30.0,"estado":"Activa"},{"idRuta":"RUTA-33EE5DB1","estacionOrigen":"La Universidad","estacionDestino":"La Joya","distancia":120.0,"estado":"Activa"}]
+[
+  {"idRuta":"RUTA-0001","estacionOrigen":"Cabecera del Llano","estacionDestino":"San Francisco","distancia":30.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0002","estacionOrigen":"Cabecera del Llano","estacionDestino":"La Universidad","distancia":40.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0003","estacionOrigen":"Cabecera del Llano","estacionDestino":"Sotomayor","distancia":50.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0004","estacionOrigen":"Cabecera del Llano","estacionDestino":"La Concordia","distancia":50.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0005","estacionOrigen":"San Francisco","estacionDestino":"Cabecera del Llano","distancia":30.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0006","estacionOrigen":"La Universidad","estacionDestino":"Cabecera del Llano","distancia":40.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0007","estacionOrigen":"La Universidad","estacionDestino":"Girardot","distancia":80.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0008","estacionOrigen":"La Universidad","estacionDestino":"La Joya","distancia":120.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0009","estacionOrigen":"La Universidad","estacionDestino":"Kennedy","distancia":110.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0010","estacionOrigen":"Sotomayor","estacionDestino":"Cabecera del Llano","distancia":50.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0011","estacionOrigen":"Sotomayor","estacionDestino":"Provenza","distancia":20.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0012","estacionOrigen":"Provenza","estacionDestino":"Sotomayor","distancia":20.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0013","estacionOrigen":"Provenza","estacionDestino":"La Concordia","distancia":65.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0014","estacionOrigen":"La Concordia","estacionDestino":"Cabecera del Llano","distancia":50.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0015","estacionOrigen":"La Concordia","estacionDestino":"Provenza","distancia":65.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0016","estacionOrigen":"La Concordia","estacionDestino":"Diamante II","distancia":80.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0017","estacionOrigen":"Diamante II","estacionDestino":"La Concordia","distancia":80.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0018","estacionOrigen":"Diamante II","estacionDestino":"Mutis","distancia":30.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0019","estacionOrigen":"Diamante II","estacionDestino":"Girardot","distancia":145.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0020","estacionOrigen":"Mutis","estacionDestino":"Diamante II","distancia":30.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0021","estacionOrigen":"Girardot","estacionDestino":"La Universidad","distancia":80.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0022","estacionOrigen":"Girardot","estacionDestino":"Diamante II","distancia":145.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0023","estacionOrigen":"La Joya","estacionDestino":"La Universidad","distancia":120.0,"estado":"Activa"},
+  {"idRuta":"RUTA-0024","estacionOrigen":"Kennedy","estacionDestino":"La Universidad","distancia":110.0,"estado":"Activa"}
+]

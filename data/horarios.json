@@ -1,0 +1,26 @@
+[
+  {
+    "idHorario": "HORARIO-0001",
+    "idRuta": "RUTA-0001",
+    "idTren": "TREN-0001",
+    "fechaSalida": "2025-05-01T08:00:00",
+    "fechaLlegada": "2025-05-01T08:30:00",
+    "estado": "Activo"
+  },
+  {
+    "idHorario": "HORARIO-0002",
+    "idRuta": "RUTA-0007",
+    "idTren": "TREN-0002",
+    "fechaSalida": "2025-05-01T09:00:00",
+    "fechaLlegada": "2025-05-01T10:20:00",
+    "estado": "Activo"
+  },
+  {
+    "idHorario": "HORARIO-0003",
+    "idRuta": "RUTA-0011",
+    "idTren": "TREN-0001",
+    "fechaSalida": "2025-05-01T07:00:00",
+    "fechaLlegada": "2025-05-01T07:15:00",
+    "estado": "Activo"
+  }
+]

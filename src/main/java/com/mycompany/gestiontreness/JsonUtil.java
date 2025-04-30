@@ -4,6 +4,7 @@
  */
 package com.mycompany.gestiontreness;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -46,5 +47,9 @@ public class JsonUtil {
             System.err.println("Error al leer JSON desde " + filePath + ": " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    static List<Empleado> readJson(String FILE_PATH, TypeReference<List<Empleado>> typeReference) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
